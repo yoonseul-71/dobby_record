@@ -28,262 +28,360 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- 상단 헤더 -->
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- 타이틀 및 서브타이틀 -->
-            <div class="flex items-center space-x-3">
-                <div class="bg-amber-500/10 border border-amber-500/30 p-2.5 rounded-xl text-amber-400">
-                    <i class="fa-solid me-0 fa-trophy text-2xl"></i>
+    <div>
+        <!-- 상단 헤더 -->
+        <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <!-- 타이틀 및 서브타이틀 -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-amber-500/10 border border-amber-500/30 p-2.5 rounded-xl text-amber-400">
+                        <i class="fa-solid fa-trophy text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
+                            SOOP DOHYEON
+                        </h1>
+                        <p class="text-xs text-slate-400 font-medium">전적 검색 & 롤 멸망전</p>
+                    </div>
+                </div>
+
+                <!-- 메인 탭 & 관리자 모드 버튼 -->
+                <div class="flex items-center space-x-3">
+                    <nav class="flex space-x-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                        <button id="nav-btn-history" onclick="switchMainTab('history')" class="px-4 py-2 rounded-lg text-sm font-bold transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/20">
+                            게임 전적 검색
+                        </button>
+                        <button id="nav-btn-mwj" onclick="switchMainTab('mwj')" class="px-4 py-2 rounded-lg text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50">
+                            롤 멸망전
+                        </button>
+                    </nav>
+                    <button onclick="toggleAdminMode()" id="admin-mode-btn" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 transition-all">
+                        <i class="fa-solid fa-lock mr-1"></i>관리자 OFF
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 메인 컨텐츠 영역 -->
+        <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            <!-- ========================================== -->
+            <!-- 1. 게임 전적 검색 섹션 -->
+            <!-- ========================================== -->
+            <section id="section-history" class="space-y-6">
+                
+                <!-- 상단 검색 및 필터 바 -->
+                <div class="bg-slate-900/80 backdrop-blur border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row gap-4 justify-between items-center shadow-xl">
+                    <!-- 게임 선택 탭 (VALORANT / LEAGUE OF LEGENDS / PUBG) - 아이콘 제거 -->
+                    <div class="flex space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 w-full md:w-auto">
+                        <button id="game-tab-val" onclick="switchGameTab('val')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold bg-rose-600 text-white transition-all">
+                            VALORANT
+                        </button>
+                        <button id="game-tab-lol" onclick="switchGameTab('lol')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">
+                            LEAGUE OF LEGENDS
+                        </button>
+                        <button id="game-tab-pubg" onclick="switchGameTab('pubg')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">
+                            PUBG
+                        </button>
+                    </div>
+
+                    <!-- 통합 검색창 및 유형 필터 -->
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button onclick="openAddRecordModal()" id="add-record-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1 whitespace-nowrap">
+                            <i class="fa-solid fa-plus"></i> 기록 추가
+                        </button>
+                        <select id="type-filter" onchange="filterRecords()" class="bg-slate-950 border border-slate-800 text-slate-300 text-sm rounded-xl px-3 py-2 outline-none focus:border-indigo-500">
+                            <option value="ALL">전체 유형</option>
+                            <option value="내전">내전</option>
+                            <option value="CK">CK</option>
+                            <option value="랜드">랜드</option>
+                            <option value="자유입력">자유입력</option>
+                        </select>
+                        <div class="relative flex-1 md:w-64">
+                            <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                            <input type="text" id="search-input" onkeyup="filterRecords()" placeholder="스트리머, 챔프/요원, 날짜..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 전적 리스트 출력 구역 (가로형 알찬 구조) -->
+                <div id="record-list" class="space-y-3">
+                    <!-- Dynamic Render -->
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- 2. 롤 멸망전 섹션 -->
+            <!-- ========================================== -->
+            <section id="section-mwj" class="space-y-6 hidden">
+                
+                <div id="mwj-main-view">
+                    <div class="mb-6 flex justify-between items-end">
+                        <div>
+                            <h2 class="text-xl font-bold text-white mb-1">참여 멸망전 목록</h2>
+                            <p class="text-sm text-slate-400">팀 카드를 클릭하면 상세 아카이브를 확인할 수 있습니다.</p>
+                        </div>
+                        <button onclick="alert('관리자 모드에서 팀 추가가 가능합니다.')" id="add-mwj-btn" class="hidden px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all">
+                            <i class="fa-solid fa-plus mr-1"></i>멸망전 시즌 추가
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div onclick="openMwjDetail('team1')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 hover:shadow-xl transition-all cursor-pointer relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/20">
+                                2025 ALL Season 1
+                            </div>
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center font-black text-2xl text-slate-950 shadow-lg group-hover:scale-105 transition-transform">
+                                    DH
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">도현팀 (승리 요정들)</h3>
+                                    <p class="text-xs text-slate-400">최종 성적: 준우승 🥈</p>
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-800/80 pt-3 flex justify-between items-center text-xs text-slate-400">
+                                <span><i class="fa-regular fa-calendar mr-1"></i>2025.11.10 ~ 11.25</span>
+                                <span class="text-amber-400 font-semibold">기록 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 멸망전 상세 아카이브 뷰 -->
+                <div id="mwj-detail-view" class="space-y-6 hidden">
+                    <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+                        <div class="flex items-center space-x-4">
+                            <button onclick="closeMwjDetail()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-xl transition-all">
+                                <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
+                            </button>
+                            <div>
+                                <h2 class="text-lg font-bold text-white">2025 ALL Season 1 - 도현팀 상세 아카이브</h2>
+                                <span class="text-xs text-amber-400 font-medium">총 스크림 통산: 14승 8패</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold px-2.5 py-1 rounded-lg">대회 본선 8강</span>
+                                <h3 class="text-lg font-bold text-white">[본선 1일차] 25.11.15 토</h3>
+                                <span class="text-xs text-slate-400 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">결과: 2승 1패</span>
+                            </div>
+                            <a href="#" target="_blank" class="inline-flex items-center text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl border border-rose-500/20 transition-all">
+                                <i class="fa-solid fa-play-circle mr-1.5"></i>풀영상 다시보기
+                            </a>
+                        </div>
+
+                        <!-- 멸망전 밴픽 표 (포지션 중앙, 진영 선택 가능, 칸 분리) -->
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex space-x-2">
+                                    <button onclick="switchMatchSubTab(1)" id="match-subtab-1" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">19시 1세트 (승)</button>
+                                    <button onclick="switchMatchSubTab(2)" id="match-subtab-2" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-950">20시 2세트 (패)</button>
+                                </div>
+                                <div class="text-xs text-slate-400 font-medium bg-slate-950 px-3 py-1 rounded-lg border border-slate-800">
+                                    진영 선택: <span id="current-side-label" class="text-blue-400 font-bold">BLUE TEAM (승리)</span>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto custom-scrollbar">
+                                <table class="w-full text-center border-collapse min-w-[650px]">
+                                    <thead>
+                                        <tr class="text-xs text-slate-400 border-b border-slate-800 bg-slate-950/50">
+                                            <th class="py-2.5 text-blue-400 font-bold w-5/12" colspan="3">BLUE TEAM (승리)</th>
+                                            <th class="py-2.5 font-bold text-slate-400 w-2/12">포지션</th>
+                                            <th class="py-2.5 text-rose-400 font-bold w-5/12" colspan="3">RED TEAM (패배)</th>
+                                        </tr>
+                                        <tr class="text-[11px] text-slate-500 border-b border-slate-800/60 bg-slate-950/30">
+                                            <th class="py-1">스트리머</th>
+                                            <th class="py-1">티어/포인트</th>
+                                            <th class="py-1">챔피언</th>
+                                            <th class="py-1">-</th>
+                                            <th class="py-1">챔피언</th>
+                                            <th class="py-1">티어/포인트</th>
+                                            <th class="py-1">스트리머</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/40 text-xs sm:text-sm">
+                                        <tr>
+                                            <td class="py-2.5 font-semibold text-white">박사장</td>
+                                            <td class="text-slate-400 text-xs">[E] 31.2</td>
+                                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">카밀</span></td>
+                                            <td class="font-bold text-slate-400 bg-slate-950/40">탑</td>
+                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">모데카이저</span></td>
+                                            <td class="text-slate-400 text-xs">[P] 24.3</td>
+                                            <td class="font-semibold text-white">염보성</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2.5 font-semibold text-white">저라뎃</td>
+                                            <td class="text-slate-400 text-xs">[C] 63.0</td>
+                                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">케인</span></td>
+                                            <td class="font-bold text-slate-400 bg-slate-950/40">정글</td>
+                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">사일러스</span></td>
+                                            <td class="text-slate-400 text-xs">[C] 68.0</td>
+                                            <td class="font-semibold text-white">클리드</td>
+                                        </tr>
+                                        <tr class="bg-amber-500/5">
+                                            <td class="py-2.5 font-bold text-amber-400">도현 ⭐</td>
+                                            <td class="text-slate-400 text-xs">[P] 31.5</td>
+                                            <td><span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-xs">멜</span></td>
+                                            <td class="font-bold text-amber-400 bg-slate-950/40">미드</td>
+                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">사이온</span></td>
+                                            <td class="text-slate-400 text-xs">[S] 10.0</td>
+                                            <td class="font-semibold text-white">박이언</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2.5 font-semibold text-white">맛종욱</td>
+                                            <td class="text-slate-400 text-xs">[E] 22.1</td>
+                                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">바루스</span></td>
+                                            <td class="font-bold text-slate-400 bg-slate-950/40">원딜</td>
+                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">유나라</span></td>
+                                            <td class="text-slate-400 text-xs">[C] 60.4</td>
+                                            <td class="font-semibold text-white">바밤바</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2.5 font-semibold text-white">한아밍</td>
+                                            <td class="text-slate-400 text-xs">[E] 36.0</td>
+                                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">레오나</span></td>
+                                            <td class="font-bold text-slate-400 bg-slate-950/40">서폿</td>
+                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">유미</span></td>
+                                            <td class="text-slate-400 text-xs">[G] 21.0</td>
+                                            <td class="font-semibold text-white">애교용</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 하단 푸터 (요청하신 문구 및 제작자 표기 반영) -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-4 px-4 sm:px-6 lg:px-8 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
+            <div>본 사이트는 비공식 전적 정리 사이트이므로 일부 누락이나 오류가 있을 수 있습니다.</div>
+            <div class="font-semibold text-slate-400">made by 윤슬ツ</div>
+        </div>
+    </footer>
+
+    <!-- 기록 추가 모달 (관리자 전용) -->
+    <div id="add-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="text-lg font-bold text-white"><span id="modal-game-title">VALORANT</span> 전적 추가 (관리자)</h3>
+            <div class="space-y-3 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-slate-400 block mb-1">유형</label>
+                        <select id="m-type" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                            <option value="내전">내전</option>
+                            <option value="CK">CK</option>
+                            <option value="랜드">랜드</option>
+                            <option value="자유입력">자유입력</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-slate-400 block mb-1">날짜</label>
+                        <input type="text" id="m-date" placeholder="2025.11.21" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                    </div>
                 </div>
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                        SOOP DOHYEON
-                    </h1>
-                    <p class="text-xs text-slate-400 font-medium">전적 검색 & 롤 멸망전</p>
+                    <label class="text-slate-400 block mb-1">밸런스 (상대 스트리머 등)</label>
+                    <input type="text" id="m-balance" placeholder="예: 도현팀 vs 이상호팀" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                </div>
+                <div id="m-game-specific-fields" class="space-y-3">
+                    <!-- 종목별 동적 필드 채워짐 -->
+                </div>
+                <div>
+                    <label class="text-slate-400 block mb-1">전체 멤버 (상세보기용 쉼표 구분)</label>
+                    <input type="text" id="m-members" placeholder="도현, 킴성태, 괴물쥐, 피넛, ..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-slate-400 block mb-1">승패 여부</label>
+                        <select id="m-result" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                            <option value="WIN">WIN (승리)</option>
+                            <option value="LOSE">LOSE (패배)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-
-            <!-- 메인 탭 선택 (게임 전적 검색 / 롤 멸망전) -->
-            <nav class="flex space-x-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-                <button id="nav-btn-history" onclick="switchMainTab('history')" class="px-4 py-2 rounded-lg text-sm font-bold transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/20">
-                    <i class="fa-solid fa-gamepad mr-1.5"></i>게임 전적 검색
-                </button>
-                <button id="nav-btn-mwj" onclick="switchMainTab('mwj')" class="px-4 py-2 rounded-lg text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50">
-                    <i class="fa-solid fa-crown mr-1.5"></i>롤 멸망전
-                </button>
-            </nav>
+            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
+                <button onclick="closeAddRecordModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all text-xs">취소</button>
+                <button onclick="saveNewRecord()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all text-xs">저장하기</button>
+            </div>
         </div>
-    </header>
+    </div>
 
-    <!-- 메인 컨텐츠 영역 -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-        <!-- ========================================== -->
-        <!-- 1. 게임 전적 검색 섹션 -->
-        <!-- ========================================== -->
-        <section id="section-history" class="space-y-6">
-            
-            <!-- 상단 검색 및 필터 바 (고정) -->
-            <div class="bg-slate-900/80 backdrop-blur border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row gap-4 justify-between items-center shadow-xl">
-                <!-- 게임 선택 탭 (발로란트 / LoL / 배그) -->
-                <div class="flex space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 w-full md:w-auto">
-                    <button id="game-tab-val" onclick="switchGameTab('val')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold bg-rose-600 text-white transition-all">
-                        <i class="fa-solid fa-crosshairs mr-1"></i>발로란트
-                    </button>
-                    <button id="game-tab-lol" onclick="switchGameTab('lol')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">
-                        <i class="fa-solid fa-shield-halved mr-1"></i>League of Legends
-                    </button>
-                    <button id="game-tab-pubg" onclick="switchGameTab('pubg')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">
-                        <i class="fa-solid fa-person-rifle mr-1"></i>배틀그라운드
-                    </button>
-                </div>
-
-                <!-- 통합 검색창 및 유형 필터 -->
-                <div class="flex gap-2 w-full md:w-auto">
-                    <select id="type-filter" onchange="filterRecords()" class="bg-slate-950 border border-slate-800 text-slate-300 text-sm rounded-xl px-3 py-2 outline-none focus:border-indigo-500">
-                        <option value="ALL">전체 매치</option>
-                        <option value="내전">내전</option>
-                        <option value="CK">CK</option>
-                        <option value="랜드">랜드</option>
-                    </select>
-                    <div class="relative flex-1 md:w-64">
-                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                        <input type="text" id="search-input" onkeyup="filterRecords()" placeholder="스트리머, 챔프/요원, 날짜..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 outline-none focus:border-indigo-500">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 전적 리스트 출력 구역 -->
-            <div id="record-list" class="space-y-4">
-                <!-- JavaScript로 dynamic하게 데이터 채워짐 -->
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- 2. 롤 멸망전 섹션 -->
-        <!-- ========================================== -->
-        <section id="section-mwj" class="space-y-6 hidden">
-            
-            <!-- [멸망전 메인] 팀 선택 카드 뷰 -->
-            <div id="mwj-main-view">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-white mb-1">참여 멸망전 목록</h2>
-                    <p class="text-sm text-slate-400">팀 카드를 클릭하면 스크림 및 본선 상세 아카이브를 확인할 수 있습니다.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- 팀 카드 예시 -->
-                    <div onclick="openMwjDetail('team1')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 hover:shadow-xl hover:shadow-amber-500/5 transition-all cursor-pointer relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/20">
-                            2025 ALL Season 1
-                        </div>
-                        <div class="flex items-center space-x-4 mb-4">
-                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center font-black text-2xl text-slate-950 shadow-lg group-hover:scale-105 transition-transform">
-                                DH
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">도현팀 (승리 요정들)</h3>
-                                <p class="text-xs text-slate-400">최종 성적: 준우승 🥈</p>
-                            </div>
-                        </div>
-                        <div class="border-t border-slate-800/80 pt-3 flex justify-between items-center text-xs text-slate-400">
-                            <span><i class="fa-regular fa-calendar mr-1"></i>2025.11.10 ~ 11.25</span>
-                            <span class="text-amber-400 font-semibold">기록 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- [멸망전 상세] 아카이브 뷰 -->
-            <div id="mwj-detail-view" class="space-y-6 hidden">
-                <!-- 뒤로가기 헤더 -->
-                <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                    <div class="flex items-center space-x-4">
-                        <button onclick="closeMwjDetail()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-xl transition-all">
-                            <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
-                        </button>
-                        <div>
-                            <h2 class="text-lg font-bold text-white">2025 ALL Season 1 - 도현팀 상세 아카이브</h2>
-                            <span class="text-xs text-amber-400 font-medium">총 스크림 통산: 14승 8패</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 날짜별 스크림 / 대회 경기 카드 -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
-                    
-                    <!-- 카드 상단: 구분 및 타이틀 -->
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-4">
-                        <div class="flex items-center gap-2">
-                            <span class="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold px-2.5 py-1 rounded-lg">대회 본선 8강</span>
-                            <h3 class="text-lg font-bold text-white">[본선 1일차] 25.11.15 토</h3>
-                            <span class="text-xs text-slate-400 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">결과: 2승 1패</span>
-                        </div>
-                        <a href="#" target="_blank" class="inline-flex items-center text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl border border-rose-500/20 transition-all">
-                            <i class="fa-solid fa-play-circle mr-1.5"></i>풀영상 다시보기
-                        </a>
-                    </div>
-
-                    <!-- 세부 세트 (시간대/경기별 탭) -->
-                    <div class="space-y-4">
-                        <div class="flex space-x-2 border-b border-slate-800/60 pb-2">
-                            <button onclick="switchMatchSubTab(1)" id="match-subtab-1" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">19시 1세트 (승)</button>
-                            <button onclick="switchMatchSubTab(2)" id="match-subtab-2" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-950">20시 2세트 (패)</button>
-                            <button onclick="switchMatchSubTab(3)" id="match-subtab-3" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-950">21시 3세트 (승)</button>
-                        </div>
-
-                        <!-- 양팀 진영 및 포지션 중앙 배치 밴픽/로스터 표 -->
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-center border-collapse min-w-[650px]">
-                                <thead>
-                                    <tr class="text-xs text-slate-400 border-b border-slate-800 bg-slate-950/50">
-                                        <!-- 블루팀 서식 -->
-                                        <th class="py-2.5 text-blue-400 font-bold w-5/12" colspan="3">
-                                            <i class="fa-solid fa-square mr-1"></i>BLUE TEAM (승리)
-                                        </th>
-                                        <!-- 포지션 (중앙) -->
-                                        <th class="py-2.5 font-bold text-slate-400 w-2/12">포지션</th>
-                                        <!-- 레드팀 서식 -->
-                                        <th class="py-2.5 text-rose-400 font-bold w-5/12" colspan="3">
-                                            RED TEAM (패배)<i class="fa-solid fa-square ml-1"></i>
-                                        </th>
-                                    </tr>
-                                    <tr class="text-[11px] text-slate-500 border-b border-slate-800/60 bg-slate-950/30">
-                                        <th class="py-1">스트리머</th>
-                                        <th class="py-1">티어/포인트</th>
-                                        <th class="py-1">챔피언</th>
-                                        <th class="py-1">-</th>
-                                        <th class="py-1">챔피언</th>
-                                        <th class="py-1">티어/포인트</th>
-                                        <th class="py-1">스트리머</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-800/40 text-xs sm:text-sm">
-                                    <!-- 탑 -->
-                                    <tr class="hover:bg-slate-800/30">
-                                        <td class="py-2.5 font-semibold text-white">박사장</td>
-                                        <td class="text-slate-400 text-xs">[E] 31.2</td>
-                                        <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">카밀</span></td>
-                                        <td class="font-bold text-slate-400 bg-slate-950/40">탑</td>
-                                        <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">모데카이저</span></td>
-                                        <td class="text-slate-400 text-xs">[P] 24.3</td>
-                                        <td class="font-semibold text-white">염보성</td>
-                                    </tr>
-                                    <!-- 정글 -->
-                                    <tr class="hover:bg-slate-800/30">
-                                        <td class="py-2.5 font-semibold text-white">저라뎃</td>
-                                        <td class="text-slate-400 text-xs">[C] 63.0</td>
-                                        <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">케인</span></td>
-                                        <td class="font-bold text-slate-400 bg-slate-950/40">정글</td>
-                                        <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">사일러스</span></td>
-                                        <td class="text-slate-400 text-xs">[C] 68.0</td>
-                                        <td class="font-semibold text-white">클리드</td>
-                                    </tr>
-                                    <!-- 미드 -->
-                                    <tr class="hover:bg-slate-800/30 bg-amber-500/5">
-                                        <td class="py-2.5 font-bold text-amber-400">도현 ⭐</td>
-                                        <td class="text-slate-400 text-xs">[P] 31.5</td>
-                                        <td><span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-xs">멜</span></td>
-                                        <td class="font-bold text-amber-400 bg-slate-950/40">미드</td>
-                                        <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">사이온</span></td>
-                                        <td class="text-slate-400 text-xs">[S] 10.0</td>
-                                        <td class="font-semibold text-white">박이언</td>
-                                    </tr>
-                                    <!-- 원딜 -->
-                                    <tr class="hover:bg-slate-800/30">
-                                        <td class="py-2.5 font-semibold text-white">맛종욱</td>
-                                        <td class="text-slate-400 text-xs">[E] 22.1</td>
-                                        <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">바루스</span></td>
-                                        <td class="font-bold text-slate-400 bg-slate-950/40">원딜</td>
-                                        <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">유나라</span></td>
-                                        <td class="text-slate-400 text-xs">[C] 60.4</td>
-                                        <td class="font-semibold text-white">바밤바</td>
-                                    </tr>
-                                    <!-- 서폿 -->
-                                    <tr class="hover:bg-slate-800/30">
-                                        <td class="py-2.5 font-semibold text-white">한아밍</td>
-                                        <td class="text-slate-400 text-xs">[E] 36.0</td>
-                                        <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">레오나</span></td>
-                                        <td class="font-bold text-slate-400 bg-slate-950/40">서폿</td>
-                                        <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">유미</span></td>
-                                        <td class="text-slate-400 text-xs">[G] 21.0</td>
-                                        <td class="font-semibold text-white">애교용</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- 스크립트 (동적 데이터 관리 & 탭 전환) -->
+    <!-- 스크립트 -->
     <script>
-        // 전적 데이터 샘플 (발로란트 / LoL / 배그)
-        const mockData = {
+        // 전적 데이터 샘플 (가로형 알찬 구조 및 다른 스트리머 밸런스 포함)
+        let mockData = {
             val: [
-                { id: 1, type: "CK", date: "2025.11.20", balance: "다이아~초월자 밸런스", map: "헤이븐", agent: "제트", acs: 312, kda: "24 / 12 / 5", result: "WIN", score: "13 : 9", players: "도현, 뜨삭, 손오봉..." },
-                { id: 2, type: "내전", date: "2025.11.18", balance: "방송인 통합 내전", map: "어센트", agent: "소바", acs: 198, kda: "14 / 15 / 11", result: "LOSE", score: "10 : 13", players: "도현, 푸린, 김계란..." }
+                { 
+                    id: 1, type: "CK", date: "2025.11.20", balance: "도현팀 vs 이상호팀", 
+                    map: "헤이븐", agent: "제트", acs: 312, kda: "24 / 12 / 5", result: "WIN", score: "13 : 9", 
+                    members: "도현, 이상호, 뜨삭, 손오봉, 김블루, 눈을감자, 푸린, 다주, 서넹, 공파리파" 
+                },
+                { 
+                    id: 2, type: "내전", date: "2025.11.18", balance: "도현팀 vs 김계란팀", 
+                    map: "어센트", agent: "소바", acs: 198, kda: "14 / 15 / 11", result: "LOSE", score: "10 : 13", 
+                    members: "도현, 김계란, 푸린, 릴카, 풍월량, 침착맨, 주펄, 곽튜브, 빠니보틀, 승우아빠" 
+                }
             ],
             lol: [
-                { id: 1, type: "CK", date: "2025.11.19", balance: "마스터 이하 CK", position: "미드", champion: "아칼리", kda: "10 / 2 / 6", result: "WIN", players: "도현, 저라뎃, 박사장..." },
-                { id: 2, type: "랜드", date: "2025.11.16", balance: "멸망전 대비 랜드", position: "미드", champion: "오리아나", kda: "3 / 5 / 8", result: "LOSE", players: "도현, 이상호, 민교..." }
+                { 
+                    id: 1, type: "CK", date: "2025.11.19", balance: "도현스쿼드 vs 저라뎃스쿼드", 
+                    position: "미드", champion: "아칼리", kda: "10 / 2 / 6", result: "WIN", 
+                    members: "도현, 저라뎃, 박사장, 앰비션, 울프, 칸, 따효니, 철구, 염보성, 감스트" 
+                },
+                { 
+                    id: 2, type: "랜드", date: "2025.11.16", balance: "도현캠프 vs 민교캠프", 
+                    position: "미드", champion: "오리아나", kda: "3 / 5 / 8", result: "LOSE", 
+                    members: "도현, 김민교, 이상호, 기인, 룰러, 쵸비, 페이커, 쇼메이커, 베릴, 케리아" 
+                }
             ],
             pubg: [
-                { id: 1, type: "내전", date: "2025.11.17", balance: "스쿼드 멸망전 연습", targetKills: "팀 40킬", memberKills: "도현: 30 (40-10)", totalScore: "1위 (65점)", result: "WIN", players: "도현, 킴성태, 싸패..." }
+                { 
+                    id: 1, type: "내전", date: "2025.11.17", balance: "도현스쿼드 vs 킴성태스쿼드", 
+                    targetKills: "팀 40킬", memberKills: "도현: 30 (40-10)", totalScore: "1위 (65점)", result: "WIN", 
+                    members: "도현, 킴성태, 싸패, 에스카, 블랙워크, 주스텟, 섹시피그, 윤루트, 기스코, 실바" 
+                }
             ]
         };
 
         let currentGameTab = 'val';
+        let isAdmin = false;
 
-        // 1. 메인 탭 전환 (게임 전적 / 롤 멸망전)
+        // 관리자 모드 토글
+        function toggleAdminMode() {
+            isAdmin = !isAdmin;
+            const btn = document.getElementById('admin-mode-btn');
+            const addBtn = document.getElementById('add-record-btn');
+            const addMwjBtn = document.getElementById('add-mwj-btn');
+
+            if(isAdmin) {
+                btn.className = "px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border border-emerald-500 transition-all";
+                btn.innerHTML = '<i class="fa-solid fa-unlock mr-1"></i>관리자 ON';
+                addBtn.classList.remove('hidden');
+                addMwjBtn.classList.remove('hidden');
+            } else {
+                btn.className = "px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 transition-all";
+                btn.innerHTML = '<i class="fa-solid fa-lock mr-1"></i>관리자 OFF';
+                addBtn.classList.add('hidden');
+                addMwjBtn.classList.add('hidden');
+            }
+        }
+
+        // 메인 탭 전환
         function switchMainTab(tab) {
             const historySec = document.getElementById('section-history');
             const mwjSec = document.getElementById('section-mwj');
@@ -303,7 +401,7 @@
             }
         }
 
-        // 2. 게임 종목 탭 전환 (발로란트 / LoL / 배그)
+        // 게임 종목 탭 전환 (영어 명칭 및 아이콘 제거)
         function switchGameTab(game) {
             currentGameTab = game;
             ['val', 'lol', 'pubg'].forEach(g => {
@@ -318,7 +416,7 @@
             renderRecords();
         }
 
-        // 3. 전적 카드 렌더링
+        // 전적 카드 렌더링 (가로형 구조, 연하늘/연분홍 승패 배경색 반영)
         function renderRecords() {
             const listEl = document.getElementById('record-list');
             const data = mockData[currentGameTab];
@@ -331,9 +429,10 @@
                 const matchType = (filterType === 'ALL' || item.type === filterType);
                 const matchQuery = !query || 
                     item.date.includes(query) || 
+                    (item.balance && item.balance.toLowerCase().includes(query)) ||
                     (item.agent && item.agent.toLowerCase().includes(query)) ||
                     (item.champion && item.champion.toLowerCase().includes(query)) ||
-                    (item.players && item.players.toLowerCase().includes(query));
+                    (item.members && item.members.toLowerCase().includes(query));
                 return matchType && matchQuery;
             });
 
@@ -344,79 +443,94 @@
 
             filtered.forEach(item => {
                 const isWin = item.result === 'WIN';
-                const badgeColor = isWin ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+                // 승리 시 연하늘색(#e0f2fe / 투명도), 패배 시 연분홍색(#ffe4e6 / 투명도) 적용
+                const bgStyle = isWin ? 'bg-sky-950/40 border-sky-500/40' : 'bg-rose-950/30 border-rose-500/40';
+                const badgeColor = isWin ? 'bg-sky-500/20 text-sky-300 border-sky-500/30' : 'bg-rose-500/20 text-rose-300 border-rose-500/30';
                 
                 let cardHtml = '';
 
                 if(currentGameTab === 'val') {
-                    // 발로란트 전적 카드
                     cardHtml = `
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs px-2 py-0.5 rounded font-bold border ${badgeColor}">${item.type}</span>
-                                    <span class="text-xs text-slate-400">${item.date}</span>
-                                    <span class="text-xs bg-slate-950 px-2 py-0.5 rounded text-slate-400 border border-slate-800">${item.balance}</span>
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md ${bgStyle}">
+                            <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
+                                    <span class="text-xs text-slate-400 font-medium">${item.date}</span>
+                                    <span class="text-xs bg-slate-900/60 px-2.5 py-1 rounded-lg text-slate-300 border border-slate-700/50 font-semibold">${item.balance}</span>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-base font-bold text-white">${item.map}</span>
-                                    <span class="bg-slate-800 text-rose-300 px-2.5 py-0.5 rounded-lg text-xs font-semibold">${item.agent}</span>
-                                    ${item.acs ? `<span class="text-xs text-amber-400 font-medium">ACS ${item.acs}</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-6 w-full md:w-auto justify-between border-t md:border-t-0 border-slate-800 pt-3 md:pt-0">
-                                <div class="text-left md:text-right">
-                                    <div class="text-sm font-bold text-white">K/D/A: ${item.kda}</div>
-                                    <div class="text-xs text-slate-400">스코어: ${item.score}</div>
-                                </div>
-                                <span class="text-lg font-black ${isWin ? 'text-emerald-400' : 'text-rose-400'}">${item.result}</span>
-                            </div>
-                        </div>
-                    `;
-                } else if(currentGameTab === 'lol') {
-                    // LoL 전적 카드 (상세 펼치기 방식)
-                    cardHtml = `
-                        <details class="group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition-all">
-                            <summary class="p-5 flex justify-between items-center cursor-pointer list-none select-none">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs px-2 py-0.5 rounded font-bold border ${badgeColor}">${item.type}</span>
-                                    <span class="text-sm font-bold text-white">${item.date}</span>
-                                    <span class="bg-slate-800 text-indigo-300 px-2.5 py-0.5 rounded-lg text-xs font-semibold">${item.position}</span>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                    <span class="text-sm font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'}">${item.result}</span>
-                                    <i class="fa-solid fa-chevron-down text-xs text-slate-500 group-open:rotate-180 transition-transform"></i>
+                                <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                                    <div class="flex items-center gap-3 text-sm">
+                                        <span class="font-bold text-white">${item.map}</span>
+                                        <span class="bg-slate-900/60 text-rose-300 px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-700/50">${item.agent}</span>
+                                        ${item.acs ? `<span class="text-xs text-amber-400 font-bold">ACS ${item.acs}</span>` : ''}
+                                        <span class="text-white font-bold">KDA: ${item.kda}</span>
+                                        <span class="text-xs text-slate-300">스코어: ${item.score}</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
+                                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
+                                    </div>
                                 </div>
                             </summary>
-                            <div class="px-5 pb-5 pt-2 border-t border-slate-800/60 bg-slate-950/40 space-y-2 text-xs text-slate-300">
-                                <div class="flex justify-between"><span>밸런스:</span> <span class="text-white">${item.balance}</span></div>
-                                <div class="flex justify-between"><span>챔피언:</span> <span class="text-indigo-400 font-bold">${item.champion}</span></div>
-                                <div class="flex justify-between"><span>K/D/A:</span> <span class="text-white font-bold">${item.kda}</span></div>
+                            <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
+                                <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
+                                <div class="text-white font-medium bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">${item.members}</div>
+                            </div>
+                        </details>
+                    `;
+                } else if(currentGameTab === 'lol') {
+                    cardHtml = `
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md ${bgStyle}">
+                            <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
+                                    <span class="text-xs text-slate-400 font-medium">${item.date}</span>
+                                    <span class="text-xs bg-slate-900/60 px-2.5 py-1 rounded-lg text-slate-300 border border-slate-700/50 font-semibold">${item.balance}</span>
+                                </div>
+                                <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                                    <div class="flex items-center gap-3 text-sm">
+                                        <span class="bg-slate-900/60 text-indigo-300 px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-700/50">${item.position}</span>
+                                        <span class="text-indigo-400 font-bold">${item.champion}</span>
+                                        <span class="text-white font-bold">KDA: ${item.kda}</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
+                                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
+                                    </div>
+                                </div>
+                            </summary>
+                            <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
+                                <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
+                                <div class="text-white font-medium bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">${item.members}</div>
                             </div>
                         </details>
                     `;
                 } else if(currentGameTab === 'pubg') {
-                    // 배틀그라운드 전적 카드
                     cardHtml = `
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs px-2 py-0.5 rounded font-bold border ${badgeColor}">${item.type}</span>
-                                    <span class="text-xs text-slate-400">${item.date}</span>
-                                    <span class="text-xs bg-slate-950 px-2 py-0.5 rounded text-slate-400 border border-slate-800">${item.balance}</span>
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md ${bgStyle}">
+                            <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
+                                    <span class="text-xs text-slate-400 font-medium">${item.date}</span>
+                                    <span class="text-xs bg-slate-900/60 px-2.5 py-1 rounded-lg text-slate-300 border border-slate-700/50 font-semibold">${item.balance}</span>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-sm font-bold text-amber-400">목표: ${item.targetKills}</span>
-                                    <span class="text-xs text-slate-300 bg-slate-800 px-2.5 py-1 rounded-lg">${item.memberKills}</span>
+                                <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                                    <div class="flex items-center gap-3 text-sm">
+                                        <span class="text-amber-400 font-bold">목표: ${item.targetKills}</span>
+                                        <span class="text-xs text-slate-300 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-slate-700/50">${item.memberKills}</span>
+                                        <span class="text-white font-bold">최종: ${item.totalScore}</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
+                                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
+                                    </div>
                                 </div>
+                            </summary>
+                            <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
+                                <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
+                                <div class="text-white font-medium bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">${item.members}</div>
                             </div>
-                            <div class="flex items-center gap-6 w-full md:w-auto justify-between border-t md:border-t-0 border-slate-800 pt-3 md:pt-0">
-                                <div class="text-left md:text-right">
-                                    <div class="text-sm font-bold text-white">최종: ${item.totalScore}</div>
-                                </div>
-                                <span class="text-lg font-black ${isWin ? 'text-emerald-400' : 'text-rose-400'}">${item.result}</span>
-                            </div>
-                        </div>
+                        </details>
                     `;
                 }
 
@@ -428,7 +542,80 @@
             renderRecords();
         }
 
-        // 4. 멸망전 페이지 상세 전환
+        // 모달 관리
+        function openAddRecordModal() {
+            document.getElementById('modal-game-title').innerText = currentGameTab.toUpperCase();
+            const specificFields = document.getElementById('m-game-specific-fields');
+            
+            if(currentGameTab === 'val') {
+                specificFields.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="text-slate-400 block mb-1">맵</label><input type="text" id="m-map" placeholder="헤이븐" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">요원</label><input type="text" id="m-agent" placeholder="제트" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div><label class="text-slate-400 block mb-1">ACS</label><input type="number" id="m-acs" placeholder="312" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">KDA</label><input type="text" id="m-kda" placeholder="24/12/5" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">스코어</label><input type="text" id="m-score" placeholder="13 : 9" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                    </div>
+                `;
+            } else if(currentGameTab === 'lol') {
+                specificFields.innerHTML = `
+                    <div class="grid grid-cols-3 gap-3">
+                        <div><label class="text-slate-400 block mb-1">포지션</label><input type="text" id="m-position" placeholder="미드" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">챔피언</label><input type="text" id="m-champion" placeholder="아칼리" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">KDA</label><input type="text" id="m-kda" placeholder="10/2/6" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                    </div>
+                `;
+            } else if(currentGameTab === 'pubg') {
+                specificFields.innerHTML = `
+                    <div class="grid grid-cols-3 gap-3">
+                        <div><label class="text-slate-400 block mb-1">목표킬</label><input type="text" id="m-target" placeholder="팀 40킬" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">순수킬</label><input type="text" id="m-mkills" placeholder="도현: 30(40-10)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">최종점수</label><input type="text" id="m-score" placeholder="1위 (65점)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function closeAddRecordModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+        }
+
+        function saveNewRecord() {
+            const type = document.getElementById('m-type').value;
+            const date = document.getElementById('m-date').value || '2025.11.21';
+            const balance = document.getElementById('m-balance').value || '자유 밸런스';
+            const result = document.getElementById('m-result').value;
+            const members = document.getElementById('m-members').value || '도현 외 팀원들';
+
+            let newItem = { id: Date.now(), type, date, balance, result, members };
+
+            if(currentGameTab === 'val') {
+                newItem.map = document.getElementById('m-map').value || '커스텀 맵';
+                newItem.agent = document.getElementById('m-agent').value || '제트';
+                newItem.acs = document.getElementById('m-acs').value || 250;
+                newItem.kda = document.getElementById('m-kda').value || '10/10/10';
+                newItem.score = document.getElementById('m-score').value || '13 : 10';
+            } else if(currentGameTab === 'lol') {
+                newItem.position = document.getElementById('m-position').value || '미드';
+                newItem.champion = document.getElementById('m-champion').value || '아리';
+                newItem.kda = document.getElementById('m-kda').value || '5/5/5';
+            } else if(currentGameTab === 'pubg') {
+                newItem.targetKills = document.getElementById('m-target').value || '30킬';
+                newItem.memberKills = document.getElementById('m-mkills').value || '도현: 15';
+                newItem.totalScore = document.getElementById('m-score').value || 'TOP 3';
+            }
+
+            mockData[currentGameTab].unshift(newItem);
+            renderRecords();
+            closeAddRecordModal();
+            alert('새로운 전적이 성공적으로 추가되었습니다!');
+        }
+
+        // 멸망전 관련
         function openMwjDetail(teamId) {
             document.getElementById('mwj-main-view').classList.add('hidden');
             document.getElementById('mwj-detail-view').classList.remove('hidden');
@@ -440,7 +627,7 @@
         }
 
         function switchMatchSubTab(setNum) {
-            [1, 2, 3].forEach(n => {
+            [1, 2].forEach(n => {
                 const btn = document.getElementById(`match-subtab-${n}`);
                 if(n === setNum) {
                     btn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white";
@@ -448,9 +635,10 @@
                     btn.className = "px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-950";
                 }
             });
+            document.getElementById('current-side-label').innerText = setNum === 1 ? "BLUE TEAM (승리)" : "RED TEAM (패배)";
+            document.getElementById('current-side-label').className = setNum === 1 ? "text-sky-400 font-bold" : "text-rose-400 font-bold";
         }
 
-        // 초기화
         window.onload = () => {
             renderRecords();
         };
