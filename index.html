@@ -46,7 +46,7 @@
                     </div>
                 </div>
 
-                <!-- 상단 탭 4개 -->
+                <!-- 상단 메인 탭 4개 -->
                 <div class="flex items-center space-x-3">
                     <nav id="main-nav-tabs" class="flex space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 overflow-x-auto max-w-full custom-scrollbar">
                         <button onclick="switchMainTab('history')" id="nav-btn-history" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-indigo-600 text-white shadow-lg whitespace-nowrap">게임 전적</button>
@@ -64,7 +64,7 @@
         <!-- 메인 컨텐츠 영역 -->
         <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- 1. 게임 전적 섹션 -->
+            <!-- 1. 게임 전적 섹션 (초기 컨셉 스타일) -->
             <section id="section-history" class="space-y-6">
                 <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col gap-4 shadow-xl">
                     <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
@@ -233,7 +233,7 @@
                 </div>
                 <div><label class="text-slate-400 block mb-1">밸런스</label><input type="text" id="rec-balance" placeholder="팀원 조합 및 밸런스 요약" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 
-                <!-- 발로란트 전용 맵/요원/ACS/KDA/스코어 -->
+                <!-- 발로란트 전용 -->
                 <div id="rec-fields-val" class="space-y-3 border-t border-slate-800 pt-3">
                     <div class="grid grid-cols-2 gap-3">
                         <div><label class="text-slate-400 block mb-1">맵 (흰글씨)</label><input type="text" id="rec-map" placeholder="바인드" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2.5"></div>
@@ -498,7 +498,8 @@
                 yearTabsEl.innerHTML += `<button onclick="currentYearTab='${y}'; renderRecords();" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white shadow' : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'}">${y}년</button>`;
             });
 
-            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+            const searchInputEl = document.getElementById('search-input');
+            const searchQuery = searchInputEl ? searchInputEl.value.toLowerCase() : '';
             let filtered = records.filter(r => (r.year || '2026') === currentYearTab);
             
             if(searchQuery) {
@@ -524,7 +525,6 @@
 
             filtered.forEach(r => {
                 const isWin = r.winlose === '승리';
-                // 불투명 파스텔톤 연파랑 / 파스텔톤 연분홍 배경 적용
                 const cardBgClass = isWin 
                     ? 'bg-[#1e2e45] border-[#38bdf8]/40' 
                     : 'bg-[#2d1b28] border-[#f43f5e]/40';
@@ -563,7 +563,6 @@
 
                 listEl.innerHTML += `
                     <div class="border rounded-2xl p-4 shadow-lg transition-all ${cardBgClass} space-y-3">
-                        <!-- 가로 한 줄 레이아웃 -->
                         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs sm:text-sm">
                             <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                                 <span class="bg-indigo-900 text-white font-bold text-xs px-2.5 py-1 rounded">${r.type || 'CK'}</span>
@@ -579,7 +578,6 @@
                             </div>
                         </div>
 
-                        <!-- 상세보기 (전체 참여멤버 목록 접이식) -->
                         ${r.members ? `
                         <div id="record-members-${r.id}" class="hidden border-t border-slate-800/80 pt-3 text-xs text-slate-300 bg-slate-950/60 p-3 rounded-xl">
                             <div class="font-bold text-indigo-400 mb-1">전체 참여멤버</div>
@@ -737,7 +735,7 @@
                                 <p class="text-xs text-slate-400 whitespace-pre-line">${team.desc || ''}</p>
                             </div>
                         </div>
-                        <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-xs text-slate-400"><span>${team.period || ''}</span><span class="text-amber-400 font-semibold">기록 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
+                        <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-xs text-slate-400"><span>${team.period || ''}</span><span class="text-amber-400 font-semibold">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
                         ${adminC}
                     </div>
                 `;
@@ -748,7 +746,6 @@
             currentSelectedTeamId = teamId;
             const team = mwjTeams.find(t => t.id === teamId);
             if(!team) return;
-            // 목록으로 옆에 탭/팀 이름 그대로 표기
             document.getElementById('mwj-detail-title-name').innerText = team.name;
             document.getElementById('mwj-main-view').classList.add('hidden');
             document.getElementById('mwj-detail-view').classList.remove('hidden');
@@ -904,7 +901,6 @@
             currentSelectedChongId = epId;
             const ep = chongEpisodes.find(x => x.id === epId);
             if(!ep) return;
-            // 목록으로 옆에 에피소드 이름 그대로 표기
             document.getElementById('chong-detail-title-name').innerText = `${ep.ep} - ${ep.title}`;
             document.getElementById('chong-main-view').classList.add('hidden');
             document.getElementById('chong-detail-view').classList.remove('hidden');
@@ -1011,7 +1007,6 @@
             currentSelectedGuildId = guildId;
             const g = mcGuilds.find(x => x.id === guildId);
             if(!g) return;
-            // 목록으로 옆에 서버/길드 이름 그대로 표기
             document.getElementById('mc-detail-title-name').innerText = g.server ? `${g.server} - ${g.name}` : g.name;
             document.getElementById('mc-main-view').classList.add('hidden');
             document.getElementById('mc-detail-view').classList.remove('hidden');
