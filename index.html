@@ -42,7 +42,7 @@
                         <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
                             SOOP DOHYEON
                         </h1>
-                        <p class="text-xs text-slate-400 font-medium">전적 검색 & 롤 멸망전 & 총겜동 & 마크서버</p>
+                        <p class="text-xs text-slate-400 font-medium">도현 기록 모음</p>
                     </div>
                 </div>
 
@@ -74,26 +74,36 @@
 
             <!-- 1. 게임 전적 검색 섹션 -->
             <section id="section-history" class="space-y-6">
-                <div class="bg-slate-900/80 backdrop-blur border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row gap-4 justify-between items-center shadow-xl">
-                    <div class="flex space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 w-full md:w-auto">
-                        <button id="game-tab-val" onclick="switchGameTab('val')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold bg-rose-600 text-white transition-all">VALORANT</button>
-                        <button id="game-tab-lol" onclick="switchGameTab('lol')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">LEAGUE OF LEGENDS</button>
-                        <button id="game-tab-pubg" onclick="switchGameTab('pubg')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">PUBG</button>
+                <div class="bg-slate-900/80 backdrop-blur border border-slate-800 p-4 rounded-2xl flex flex-col gap-4 shadow-xl">
+                    <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                        <div class="flex space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 w-full md:w-auto">
+                            <button id="game-tab-val" onclick="switchGameTab('val')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold bg-rose-600 text-white transition-all">VALORANT</button>
+                            <button id="game-tab-lol" onclick="switchGameTab('lol')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">LEAGUE OF LEGENDS</button>
+                            <button id="game-tab-pubg" onclick="switchGameTab('pubg')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all">PUBG</button>
+                        </div>
+                        <div class="flex gap-2 w-full md:w-auto items-center">
+                            <button onclick="openAddRecordModal()" id="add-record-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1 whitespace-nowrap">
+                                <i class="fa-solid fa-plus"></i> 기록 추가
+                            </button>
+                            <select id="type-filter" onchange="renderRecords()" class="bg-slate-950 border border-slate-800 text-slate-300 text-sm rounded-xl px-3 py-2 outline-none focus:border-indigo-500">
+                                <option value="ALL">전체 유형</option>
+                                <option value="내전">내전</option>
+                                <option value="CK">CK</option>
+                                <option value="랜드">랜드</option>
+                                <option value="자유입력">자유입력</option>
+                            </select>
+                            <div class="relative flex-1 md:w-56">
+                                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                                <input type="text" id="search-input" onkeyup="renderRecords()" placeholder="검색..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex gap-2 w-full md:w-auto">
-                        <button onclick="openAddRecordModal()" id="add-record-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1 whitespace-nowrap">
-                            <i class="fa-solid fa-plus"></i> 기록 추가
-                        </button>
-                        <select id="type-filter" onchange="filterRecords()" class="bg-slate-950 border border-slate-800 text-slate-300 text-sm rounded-xl px-3 py-2 outline-none focus:border-indigo-500">
-                            <option value="ALL">전체 유형</option>
-                            <option value="내전">내전</option>
-                            <option value="CK">CK</option>
-                            <option value="랜드">랜드</option>
-                            <option value="자유입력">자유입력</option>
-                        </select>
-                        <div class="relative flex-1 md:w-64">
-                            <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                            <input type="text" id="search-input" onkeyup="filterRecords()" placeholder="스트리머, 챔프/요원, 날짜..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 outline-none focus:border-indigo-500">
+                    <!-- 연도별 탭 & 정렬 바 -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center border-t border-slate-800 pt-3 gap-3">
+                        <div id="history-year-tabs" class="flex space-x-1 overflow-x-auto max-w-full custom-scrollbar pb-1"></div>
+                        <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                            <button onclick="switchSortOrder('desc')" id="sort-btn-desc" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">최신순</button>
+                            <button onclick="switchSortOrder('asc')" id="sort-btn-asc" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white">과거순</button>
                         </div>
                     </div>
                 </div>
@@ -106,7 +116,7 @@
                     <div class="mb-6 flex justify-between items-end">
                         <div>
                             <h2 class="text-xl font-bold text-white mb-1">참여 멸망전 목록</h2>
-                            <p class="text-sm text-slate-400">팀 카드를 클릭하면 상세 아카이브를 확인할 수 있습니다.</p>
+                            <p class="text-sm text-slate-400">팀 카드를 클릭하면 상세 기록을 확인할 수 있습니다.</p>
                         </div>
                         <button onclick="openAddTeamModal()" id="add-mwj-btn" class="hidden px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all">
                             <i class="fa-solid fa-plus mr-1"></i>멸망전 팀 추가
@@ -171,7 +181,7 @@
                     <div class="mb-6 flex justify-between items-end">
                         <div>
                             <h2 class="text-xl font-bold text-white mb-1">마크서버 길드 및 기록</h2>
-                            <p class="text-sm text-slate-400">길드를 클릭하여 상세 일차별 아카이브를 확인하세요.</p>
+                            <p class="text-sm text-slate-400">길드를 클릭하여 상세 일별 타임라인을 확인할 수 있습니다.</p>
                         </div>
                         <button onclick="openAddMcGuildModal()" id="add-mc-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all">
                             <i class="fa-solid fa-plus mr-1"></i>마크 길드 추가
@@ -208,12 +218,17 @@
         </div>
     </footer>
 
-    <!-- 게임 전적 추가 모달 -->
+    <!-- 게임 전적 추가/수정 통합 모달 -->
     <div id="add-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <h3 class="text-lg font-bold text-white"><span id="modal-game-title">VALORANT</span> 전적 추가 (관리자)</h3>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 class="text-lg font-bold text-white"><span id="modal-game-title">VALORANT</span> 전적 관리</h3>
+            <input type="hidden" id="edit-record-id">
             <div class="space-y-3 text-sm">
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="text-slate-400 block mb-1">연도</label>
+                        <input type="text" id="m-year" placeholder="2026" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                    </div>
                     <div>
                         <label class="text-slate-400 block mb-1">유형</label>
                         <select id="m-type" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
@@ -225,7 +240,7 @@
                     </div>
                     <div>
                         <label class="text-slate-400 block mb-1">날짜</label>
-                        <input type="text" id="m-date" placeholder="2025.11.21" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                        <input type="text" id="m-date" placeholder="11.21 토" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
                     </div>
                 </div>
                 <div>
@@ -235,7 +250,7 @@
                 <div id="m-game-specific-fields" class="space-y-3"></div>
                 <div>
                     <label class="text-slate-400 block mb-1">참여 멤버 (여러 줄 입력 가능)</label>
-                    <textarea id="m-members" rows="4" placeholder="도현&#10;킴성태&#10;괴물쥐..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar"></textarea>
+                    <textarea id="m-members" rows="4" placeholder="도현&#10;킴성태&#10;괴물쥐..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar text-xs"></textarea>
                 </div>
                 <div>
                     <label class="text-slate-400 block mb-1">승패 여부</label>
@@ -256,13 +271,13 @@
     <script>
         let mockData = JSON.parse(localStorage.getItem('dohyeon_mockData')) || {
             val: [
-                { id: 1, type: "CK", date: "2025.11.20", balance: "도현팀 vs 이상호팀", map: "헤이븐", agent: "제트", acs: 312, kda: "24 / 12 / 5", result: "WIN", score: "13 : 9", members: "도현\n이상호\n뜨삭\n손오봉" }
+                { id: 1, year: "2026", type: "CK", date: "11.20", balance: "도현팀 vs 이상호팀", map: "헤이븐", agent: "제트", acs: 312, kda: "24 / 12 / 5", result: "WIN", score: "13 : 9", members: "도현\n이상호\n뜨삭\n손오봉" }
             ],
             lol: [
-                { id: 1, type: "CK", date: "2025.11.19", balance: "도현스쿼드 vs 저라뎃스쿼드", position: "미드", champion: "아칼리", kda: "10 / 2 / 6", result: "WIN", members: "도현\n저라뎃\n박사장" }
+                { id: 1, year: "2026", type: "CK", date: "11.19", balance: "도현스쿼드 vs 저라뎃스쿼드", position: "미드", champion: "아칼리", kda: "10 / 2 / 6", result: "WIN", members: "도현\n저라뎃\n박사장" }
             ],
             pubg: [
-                { id: 1, type: "내전", date: "2025.11.17", balance: "도현스쿼드 vs 킴성태스쿼드", targetKills: "팀 40킬", memberKills: "도현: 30 (40-10)", totalScore: "1위 (65점)", result: "WIN", members: "도현\n킴성태\n싸패" }
+                { id: 1, year: "2026", type: "내전", date: "11.17", balance: "도현스쿼드 vs 킴성태스쿼드", targetKills: "팀 40킬", memberKills: "도현: 30 (40-10)", totalScore: "1위 (65점)", result: "WIN", members: "도현\n킴성태\n싸패" }
             ]
         };
 
@@ -271,11 +286,9 @@
         let mcGuilds = JSON.parse(localStorage.getItem('dohyeon_mc')) || [];
 
         let currentGameTab = 'val';
+        let currentYearTab = '2026';
+        let currentSortOrder = 'desc'; // 'desc': 최신순, 'asc': 과거순
         let isAdmin = false;
-        let currentSelectedTeamId = null;
-        let currentSelectedChongId = null;
-        let currentSelectedGuildId = null;
-        let currentMcDay = '';
 
         function saveData() {
             localStorage.setItem('dohyeon_mockData', JSON.stringify(mockData));
@@ -287,6 +300,8 @@
         function toggleAdminMode() {
             isAdmin = !isAdmin;
             const btn = document.getElementById('admin-mode-btn');
+            
+            // 모든 탭의 추가/관리 버튼 제어
             const addBtn = document.getElementById('add-record-btn');
             const addMwjBtn = document.getElementById('add-mwj-btn');
             const addMatchBtn = document.getElementById('add-match-btn');
@@ -352,115 +367,162 @@
             renderRecords();
         }
 
+        function switchSortOrder(order) {
+            currentSortOrder = order;
+            document.getElementById('sort-btn-desc').className = order === 'desc' ? "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white" : "px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
+            document.getElementById('sort-btn-asc').className = order === 'asc' ? "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white" : "px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
+            renderRecords();
+        }
+
         function renderRecords() {
             const listEl = document.getElementById('record-list');
+            const yearTabsEl = document.getElementById('history-year-tabs');
             const data = mockData[currentGameTab] || [];
+
+            // 연도별 탭 동적 생성
+            const yearsSet = new Set(data.map(item => item.year || '2026'));
+            yearsSet.add('2026');
+            const years = Array.from(yearsSet).sort().reverse();
+
+            if(!years.includes(currentYearTab)) {
+                currentYearTab = years[0];
+            }
+
+            yearTabsEl.innerHTML = '';
+            years.forEach(y => {
+                const isActive = (y === currentYearTab);
+                yearTabsEl.innerHTML += `<button onclick="currentYearTab='${y}'; renderRecords();" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white shadow' : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'}">${y}년</button>`;
+            });
+
             const filterType = document.getElementById('type-filter').value;
             const query = document.getElementById('search-input').value.toLowerCase();
 
-            listEl.innerHTML = '';
-            const filtered = data.filter(item => {
-                const matchType = (filterType === 'ALL' || item.type === filterType);
-                const matchQuery = !query || 
+            let filtered = data.filter(item => (item.year || '2026') === currentYearTab);
+
+            if(filterType !== 'ALL') {
+                filtered = filtered.filter(item => item.type === filterType);
+            }
+
+            if(query) {
+                filtered = filtered.filter(item => 
                     item.date.includes(query) || 
                     (item.balance && item.balance.toLowerCase().includes(query)) ||
                     (item.agent && item.agent.toLowerCase().includes(query)) ||
                     (item.champion && item.champion.toLowerCase().includes(query)) ||
-                    (item.members && item.members.toLowerCase().includes(query));
-                return matchType && matchQuery;
+                    (item.members && item.members.toLowerCase().includes(query))
+                );
+            }
+
+            filtered.sort((a, b) => {
+                if(currentSortOrder === 'desc') return b.id - a.id;
+                return a.id - b.id;
             });
 
+            listEl.innerHTML = '';
             if(filtered.length === 0) {
-                listEl.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">기록된 전적이 없습니다. 상단 '기록 추가' 버튼을 이용하세요.</div>`;
+                listEl.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">등록된 전적이 없습니다. 상단 '기록 추가' 버튼을 이용하세요.</div>`;
                 return;
             }
 
             filtered.forEach(item => {
                 const isWin = item.result === 'WIN';
-                const bgStyle = isWin ? 'bg-sky-950/40 border-sky-500/40' : 'bg-rose-950/30 border-rose-500/40';
-                const badgeColor = isWin ? 'bg-sky-500/20 text-sky-300 border-sky-500/30' : 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+                const bgStyle = isWin ? 'bg-[#1e2e45] border-[#38bdf8]/40' : 'bg-[#2d1b28] border-[#f43f5e]/40';
+                
+                const typeBadge = `<span class="bg-indigo-900 text-white text-xs font-bold px-2.5 py-1 rounded">${item.type || 'CK'}</span>`;
+                const winLoseBadge = `<span class="text-xs font-bold px-2 py-1 rounded ${isWin ? 'bg-sky-600 text-white' : 'bg-rose-600 text-white'}">${isWin ? '승리' : '패배'}</span>`;
+                
                 const formattedMembers = item.members ? item.members.replace(/\n/g, '<br>') : '';
                 
+                const adminBtns = isAdmin ? `
+                    <div class="flex items-center gap-1 mt-2 sm:mt-0">
+                        <button onclick="editGameRecord(${item.id})" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded text-xs font-bold">수정</button>
+                        <button onclick="deleteGameRecord(${item.id})" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded text-xs font-bold">삭제</button>
+                    </div>
+                ` : '';
+
                 let cardHtml = '';
                 if(currentGameTab === 'val') {
                     cardHtml = `
-                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md text-base ${bgStyle}">
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-lg text-base ${bgStyle}">
                             <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
                                 <div class="flex items-center gap-3 flex-wrap">
-                                    <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
+                                    ${typeBadge}
+                                    ${winLoseBadge}
                                     <span class="text-xs text-slate-400 font-medium">${item.date}</span>
-                                    <span class="text-xs bg-slate-900/60 px-2.5 py-1 rounded-lg text-slate-300 border border-slate-700/50 font-semibold">${item.balance}</span>
+                                    <span class="text-xs text-slate-300 border-l border-slate-700/80 pl-2"><span class="text-slate-400">밸런스:</span> ${item.balance}</span>
                                 </div>
                                 <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                                     <div class="flex items-center gap-3 text-sm">
-                                        <span class="font-bold text-white">${item.map || ''}</span>
-                                        <span class="bg-slate-900/60 text-rose-300 px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-700/50">${item.agent || ''}</span>
-                                        ${item.acs ? `<span class="text-xs text-amber-400 font-bold">ACS ${item.acs}</span>` : ''}
-                                        <span class="text-white font-bold">${item.kda || ''}</span>
-                                        <span class="text-xs text-slate-300">${item.score || ''}</span>
+                                        <span class="font-medium text-white">${item.map || ''}</span>
+                                        <span class="text-purple-400 font-bold">${item.agent || ''}</span>
+                                        ${item.acs ? `<span class="text-amber-400 font-bold">ACS ${item.acs}</span>` : ''}
+                                        <span class="text-white font-medium">${item.kda || ''}</span>
+                                        <span class="text-slate-300 text-xs font-semibold">(${item.score || ''})</span>
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
+                                        ${adminBtns}
                                         <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
                                     </div>
                                 </div>
                             </summary>
-                            <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
-                                <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
+                            <div class="px-5 py-3 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
+                                <span class="text-indigo-400 font-bold">전체 참여멤버:</span>
                                 <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
                             </div>
                         </details>
                     `;
                 } else if(currentGameTab === 'lol') {
                     cardHtml = `
-                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md text-base ${bgStyle}">
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-lg text-base ${bgStyle}">
                             <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
                                 <div class="flex items-center gap-3 flex-wrap">
-                                    <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
+                                    ${typeBadge}
+                                    ${winLoseBadge}
                                     <span class="text-xs text-slate-400 font-medium">${item.date}</span>
-                                    <span class="text-xs bg-slate-900/60 px-2.5 py-1 rounded-lg text-slate-300 border border-slate-700/50 font-semibold">${item.balance}</span>
+                                    <span class="text-xs text-slate-300 border-l border-slate-700/80 pl-2"><span class="text-slate-400">밸런스:</span> ${item.balance}</span>
                                 </div>
                                 <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                                     <div class="flex items-center gap-3 text-sm">
-                                        <span class="bg-slate-900/60 text-indigo-300 px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-700/50">${item.position || ''}</span>
-                                        <span class="text-indigo-400 font-bold">${item.champion || ''}</span>
-                                        <span class="text-white font-bold">${item.kda || ''}</span>
+                                        <span class="text-slate-300 font-semibold">[${item.position || ''}]</span>
+                                        <span class="text-purple-400 font-bold">${item.champion || ''}</span>
+                                        <span class="text-white font-medium">${item.kda || ''}</span>
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
+                                        ${adminBtns}
                                         <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
                                     </div>
                                 </div>
                             </summary>
-                            <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
-                                <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
+                            <div class="px-5 py-3 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
+                                <span class="text-indigo-400 font-bold">전체 참여멤버:</span>
                                 <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
                             </div>
                         </details>
                     `;
                 } else if(currentGameTab === 'pubg') {
                     cardHtml = `
-                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md text-base ${bgStyle}">
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-lg text-base ${bgStyle}">
                             <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
                                 <div class="flex items-center gap-3 flex-wrap">
-                                    <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
+                                    ${typeBadge}
+                                    ${winLoseBadge}
                                     <span class="text-xs text-slate-400 font-medium">${item.date}</span>
-                                    <span class="text-xs bg-slate-900/60 px-2.5 py-1 rounded-lg text-slate-300 border border-slate-700/50 font-semibold">${item.balance}</span>
+                                    <span class="text-xs text-slate-300 border-l border-slate-700/80 pl-2"><span class="text-slate-400">밸런스:</span> ${item.balance}</span>
                                 </div>
                                 <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                                     <div class="flex items-center gap-3 text-sm">
-                                        <span class="text-amber-400 font-bold">목표: ${item.targetKills || ''}</span>
-                                        <span class="text-xs text-slate-300 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-slate-700/50">${item.memberKills || ''}</span>
+                                        <span class="text-amber-300 font-bold">[목표] ${item.targetKills || ''}</span>
+                                        <span class="text-xs text-slate-300">${item.memberKills || ''}</span>
                                         <span class="text-white font-bold">${item.totalScore || ''}</span>
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
+                                        ${adminBtns}
                                         <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
                                     </div>
                                 </div>
                             </summary>
-                            <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
-                                <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
+                            <div class="px-5 py-3 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
+                                <span class="text-indigo-400 font-bold">전체 참여멤버:</span>
                                 <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
                             </div>
                         </details>
@@ -470,10 +532,15 @@
             });
         }
 
-        function filterRecords() { renderRecords(); }
-
-        function openAddRecordModal() {
+        function openAddRecordModal(editId = null) {
             document.getElementById('modal-game-title').innerText = currentGameTab.toUpperCase();
+            document.getElementById('edit-record-id').value = '';
+            document.getElementById('m-year').value = currentYearTab || '2026';
+            document.getElementById('m-date').value = '';
+            document.getElementById('m-balance').value = '';
+            document.getElementById('m-members').value = '';
+            document.getElementById('m-result').value = 'WIN';
+
             const specificFields = document.getElementById('m-game-specific-fields');
             if(currentGameTab === 'val') {
                 specificFields.innerHTML = `
@@ -504,19 +571,55 @@
                     </div>
                 `;
             }
+
+            if(editId) {
+                const item = (mockData[currentGameTab] || []).find(x => x.id === editId);
+                if(item) {
+                    document.getElementById('edit-record-id').value = item.id;
+                    document.getElementById('m-year').value = item.year || '2026';
+                    document.getElementById('m-type').value = item.type || 'CK';
+                    document.getElementById('m-date').value = item.date || '';
+                    document.getElementById('m-balance').value = item.balance || '';
+                    document.getElementById('m-members').value = item.members || '';
+                    document.getElementById('m-result').value = item.result || 'WIN';
+
+                    if(currentGameTab === 'val') {
+                        document.getElementById('m-map').value = item.map || '';
+                        document.getElementById('m-agent').value = item.agent || '';
+                        document.getElementById('m-acs').value = item.acs || '';
+                        document.getElementById('m-kda').value = item.kda || '';
+                        document.getElementById('m-score').value = item.score || '';
+                    } else if(currentGameTab === 'lol') {
+                        document.getElementById('m-pos').value = item.position || '';
+                        document.getElementById('m-champ').value = item.champion || '';
+                        document.getElementById('m-lol-kda').value = item.kda || '';
+                    } else if(currentGameTab === 'pubg') {
+                        document.getElementById('m-target').value = item.targetKills || '';
+                        document.getElementById('m-mkills').value = item.memberKills || '';
+                        document.getElementById('m-score-pubg').value = item.totalScore || '';
+                    }
+                }
+            }
+
             document.getElementById('add-modal').classList.remove('hidden');
         }
 
         function closeAddRecordModal() { document.getElementById('add-modal').classList.add('hidden'); }
 
+        function editGameRecord(id) {
+            openAddRecordModal(id);
+        }
+
         function saveNewRecord() {
+            const editId = document.getElementById('edit-record-id').value;
+            const year = document.getElementById('m-year').value || '2026';
             const type = document.getElementById('m-type').value;
-            const date = document.getElementById('m-date').value || '2025.11.21';
+            const date = document.getElementById('m-date').value || '11.21';
             const balance = document.getElementById('m-balance').value || '';
             const members = document.getElementById('m-members').value || '';
             const result = document.getElementById('m-result').value;
 
-            let newItem = { id: Date.now(), type, date, balance, members, result };
+            let newItem = { year, type, date, balance, members, result };
 
             if(currentGameTab === 'val') {
                 newItem.map = document.getElementById('m-map').value || '';
@@ -535,10 +638,28 @@
             }
 
             if(!mockData[currentGameTab]) mockData[currentGameTab] = [];
-            mockData[currentGameTab].unshift(newItem);
+
+            if(editId) {
+                const index = mockData[currentGameTab].findIndex(x => x.id === Number(editId));
+                if(index !== -1) {
+                    newItem.id = Number(editId);
+                    mockData[currentGameTab][index] = newItem;
+                }
+            } else {
+                newItem.id = Date.now();
+                mockData[currentGameTab].unshift(newItem);
+            }
+
             saveData();
+            currentYearTab = year;
             renderRecords();
             closeAddRecordModal();
+        }
+
+        function deleteGameRecord(id) {
+            mockData[currentGameTab] = mockData[currentGameTab].filter(x => x.id !== id);
+            saveData();
+            renderRecords();
         }
 
         window.onload = () => { switchMainTab('history'); };
