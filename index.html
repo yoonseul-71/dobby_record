@@ -90,11 +90,7 @@
             <!-- 2. 롤 멸망전 섹션 -->
             <section id="section-mwj" class="space-y-6 hidden">
                 <div id="mwj-main-view">
-                    <div class="mb-6 flex justify-between items-end">
-                        <div>
-                            <h2 class="text-xl font-bold text-white mb-1">참여 멸망전 목록</h2>
-                            <p class="text-sm text-slate-400">팀 카드를 클릭하면 상세 아카이브를 확인할 수 있습니다.</p>
-                        </div>
+                    <div class="mb-6 flex justify-end">
                         <button onclick="openAddTeamModal()" id="add-mwj-btn" class="hidden px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all">
                             <i class="fa-solid fa-plus mr-1"></i>멸망전 팀 추가
                         </button>
@@ -103,19 +99,19 @@
                 </div>
 
                 <div id="mwj-detail-view" class="space-y-6 hidden">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl gap-3">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl gap-3 shadow-md">
                         <div class="flex items-center space-x-4">
-                            <button onclick="closeMwjDetail()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-xl transition-all">
+                            <button onclick="closeMwjDetail()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all">
                                 <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
                             </button>
-                            <div><h2 id="detail-team-title" class="text-lg font-bold text-white">멸망전 상세 아카이브</h2></div>
+                            <div><h2 id="detail-team-title" class="text-base sm:text-lg font-bold text-white">멸망전 상세 아카이브</h2></div>
                         </div>
                         <div class="flex items-center gap-3 w-full sm:w-auto justify-between">
-                            <div class="flex space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
-                                <button id="mwj-subtab-scream" onclick="switchMwjSubTab('스크림')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-white transition-all">스크림</button>
-                                <button id="mwj-subtab-match" onclick="switchMwjSubTab('대회')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all">대회</button>
+                            <div class="flex space-x-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 shadow-inner">
+                                <button id="mwj-subtab-scream" onclick="switchMwjSubTab('스크림')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all">스크림</button>
+                                <button id="mwj-subtab-match" onclick="switchMwjSubTab('대회')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all">대회</button>
                             </div>
-                            <button onclick="openAddMwjMatchModal()" id="add-mwj-match-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap">
+                            <button onclick="openAddMwjMatchModal()" id="add-mwj-match-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap">
                                 <i class="fa-solid fa-plus mr-1"></i>경기 추가
                             </button>
                         </div>
@@ -129,7 +125,6 @@
                 <div id="chong-main-view">
                     <div class="mb-6 flex justify-between items-end">
                         <div>
-                            <h2 class="text-xl font-bold text-white mb-1">총겜동 에피소드</h2>
                             <p class="text-sm text-slate-400">총겜동 컨텐츠 모음</p>
                         </div>
                         <button onclick="openAddChongModal()" id="add-chong-btn" class="hidden px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all">
@@ -141,14 +136,14 @@
 
                 <!-- 총겜동 상세 타임라인 뷰 -->
                 <div id="chong-detail-view" class="space-y-6 hidden">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl gap-3">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl gap-3 shadow-md">
                         <div class="flex items-center space-x-4">
-                            <button onclick="closeChongDetail()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-xl transition-all">
+                            <button onclick="closeChongDetail()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all">
                                 <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
                             </button>
-                            <div><h2 id="chong-detail-title" class="text-lg font-bold text-white">에피소드 상세 타임라인</h2></div>
+                            <div><h2 id="chong-detail-title" class="text-base sm:text-lg font-bold text-white">에피소드 상세 타임라인</h2></div>
                         </div>
-                        <button onclick="openAddChongTimelineModal()" id="add-chong-timeline-btn" class="hidden px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap">
+                        <button onclick="openAddChongTimelineModal()" id="add-chong-timeline-btn" class="hidden px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap">
                             <i class="fa-solid fa-plus mr-1"></i>타임라인 추가
                         </button>
                     </div>
@@ -159,11 +154,7 @@
             <!-- 4. 마크서버 섹션 -->
             <section id="section-mc" class="space-y-6 hidden">
                 <div id="mc-main-view">
-                    <div class="mb-6 flex justify-between items-end">
-                        <div>
-                            <h2 class="text-xl font-bold text-white mb-1">마크서버 길드 아카이브</h2>
-                            <p class="text-sm text-slate-400">길드를 누르면 40일차까지 10일 단위로 정렬된 타임라인을 볼 수 있습니다.</p>
-                        </div>
+                    <div class="mb-6 flex justify-end">
                         <button onclick="openAddMcGuildModal()" id="add-mc-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all">
                             <i class="fa-solid fa-plus mr-1"></i>마크 길드 추가
                         </button>
@@ -172,19 +163,18 @@
                 </div>
 
                 <div id="mc-detail-view" class="space-y-6 hidden">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl gap-3">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl gap-3 shadow-md">
                         <div class="flex items-center space-x-4">
-                            <button onclick="closeMcDetail()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-xl transition-all">
+                            <button onclick="closeMcDetail()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all">
                                 <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
                             </button>
-                            <div><h2 id="mc-detail-title" class="text-lg font-bold text-white">마크서버 상세 아카이브</h2></div>
+                            <div><h2 id="mc-detail-title" class="text-base sm:text-lg font-bold text-white">마크서버 상세 아카이브</h2></div>
                         </div>
-                        <button onclick="openAddMcDayModal()" id="add-mc-day-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all">
+                        <button onclick="openAddMcDayModal()" id="add-mc-day-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all">
                             <i class="fa-solid fa-plus mr-1"></i>날짜(일차) 탭 추가
                         </button>
                     </div>
-                    <!-- 10일 단위 그리드 정렬 요일/일차 탭 -->
-                    <div id="mc-days-tabs" class="grid grid-cols-5 sm:grid-cols-10 gap-2 pb-2"></div>
+                    <div id="mc-days-tabs" class="grid grid-cols-5 sm:grid-cols-10 gap-2 pb-2 bg-slate-950 p-3 rounded-2xl border border-slate-800 shadow-inner"></div>
                     <div id="mc-categories-container" class="space-y-6"></div>
                 </div>
             </section>
@@ -199,6 +189,23 @@
             <div class="font-semibold text-slate-400">made by 윤슬ツ</div>
         </div>
     </footer>
+
+    <!-- 게임 전적 추가 모달 -->
+    <div id="add-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="text-lg font-bold text-white">게임 전적 기록 추가</h3>
+            <div class="space-y-3 text-sm">
+                <div><label class="text-slate-400 block mb-1">날짜</label><input type="text" id="rec-date" placeholder="2025.11.15" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                <div><label class="text-slate-400 block mb-1">스트리머 / 플레이어</label><input type="text" id="rec-player" placeholder="도현" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                <div><label class="text-slate-400 block mb-1">챔피언 / 요원</label><input type="text" id="rec-champ" placeholder="제타 / 제트" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                <div><label class="text-slate-400 block mb-1">결과 및 KDA</label><input type="text" id="rec-result" placeholder="승리 (20/5/10)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+            </div>
+            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
+                <button onclick="closeAddRecordModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">취소</button>
+                <button onclick="saveNewRecord()" class="px-4 py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs">저장하기</button>
+            </div>
+        </div>
+    </div>
 
     <!-- 멸망전 팀 추가/수정 모달 -->
     <div id="mwj-team-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -215,7 +222,7 @@
                         <span class="text-xs text-emerald-400 font-semibold">이미지 선택됨</span>
                     </div>
                 </div>
-                <div><label class="text-slate-400 block mb-1">시즌 및 성적</label><input type="text" id="t-desc" placeholder="준우승 🥈" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                <div><label class="text-slate-400 block mb-1">시즌 및 성적 (여러 줄 입력 가능)</label><textarea id="t-desc" rows="2" placeholder="준우승 🥈&#10;(엔터로 줄바꿈 가능)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 text-xs custom-scrollbar"></textarea></div>
                 <div><label class="text-slate-400 block mb-1">기간</label><input type="text" id="t-period" placeholder="2025.11.10 ~ 11.25" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
@@ -225,7 +232,7 @@
         </div>
     </div>
 
-    <!-- 멸망전 경기 추가 모달 (줄바꿈 지원) -->
+    <!-- 멸망전 경기 추가 모달 -->
     <div id="mwj-match-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h3 class="text-lg font-bold text-white">멸망전 경기 기록 추가</h3>
@@ -245,17 +252,17 @@
                     </div>
                     <div><label class="text-slate-400 block mb-1">날짜</label><input type="text" id="mm-date" placeholder="25.11.15 토" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 </div>
-                <div class="grid grid-cols-3 gap-3">
+                <div class="grid grid-cols-2 gap-3">
                     <div><label class="text-slate-400 block mb-1">시간대/세트</label><input type="text" id="mm-setnum" placeholder="19시 1세트" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                     <div><label class="text-slate-400 block mb-1">결과 요약</label><input type="text" id="mm-resultsummary" placeholder="1승 2패" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 </div>
                 <div class="border-t border-slate-800 pt-3">
                     <label class="text-slate-300 font-bold block mb-1">블루팀 멤버 (여러 줄 입력 가능)</label>
-                    <textarea id="mm-blue-members" rows="4" placeholder="탑: 도현&#10;정글: ...&#10;(엔터로 줄바꿈 유지가능)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar text-xs whitespace-pre-line"></textarea>
+                    <textarea id="mm-blue-members" rows="4" placeholder="탑: 도현&#10;정글: ...&#10;(엔터로 줄바꿈 유지)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar text-xs whitespace-pre-line"></textarea>
                 </div>
                 <div class="border-t border-slate-800 pt-3">
                     <label class="text-slate-300 font-bold block mb-1">레드팀 멤버 (여러 줄 입력 가능)</label>
-                    <textarea id="mm-red-members" rows="4" placeholder="탑: 상대팀&#10;정글: ...&#10;(엔터로 줄바꿈 유지가능)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar text-xs whitespace-pre-line"></textarea>
+                    <textarea id="mm-red-members" rows="4" placeholder="탑: 상대팀&#10;정글: ...&#10;(엔터로 줄바꿈 유지)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar text-xs whitespace-pre-line"></textarea>
                 </div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
@@ -286,7 +293,7 @@
         </div>
     </div>
 
-    <!-- 총겜동 타임라인 추가 모달 (줄바꿈 지원) -->
+    <!-- 총겜동 타임라인 추가 모달 -->
     <div id="chong-timeline-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
             <h3 class="text-lg font-bold text-white">총겜동 타임라인 추가</h3>
@@ -312,7 +319,7 @@
             <div class="space-y-3 text-sm">
                 <div><label class="text-slate-400 block mb-1">길드 이름</label><input type="text" id="mc-gname" placeholder="도현길드" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 <div><label class="text-slate-400 block mb-1">서버 종류 (우측 상단 노란색 뱃지)</label><input type="text" id="mc-server" placeholder="스파크서버 시즌1" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                <div><label class="text-slate-400 block mb-1">진행 기간 / 날짜</label><input type="text" id="mc-gperiod" placeholder="2025.11.10 ~ 11.25" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                <div><label class="text-slate-400 block mb-1">진행 기간 / 날짜 (여러 줄 입력 가능)</label><textarea id="mc-gperiod" rows="2" placeholder="2025.11.10 ~ 11.25&#10;(엔터로 줄바꿈 가능)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 text-xs custom-scrollbar"></textarea></div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
                 <button onclick="closeAddMcGuildModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">취소</button>
@@ -421,7 +428,7 @@
                 
                 const adminC = isAdmin ? `<div class="absolute bottom-3 right-3 z-10 flex gap-1"><button onclick="event.stopPropagation(); editTeam('${team.id}')" class="px-2 py-1 bg-amber-600 text-white rounded text-xs font-bold">수정</button><button onclick="event.stopPropagation(); deleteTeam('${team.id}')" class="px-2 py-1 bg-rose-600 text-white rounded text-xs font-bold">삭제</button></div>` : '';
                 grid.innerHTML += `
-                    <div onclick="openMwjDetail('${team.id}')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 transition-all cursor-pointer relative overflow-hidden">
+                    <div onclick="openMwjDetail('${team.id}')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 transition-all cursor-pointer relative overflow-hidden shadow-lg">
                         <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/20">${team.seasonTitle || '2025 멸망전'}</div>
                         <div class="flex items-center space-x-4 mb-4">
                             ${logoHtml}
@@ -452,8 +459,8 @@
         }
         function switchMwjSubTab(tab) {
             currentMwjSubTab = tab;
-            document.getElementById('mwj-subtab-scream').className = tab === '스크림' ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-white" : "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400";
-            document.getElementById('mwj-subtab-match').className = tab === '대회' ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-white" : "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400";
+            document.getElementById('mwj-subtab-scream').className = tab === '스크림' ? "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-white shadow" : "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
+            document.getElementById('mwj-subtab-match').className = tab === '대회' ? "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-white shadow" : "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
             const team = mwjTeams.find(t => t.id === currentSelectedTeamId);
             if(team) renderMwjMatches(team);
         }
@@ -465,7 +472,7 @@
             matches.forEach(m => {
                 const adminDel = isAdmin ? `<button onclick="deleteMwjMatch(${m.id})" class="px-2 py-1 bg-rose-600 text-white rounded text-xs">삭제</button>` : '';
                 container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-lg">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                             <div class="flex items-center gap-2"><span class="bg-indigo-900 text-white text-xs font-bold px-2 py-1 rounded">${m.category}</span><span class="font-bold text-white text-sm">${m.date} (${m.setNum})</span> <span class="text-xs text-amber-400 font-semibold">[ ${m.resultSummary || ''} ]</span></div>
                             ${adminDel}
@@ -566,7 +573,7 @@
             if(t) { t.matches = t.matches.filter(m => m.id !== id); saveData(); renderMwjMatches(t); }
         }
 
-        // --- 3. 총겜동 (설명 및 타임라인 줄바꿈 완벽 유지) ---
+        // --- 3. 총겜동 (보라색 '상세 타임라인 보기') ---
         function renderChongEpisodes() {
             const grid = document.getElementById('chong-grid');
             grid.innerHTML = '';
@@ -574,11 +581,11 @@
             chongEpisodes.forEach(ep => {
                 const adminC = isAdmin ? `<div class="absolute bottom-3 right-3 flex gap-1"><button onclick="event.stopPropagation(); editChong(${ep.id})" class="px-2 py-1 bg-amber-600 text-white rounded text-xs font-bold">수정</button><button onclick="event.stopPropagation(); deleteChong(${ep.id})" class="px-2 py-1 bg-rose-600 text-white rounded text-xs font-bold">삭제</button></div>` : '';
                 grid.innerHTML += `
-                    <div onclick="openChongDetail(${ep.id})" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 relative cursor-pointer hover:border-indigo-500/50 transition-all">
+                    <div onclick="openChongDetail(${ep.id})" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 relative cursor-pointer hover:border-indigo-500/50 transition-all shadow-lg">
                         <div class="flex justify-between items-center"><span class="bg-indigo-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg">${ep.ep}</span><span class="text-xs text-slate-400">${ep.date}</span></div>
                         <h3 class="font-bold text-white text-base">${ep.title}</h3>
                         <p class="text-xs text-slate-400 whitespace-pre-line">${ep.desc || ''}</p>
-                        <div class="text-xs text-indigo-400 font-semibold pt-1">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></div>
+                        <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-xs text-slate-400"><span>멤버 공개</span><span class="text-purple-400 font-semibold">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
                         ${adminC}
                     </div>
                 `;
@@ -663,7 +670,7 @@
             if(ep) { ep.timelines.splice(idx, 1); saveData(); renderChongDetail(ep); }
         }
 
-        // --- 4. 마크서버 (카테고리별 타임라인 줄바꿈 완벽 유지) ---
+        // --- 4. 마크서버 (초록색 '상세 타임라인 보기') ---
         function renderMcGuilds() {
             const grid = document.getElementById('mc-guilds-grid');
             grid.innerHTML = '';
@@ -671,13 +678,13 @@
             mcGuilds.forEach(g => {
                 const adminC = isAdmin ? `<div class="absolute bottom-3 right-3 z-10 flex gap-1"><button onclick="event.stopPropagation(); editMcGuild('${g.id}')" class="px-2 py-1 bg-amber-600 text-white rounded text-xs font-bold">수정</button><button onclick="event.stopPropagation(); deleteMcGuild('${g.id}')" class="px-2 py-1 bg-rose-600 text-white rounded text-xs font-bold">삭제</button></div>` : '';
                 grid.innerHTML += `
-                    <div onclick="openMcDetail('${g.id}')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/50 transition-all cursor-pointer relative overflow-hidden">
-                        ${g.server ? `<div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/20">${g.server}</div>` : ''}
+                    <div onclick="openMcDetail('${g.id}')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/50 transition-all cursor-pointer relative overflow-hidden shadow-lg">
+                        ${g.server ? `<div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/25">${g.server}</div>` : ''}
                         <div class="mb-4">
                             <h3 class="text-lg font-bold text-white group-hover:text-emerald-400">${g.name}</h3>
                             <p class="text-xs text-slate-400 whitespace-pre-line">${g.period || ''}</p>
                         </div>
-                        <div class="border-t border-slate-800 pt-3 text-xs text-slate-400 flex justify-between"><span>타임라인 기록 보기</span><span class="text-emerald-400 font-semibold">입장 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
+                        <div class="border-t border-slate-800 pt-3 text-xs text-slate-400 flex justify-between items-center"><span>타임라인 기록 보기</span><span class="text-emerald-400 font-semibold">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
                         ${adminC}
                     </div>
                 `;
@@ -703,13 +710,13 @@
             const tabsEl = document.getElementById('mc-days-tabs');
             tabsEl.innerHTML = '';
             const dayKeys = Object.keys(guild.days || {});
-            if(dayKeys.length === 0) { tabsEl.innerHTML = `<span class="text-xs text-slate-500">등록된 날짜 탭이 없습니다.</span>`; return; }
+            if(dayKeys.length === 0) { tabsEl.innerHTML = `<span class="text-xs text-slate-500 col-span-full text-center">등록된 날짜 탭이 없습니다.</span>`; return; }
             if(!currentMcDay || !guild.days[currentMcDay]) currentMcDay = dayKeys[0];
 
             dayKeys.forEach(day => {
                 const isActive = (currentMcDay === day);
                 const activeAdminDel = isAdmin ? ` <button onclick="event.stopPropagation(); deleteMcDay('${day}')" class="text-rose-400 ml-1">×</button>` : '';
-                tabsEl.innerHTML += `<button onclick="switchMcDay('${day}')" class="px-2 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${isActive ? 'bg-emerald-600 text-white shadow-lg' : 'bg-slate-950 text-slate-400 hover:text-white'}">${day}${activeAdminDel}</button>`;
+                tabsEl.innerHTML += `<button onclick="switchMcDay('${day}')" class="px-2.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shadow ${isActive ? 'bg-emerald-600 text-white ring-1 ring-emerald-400' : 'bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-800'}">${day}${activeAdminDel}</button>`;
             });
 
             const container = document.getElementById('mc-categories-container');
@@ -725,7 +732,7 @@
                 });
                 const adminAddSubItem = isAdmin ? ` <button onclick="promptAddMcItem('${catName}')" class="text-xs text-emerald-400 font-normal hover:underline ml-2">+ 항목 추가</button>` : '';
                 container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-lg">
                         <div class="border-b border-slate-800 pb-2.5 flex justify-between items-center">
                             <h3 class="font-bold text-white text-sm sm:text-base text-emerald-400">${catName}${adminAddSubItem}</h3>
                         </div>
@@ -773,7 +780,7 @@
         }
         function deleteMcGuild(id) { mcGuilds = mcGuilds.filter(x => x.id !== id); saveData(); renderMcGuilds(); }
         function openAddMcDayModal() {
-            const dayName = prompt("추가할 일차를 입력하세요 (예: 2일차, 11일차):");
+            const dayName = prompt("추가할 일차를 입력하세요 (예: 2일차, 1일차):");
             if(!dayName) return;
             const g = mcGuilds.find(x => x.id === currentSelectedGuildId);
             if(g) {
