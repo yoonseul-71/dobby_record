@@ -195,7 +195,7 @@
     <!-- 하단 푸터 -->
     <footer class="bg-slate-900 border-t border-slate-800 py-4 px-4 sm:px-6 lg:px-8 mt-12">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
-            <div>본 사이트는 비공식 전적 정리 사이트이므로 일부 누락이나 오류가 있을 수 있습니다.</div>
+            <div>본 사이트는 비공식 정리 사이트이므로 일부 누락이나 오류가 있을 수 있습니다.</div>
             <div class="font-semibold text-slate-400">made by 윤슬ツ</div>
         </div>
     </footer>
@@ -225,7 +225,7 @@
         </div>
     </div>
 
-    <!-- 멸망전 경기 추가 모달 -->
+    <!-- 멸망전 경기 추가 모달 (줄바꿈 지원) -->
     <div id="mwj-match-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h3 class="text-lg font-bold text-white">멸망전 경기 기록 추가</h3>
@@ -248,15 +248,15 @@
                 <div class="grid grid-cols-3 gap-3">
                     <div><label class="text-slate-400 block mb-1">시간대/세트</label><input type="text" id="mm-setnum" placeholder="19시 1세트" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                     <div><label class="text-slate-400 block mb-1">결과 요약</label><input type="text" id="mm-resultsummary" placeholder="1승 2패" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                    <div>
-                        <label class="text-slate-400 block mb-1">선택 진영</label>
-                        <select id="mm-side" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
-                            <option value="BLUE">BLUE</option><option value="RED">RED</option>
-                        </select>
-                    </div>
                 </div>
-                <div class="border-t border-slate-800 pt-3"><label class="text-slate-300 font-bold block mb-2">블루팀 5인 로스터</label><div id="mm-blue-list" class="space-y-2"></div></div>
-                <div class="border-t border-slate-800 pt-3"><label class="text-slate-300 font-bold block mb-2">레드팀 5인 로스터</label><div id="mm-red-list" class="space-y-2"></div></div>
+                <div class="border-t border-slate-800 pt-3">
+                    <label class="text-slate-300 font-bold block mb-1">블루팀 멤버 (여러 줄 입력 가능)</label>
+                    <textarea id="mm-blue-members" rows="4" placeholder="탑: 도현&#10;정글: ...&#10;(엔터로 줄바꿈 유지가능)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar text-xs whitespace-pre-line"></textarea>
+                </div>
+                <div class="border-t border-slate-800 pt-3">
+                    <label class="text-slate-300 font-bold block mb-1">레드팀 멤버 (여러 줄 입력 가능)</label>
+                    <textarea id="mm-red-members" rows="4" placeholder="탑: 상대팀&#10;정글: ...&#10;(엔터로 줄바꿈 유지가능)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar text-xs whitespace-pre-line"></textarea>
+                </div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
                 <button onclick="closeAddMwjMatchModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">취소</button>
@@ -265,7 +265,7 @@
         </div>
     </div>
 
-    <!-- 총겜동 추가/수정 모달 -->
+    <!-- 총겜동 에피소드 추가/수정 모달 -->
     <div id="chong-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
             <h3 class="text-lg font-bold text-white" id="chong-modal-title">총겜동 에피소드 관리</h3>
@@ -274,7 +274,10 @@
                 <div><label class="text-slate-400 block mb-1">회차명 (예: Ep. 0, Ep. 1)</label><input type="text" id="c-ep" placeholder="Ep. 0" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 <div><label class="text-slate-400 block mb-1">에피소드 제목</label><input type="text" id="c-title" placeholder="레전드 합방 라디오" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 <div><label class="text-slate-400 block mb-1">날짜</label><input type="text" id="c-date" placeholder="2025.11.20" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                <div><label class="text-slate-400 block mb-1">상세 설명 (작은 텍스트)</label><input type="text" id="c-desc" placeholder="벌칙 회식 및 비하인드 토크" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                <div>
+                    <label class="text-slate-400 block mb-1">상세 설명 (여러 줄 입력 가능)</label>
+                    <textarea id="c-desc" rows="3" placeholder="벌칙 회식 및 비하인드 토크&#10;(엔터로 줄바꿈 가능)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 text-xs custom-scrollbar"></textarea>
+                </div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
                 <button onclick="closeAddChongModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">취소</button>
@@ -283,12 +286,15 @@
         </div>
     </div>
 
-    <!-- 총겜동 타임라인 추가 모달 -->
+    <!-- 총겜동 타임라인 추가 모달 (줄바꿈 지원) -->
     <div id="chong-timeline-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
             <h3 class="text-lg font-bold text-white">총겜동 타임라인 추가</h3>
             <div class="space-y-3 text-sm">
-                <div><label class="text-slate-400 block mb-1">내용</label><input type="text" id="ct-content" placeholder="오프닝 토크 및 근황 토크" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                <div>
+                    <label class="text-slate-400 block mb-1">내용 (여러 줄 입력 가능)</label>
+                    <textarea id="ct-content" rows="3" placeholder="오프닝 토크 및 근황 토크&#10;(엔터로 줄바꿈 가능)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 text-xs custom-scrollbar"></textarea>
+                </div>
                 <div><label class="text-slate-400 block mb-1">VOD 링크 (선택 사항)</label><input type="text" id="ct-vod" placeholder="https://..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
@@ -391,7 +397,7 @@
         function closeAddRecordModal() { document.getElementById('add-modal').classList.add('hidden'); }
         function saveNewRecord() { closeAddRecordModal(); }
 
-        // --- 2. 롤 멸망전 (이미지 로고 적용) ---
+        // --- 2. 롤 멸망전 ---
         function previewTeamLogo(event) {
             const file = event.target.files[0];
             if(!file) return;
@@ -421,7 +427,7 @@
                             ${logoHtml}
                             <div>
                                 <h3 class="text-lg font-bold text-white group-hover:text-amber-400">${team.name}</h3>
-                                <p class="text-xs text-slate-400">${team.desc || ''}</p>
+                                <p class="text-xs text-slate-400 whitespace-pre-line">${team.desc || ''}</p>
                             </div>
                         </div>
                         <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-xs text-slate-400"><span>${team.period || ''}</span><span class="text-amber-400 font-semibold">기록 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
@@ -457,31 +463,22 @@
             const matches = (team.matches || []).filter(m => m.type === currentMwjSubTab);
             if(matches.length === 0) { container.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">등록된 ${currentMwjSubTab} 경기가 없습니다.</div>`; return; }
             matches.forEach(m => {
-                let rows = '';
-                for(let i=0; i<5; i++) {
-                    const b = m.blueTeam[i] || { pos: '-', name: '-', tier: '-', champ: '-' };
-                    const r = m.redTeam[i] || { pos: '-', name: '-', tier: '-', champ: '-' };
-                    rows += `<tr class="hover:bg-slate-800/30 text-xs"><td class="py-2 text-white font-semibold">${b.name}</td><td class="text-slate-400">${b.tier}</td><td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded">${b.champ}</span></td><td class="font-bold text-slate-400 bg-slate-950/40">${b.pos}</td><td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded">${r.champ}</span></td><td class="text-slate-400">${r.tier}</td><td class="text-white font-semibold">${r.name}</td></tr>`;
-                }
                 const adminDel = isAdmin ? `<button onclick="deleteMwjMatch(${m.id})" class="px-2 py-1 bg-rose-600 text-white rounded text-xs">삭제</button>` : '';
                 container.innerHTML += `
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                            <div class="flex items-center gap-2"><span class="bg-indigo-900 text-white text-xs font-bold px-2 py-1 rounded">${m.category}</span><span class="font-bold text-white text-sm">${m.date} (${m.setNum})</span></div>
+                            <div class="flex items-center gap-2"><span class="bg-indigo-900 text-white text-xs font-bold px-2 py-1 rounded">${m.category}</span><span class="font-bold text-white text-sm">${m.date} (${m.setNum})</span> <span class="text-xs text-amber-400 font-semibold">[ ${m.resultSummary || ''} ]</span></div>
                             ${adminDel}
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-center border-collapse min-w-[600px]">
-                                <thead>
-                                    <tr class="text-[11px] text-slate-400 border-b border-slate-800 bg-slate-950/50">
-                                        <th class="py-2 text-blue-400" colspan="3">BLUE TEAM</th><th>포지션</th><th class="py-2 text-rose-400" colspan="3">RED TEAM</th>
-                                    </tr>
-                                    <tr class="text-[10px] text-slate-500 border-b border-slate-800">
-                                        <th>스트리머</th><th>티어/점수</th><th>챔피언</th><th>-</th><th>챔피언</th><th>티어/점수</th><th>스트리머</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-800/40">${rows}</tbody>
-                            </table>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                                <div class="text-blue-400 font-bold text-xs mb-2 pb-1 border-b border-slate-800">블루팀 멤버</div>
+                                <div class="text-slate-200 text-xs sm:text-sm leading-relaxed whitespace-pre-line">${m.blueMembers || '등록된 멤버 없음'}</div>
+                            </div>
+                            <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                                <div class="text-rose-400 font-bold text-xs mb-2 pb-1 border-b border-slate-800">레드팀 멤버</div>
+                                <div class="text-slate-200 text-xs sm:text-sm leading-relaxed whitespace-pre-line">${m.redMembers || '등록된 멤버 없음'}</div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -534,15 +531,42 @@
             saveData(); renderMwjTeams(); closeAddTeamModal();
         }
         function deleteTeam(id) { mwjTeams = mwjTeams.filter(x => x.id !== id); saveData(); renderMwjTeams(); }
-        function openAddMwjMatchModal() { document.getElementById('mwj-match-modal').classList.remove('hidden'); }
+        
+        function openAddMwjMatchModal() {
+            document.getElementById('mm-date').value = '';
+            document.getElementById('mm-setnum').value = '';
+            document.getElementById('mm-resultsummary').value = '';
+            document.getElementById('mm-blue-members').value = '';
+            document.getElementById('mm-red-members').value = '';
+            document.getElementById('mwj-match-modal').classList.remove('hidden');
+        }
         function closeAddMwjMatchModal() { document.getElementById('mwj-match-modal').classList.add('hidden'); }
-        function saveMwjMatch() { closeAddMwjMatchModal(); }
+        
+        function saveMwjMatch() {
+            const type = document.getElementById('mm-type').value;
+            const category = document.getElementById('mm-category').value;
+            const date = document.getElementById('mm-date').value || '';
+            const setNum = document.getElementById('mm-setnum').value || '';
+            const resultSummary = document.getElementById('mm-resultsummary').value || '';
+            const blueMembers = document.getElementById('mm-blue-members').value || '';
+            const redMembers = document.getElementById('mm-red-members').value || '';
+
+            const team = mwjTeams.find(x => x.id === currentSelectedTeamId);
+            if(team) {
+                if(!team.matches) team.matches = [];
+                team.matches.push({ id: Date.now(), type, category, date, setNum, resultSummary, blueMembers, redMembers });
+                saveData();
+                renderMwjMatches(team);
+                closeAddMwjMatchModal();
+            }
+        }
+
         function deleteMwjMatch(id) {
             const t = mwjTeams.find(x => x.id === currentSelectedTeamId);
             if(t) { t.matches = t.matches.filter(m => m.id !== id); saveData(); renderMwjMatches(t); }
         }
 
-        // --- 3. 총겜동 ---
+        // --- 3. 총겜동 (설명 및 타임라인 줄바꿈 완벽 유지) ---
         function renderChongEpisodes() {
             const grid = document.getElementById('chong-grid');
             grid.innerHTML = '';
@@ -553,7 +577,7 @@
                     <div onclick="openChongDetail(${ep.id})" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 relative cursor-pointer hover:border-indigo-500/50 transition-all">
                         <div class="flex justify-between items-center"><span class="bg-indigo-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg">${ep.ep}</span><span class="text-xs text-slate-400">${ep.date}</span></div>
                         <h3 class="font-bold text-white text-base">${ep.title}</h3>
-                        <p class="text-xs text-slate-400">${ep.desc || ''}</p>
+                        <p class="text-xs text-slate-400 whitespace-pre-line">${ep.desc || ''}</p>
                         <div class="text-xs text-indigo-400 font-semibold pt-1">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></div>
                         ${adminC}
                     </div>
@@ -582,7 +606,7 @@
             tList.forEach((item, idx) => {
                 const linkDisplay = item.vod ? `<a href="${item.vod}" target="_blank" class="text-rose-400 hover:text-rose-300 font-bold mr-2 text-xs bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20"><i class="fa-solid fa-link mr-1"></i>링크</a>` : '';
                 const adminDel = isAdmin ? `<button onclick="deleteChongTimeline(${idx})" class="text-rose-500 text-xs ml-2">삭제</button>` : '';
-                container.innerHTML += `<div class="flex items-center justify-between py-2 border-b border-slate-800/60 last:border-0 text-xs sm:text-sm text-slate-300"><div>${linkDisplay}<span>${item.text}</span></div>${adminDel}</div>`;
+                container.innerHTML += `<div class="flex items-start justify-between py-2 border-b border-slate-800/60 last:border-0 text-xs sm:text-sm text-slate-300"><div>${linkDisplay}<span class="whitespace-pre-line">${item.text}</span></div>${adminDel}</div>`;
             });
         }
         function openAddChongModal(epId = null) {
@@ -622,7 +646,7 @@
             saveData(); renderChongEpisodes(); closeAddChongModal();
         }
         function deleteChong(id) { chongEpisodes = chongEpisodes.filter(x => x.id !== id); saveData(); renderChongEpisodes(); }
-        function openAddChongTimelineModal() { document.getElementById('chong-timeline-modal').classList.remove('hidden'); }
+        function openAddChongTimelineModal() { document.getElementById('ct-content').value = ''; document.getElementById('ct-vod').value = ''; document.getElementById('chong-timeline-modal').classList.remove('hidden'); }
         function closeAddChongTimelineModal() { document.getElementById('chong-timeline-modal').classList.add('hidden'); }
         function saveChongTimeline() {
             const text = document.getElementById('ct-content').value || '내용';
@@ -639,7 +663,7 @@
             if(ep) { ep.timelines.splice(idx, 1); saveData(); renderChongDetail(ep); }
         }
 
-        // --- 4. 마크서버 ---
+        // --- 4. 마크서버 (카테고리별 타임라인 줄바꿈 완벽 유지) ---
         function renderMcGuilds() {
             const grid = document.getElementById('mc-guilds-grid');
             grid.innerHTML = '';
@@ -651,7 +675,7 @@
                         ${g.server ? `<div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/20">${g.server}</div>` : ''}
                         <div class="mb-4">
                             <h3 class="text-lg font-bold text-white group-hover:text-emerald-400">${g.name}</h3>
-                            <p class="text-xs text-slate-400">${g.period || ''}</p>
+                            <p class="text-xs text-slate-400 whitespace-pre-line">${g.period || ''}</p>
                         </div>
                         <div class="border-t border-slate-800 pt-3 text-xs text-slate-400 flex justify-between"><span>타임라인 기록 보기</span><span class="text-emerald-400 font-semibold">입장 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
                         ${adminC}
@@ -697,7 +721,7 @@
                 items.forEach((item, itemIdx) => {
                     const linkDisplay = item.vod ? `<a href="${item.vod}" target="_blank" class="text-rose-400 hover:text-rose-300 font-bold mr-2 text-xs bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20"><i class="fa-solid fa-link mr-1"></i>링크</a>` : '';
                     const adminDelItem = isAdmin ? ` <button onclick="deleteMcItem('${catName}', ${itemIdx})" class="text-rose-500 text-xs ml-2">삭제</button>` : '';
-                    itemsHtml += `<li class="py-1 text-slate-300 flex items-center justify-between border-b border-slate-800/40 last:border-0 text-xs sm:text-sm"><div>${linkDisplay}<span>${item.text}</span></div>${adminDelItem}</li>`;
+                    itemsHtml += `<li class="py-1 text-slate-300 flex items-start justify-between border-b border-slate-800/40 last:border-0 text-xs sm:text-sm"><div>${linkDisplay}<span class="whitespace-pre-line">${item.text}</span></div>${adminDelItem}</li>`;
                 });
                 const adminAddSubItem = isAdmin ? ` <button onclick="promptAddMcItem('${catName}')" class="text-xs text-emerald-400 font-normal hover:underline ml-2">+ 항목 추가</button>` : '';
                 container.innerHTML += `
