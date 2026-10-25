@@ -136,7 +136,7 @@
                                 <span class="text-xs text-amber-400 font-medium">상세 경기 기록</span>
                             </div>
                         </div>
-                        <button onclick="openAddMatchModal()" id="add-match-btn" class="hidden px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all">
+                        <button onclick="openAddMatchModal()" id="add-match-btn" class="hidden px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all">
                             <i class="fa-solid fa-plus mr-1"></i>경기 기록 추가
                         </button>
                     </div>
@@ -218,7 +218,7 @@
         </div>
     </footer>
 
-    <!-- 게임 전적 추가/수정 통합 모달 -->
+    <!-- 게임 전적 추가/수정 모달 -->
     <div id="add-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h3 class="text-lg font-bold text-white"><span id="modal-game-title">VALORANT</span> 전적 관리</h3>
@@ -231,14 +231,18 @@
                     </div>
                     <div>
                         <label class="text-slate-400 block mb-1">유형</label>
-                        <select id="m-type" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                        <select id="m-type" onchange="handleTypeChange()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
                             <option value="내전">내전</option>
                             <option value="CK">CK</option>
                             <option value="랜드">랜드</option>
                             <option value="자유입력">자유입력</option>
                         </select>
                     </div>
-                    <div>
+                    <div id="m-type-custom-box" class="hidden">
+                        <label class="text-slate-400 block mb-1">직접 입력</label>
+                        <input type="text" id="m-type-custom" placeholder="유형 입력" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                    </div>
+                    <div id="m-date-box">
                         <label class="text-slate-400 block mb-1">날짜</label>
                         <input type="text" id="m-date" placeholder="11.21 토" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
                     </div>
@@ -257,6 +261,7 @@
                     <select id="m-result" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
                         <option value="WIN">WIN (승리)</option>
                         <option value="LOSE">LOSE (패배)</option>
+                        <option value="NONE">선택 안함</option>
                     </select>
                 </div>
             </div>
@@ -277,18 +282,24 @@
                 { id: 1, year: "2026", type: "CK", date: "11.19", balance: "도현스쿼드 vs 저라뎃스쿼드", position: "미드", champion: "아칼리", kda: "10 / 2 / 6", result: "WIN", members: "도현\n저라뎃\n박사장" }
             ],
             pubg: [
-                { id: 1, year: "2026", type: "내전", date: "11.17", balance: "도현스쿼드 vs 킴성태스쿼드", targetKills: "팀 40킬", memberKills: "도현: 30 (40-10)", totalScore: "1위 (65점)", result: "WIN", members: "도현\n킴성태\n싸패" }
+                { id: 1, year: "2026", type: "내전", date: "11.17", balance: "도현스쿼드 vs 킴성태스쿼드", targetKills: "팀 40킬", memberKills: "도현: 30 (40-10)", totalScore: "1위 (65점)", result: "WIN", members: "도현\n킴성태\n싸패", pubgTeams: ["도현팀 40 (30-10)", "상대팀 25 (20-5)"] }
             ]
         };
 
-        let mwjTeams = JSON.parse(localStorage.getItem('dohyeon_mwjTeams')) || [];
+        let mwjTeams = JSON.parse(localStorage.getItem('dohyeon_mwjTeams')) || [
+            { id: 'team1', name: '도현팀 (승리 요정들)', logo: 'DH', desc: '최종 성적: 준우승 🥈', period: '2025.11.10 ~ 11.25', seasonTitle: '2025 ALL Season 1', matches: [] }
+        ];
         let chongEpisodes = JSON.parse(localStorage.getItem('dohyeon_chong')) || [];
         let mcGuilds = JSON.parse(localStorage.getItem('dohyeon_mc')) || [];
 
         let currentGameTab = 'val';
         let currentYearTab = '2026';
-        let currentSortOrder = 'desc'; // 'desc': 최신순, 'asc': 과거순
+        let currentSortOrder = 'desc'; 
         let isAdmin = false;
+
+        let currentSelectedTeamId = null;
+        let currentSelectedChongId = null;
+        let currentSelectedGuildId = null;
 
         function saveData() {
             localStorage.setItem('dohyeon_mockData', JSON.stringify(mockData));
@@ -301,37 +312,22 @@
             isAdmin = !isAdmin;
             const btn = document.getElementById('admin-mode-btn');
             
-            // 모든 탭의 추가/관리 버튼 제어
-            const addBtn = document.getElementById('add-record-btn');
-            const addMwjBtn = document.getElementById('add-mwj-btn');
-            const addMatchBtn = document.getElementById('add-match-btn');
-            const addChongBtn = document.getElementById('add-chong-btn');
-            const addChongTimelineBtn = document.getElementById('add-chong-timeline-btn');
-            const addMcBtn = document.getElementById('add-mc-btn');
-            const addMcDayBtn = document.getElementById('add-mc-day-btn');
-
             if(isAdmin) {
                 btn.className = "px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border border-emerald-500 transition-all";
                 btn.innerHTML = '<i class="fa-solid fa-unlock mr-1"></i>관리자 ON';
-                if(addBtn) addBtn.classList.remove('hidden');
-                if(addMwjBtn) addMwjBtn.classList.remove('hidden');
-                if(addMatchBtn) addMatchBtn.classList.remove('hidden');
-                if(addChongBtn) addChongBtn.classList.remove('hidden');
-                if(addChongTimelineBtn) addChongTimelineBtn.classList.remove('hidden');
-                if(addMcBtn) addMcBtn.classList.remove('hidden');
-                if(addMcDayBtn) addMcDayBtn.classList.remove('hidden');
             } else {
                 btn.className = "px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 transition-all";
                 btn.innerHTML = '<i class="fa-solid fa-lock mr-1"></i>관리자 OFF';
-                if(addBtn) addBtn.classList.add('hidden');
-                if(addMwjBtn) addMwjBtn.classList.add('hidden');
-                if(addMatchBtn) addMatchBtn.classList.add('hidden');
-                if(addChongBtn) addChongBtn.classList.add('hidden');
-                if(addChongTimelineBtn) addChongTimelineBtn.classList.add('hidden');
-                if(addMcBtn) addMcBtn.classList.add('hidden');
-                if(addMcDayBtn) addMcDayBtn.classList.add('hidden');
             }
+
+            // 모든 탭의 렌더링 함수 호출하여 관리자 버튼 즉시 반영
             renderRecords();
+            renderMwjTeams();
+            renderChongEpisodes();
+            renderMcGuilds();
+            if(currentSelectedTeamId) renderMwjMatches(currentSelectedTeamId);
+            if(currentSelectedChongId) renderChongTimelines(currentSelectedChongId);
+            if(currentSelectedGuildId) renderMcDays(currentSelectedGuildId);
         }
 
         function switchMainTab(tab) {
@@ -348,9 +344,9 @@
             if(targetNav) targetNav.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-indigo-600 text-white shadow-lg whitespace-nowrap";
 
             if(tab === 'history') renderRecords();
-            if(tab === 'mwj') { document.getElementById('mwj-main-view').classList.remove('hidden'); document.getElementById('mwj-detail-view').classList.add('hidden'); }
-            if(tab === 'chong') { document.getElementById('chong-main-view').classList.remove('hidden'); document.getElementById('chong-detail-view').classList.add('hidden'); }
-            if(tab === 'mc') { document.getElementById('mc-main-view').classList.remove('hidden'); document.getElementById('mc-detail-view').classList.add('hidden'); }
+            if(tab === 'mwj') { document.getElementById('mwj-main-view').classList.remove('hidden'); document.getElementById('mwj-detail-view').classList.add('hidden'); renderMwjTeams(); }
+            if(tab === 'chong') { document.getElementById('chong-main-view').classList.remove('hidden'); document.getElementById('chong-detail-view').classList.add('hidden'); renderChongEpisodes(); }
+            if(tab === 'mc') { document.getElementById('mc-main-view').classList.remove('hidden'); document.getElementById('mc-detail-view').classList.add('hidden'); renderMcGuilds(); }
         }
 
         function switchGameTab(game) {
@@ -374,12 +370,27 @@
             renderRecords();
         }
 
+        function handleTypeChange() {
+            const typeVal = document.getElementById('m-type').value;
+            const customBox = document.getElementById('m-type-custom-box');
+            if(typeVal === '자유입력') {
+                customBox.classList.remove('hidden');
+            } else {
+                customBox.classList.add('hidden');
+            }
+        }
+
         function renderRecords() {
             const listEl = document.getElementById('record-list');
             const yearTabsEl = document.getElementById('history-year-tabs');
-            const data = mockData[currentGameTab] || [];
+            const addRecordBtn = document.getElementById('add-record-btn');
+            
+            if(addRecordBtn) {
+                if(isAdmin) addRecordBtn.classList.remove('hidden');
+                else addRecordBtn.classList.add('hidden');
+            }
 
-            // 연도별 탭 동적 생성
+            const data = mockData[currentGameTab] || [];
             const yearsSet = new Set(data.map(item => item.year || '2026'));
             yearsSet.add('2026');
             const years = Array.from(yearsSet).sort().reverse();
@@ -425,18 +436,27 @@
             }
 
             filtered.forEach(item => {
-                const isWin = item.result === 'WIN';
-                const bgStyle = isWin ? 'bg-[#1e2e45] border-[#38bdf8]/40' : 'bg-[#2d1b28] border-[#f43f5e]/40';
+                let bgStyle = 'bg-slate-800/80 border-slate-700';
+                let winLoseBadge = '';
+
+                if (item.result === 'WIN') {
+                    bgStyle = 'bg-[#0284c7] border-sky-400 text-white';
+                    winLoseBadge = `<span class="text-xs font-bold px-2.5 py-1 rounded bg-sky-900 text-white">WIN</span>`;
+                } else if (item.result === 'LOSE') {
+                    bgStyle = 'bg-[#e11d48] border-rose-400 text-white';
+                    winLoseBadge = `<span class="text-xs font-bold px-2.5 py-1 rounded bg-rose-900 text-white">LOSE</span>`;
+                } else {
+                    bgStyle = 'bg-slate-700 border-slate-600 text-slate-200';
+                    winLoseBadge = `<span class="text-xs font-bold px-2.5 py-1 rounded bg-slate-900 text-slate-300">기타</span>`;
+                }
                 
-                const typeBadge = `<span class="bg-indigo-900 text-white text-xs font-bold px-2.5 py-1 rounded">${item.type || 'CK'}</span>`;
-                const winLoseBadge = `<span class="text-xs font-bold px-2 py-1 rounded ${isWin ? 'bg-sky-600 text-white' : 'bg-rose-600 text-white'}">${isWin ? '승리' : '패배'}</span>`;
-                
+                const typeBadge = `<span class="bg-indigo-950 text-white text-xs font-bold px-2.5 py-1 rounded">${item.type || 'CK'}</span>`;
                 const formattedMembers = item.members ? item.members.replace(/\n/g, '<br>') : '';
                 
                 const adminBtns = isAdmin ? `
                     <div class="flex items-center gap-1 mt-2 sm:mt-0">
                         <button onclick="editGameRecord(${item.id})" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded text-xs font-bold">수정</button>
-                        <button onclick="deleteGameRecord(${item.id})" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded text-xs font-bold">삭제</button>
+                        <button onclick="deleteGameRecord(${item.id})" class="px-2.5 py-1 bg-rose-900 hover:bg-rose-800 text-white rounded text-xs font-bold">삭제</button>
                     </div>
                 ` : '';
 
@@ -448,26 +468,25 @@
                                 <div class="flex items-center gap-3 flex-wrap">
                                     ${typeBadge}
                                     ${winLoseBadge}
-                                    <span class="text-xs text-slate-400 font-medium">${item.date}</span>
-                                    <span class="text-xs text-slate-300 border-l border-slate-700/80 pl-2"><span class="text-slate-400">밸런스:</span> ${item.balance}</span>
+                                    <span class="text-xs font-medium">${item.type} ${item.date} | 밸런스: ${item.balance}</span>
                                 </div>
                                 <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                                     <div class="flex items-center gap-3 text-sm">
-                                        <span class="font-medium text-white">${item.map || ''}</span>
-                                        <span class="text-purple-400 font-bold">${item.agent || ''}</span>
-                                        ${item.acs ? `<span class="text-amber-400 font-bold">ACS ${item.acs}</span>` : ''}
-                                        <span class="text-white font-medium">${item.kda || ''}</span>
-                                        <span class="text-slate-300 text-xs font-semibold">(${item.score || ''})</span>
+                                        <span class="font-medium">${item.map || ''}</span>
+                                        <span class="text-purple-300 font-bold">${item.agent || ''}</span>
+                                        ${item.acs ? `<span class="text-amber-300 font-bold">ACS ${item.acs}</span>` : ''}
+                                        <span class="font-medium">${item.kda || ''}</span>
+                                        <span class="text-xs font-semibold">${item.score || ''}</span>
                                     </div>
                                     <div class="flex items-center gap-3">
                                         ${adminBtns}
-                                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
+                                        <i class="fa-solid fa-chevron-down text-xs group-open:rotate-180 transition-transform"></i>
                                     </div>
                                 </div>
                             </summary>
-                            <div class="px-5 py-3 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
+                            <div class="px-5 py-3 border-t border-white/20 bg-slate-950/80 text-xs text-slate-200 flex flex-col gap-1.5">
                                 <span class="text-indigo-400 font-bold">전체 참여멤버:</span>
-                                <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
+                                <div class="text-white font-medium bg-slate-900 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
                             </div>
                         </details>
                     `;
@@ -478,52 +497,65 @@
                                 <div class="flex items-center gap-3 flex-wrap">
                                     ${typeBadge}
                                     ${winLoseBadge}
-                                    <span class="text-xs text-slate-400 font-medium">${item.date}</span>
-                                    <span class="text-xs text-slate-300 border-l border-slate-700/80 pl-2"><span class="text-slate-400">밸런스:</span> ${item.balance}</span>
+                                    <span class="text-xs font-medium">${item.type} ${item.date} | 밸런스: ${item.balance}</span>
                                 </div>
                                 <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                                     <div class="flex items-center gap-3 text-sm">
-                                        <span class="text-slate-300 font-semibold">[${item.position || ''}]</span>
-                                        <span class="text-purple-400 font-bold">${item.champion || ''}</span>
-                                        <span class="text-white font-medium">${item.kda || ''}</span>
+                                        <span class="font-semibold">[${item.position || ''}]</span>
+                                        <span class="text-purple-300 font-bold">${item.champion || ''}</span>
+                                        <span class="font-medium">${item.kda || ''}</span>
                                     </div>
                                     <div class="flex items-center gap-3">
                                         ${adminBtns}
-                                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
+                                        <i class="fa-solid fa-chevron-down text-xs group-open:rotate-180 transition-transform"></i>
                                     </div>
                                 </div>
                             </summary>
-                            <div class="px-5 py-3 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
+                            <div class="px-5 py-3 border-t border-white/20 bg-slate-950/80 text-xs text-slate-200 flex flex-col gap-1.5">
                                 <span class="text-indigo-400 font-bold">전체 참여멤버:</span>
-                                <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
+                                <div class="text-white font-medium bg-slate-900 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
                             </div>
                         </details>
                     `;
                 } else if(currentGameTab === 'pubg') {
+                    let pubgTableHtml = '';
+                    if(item.pubgTeams && item.pubgTeams.length > 0) {
+                        pubgTableHtml = `
+                            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                ${item.pubgTeams.map(t => `<div class="bg-slate-900 p-2 rounded border border-slate-800 text-xs text-slate-200 font-mono">${t}</div>`).join('')}
+                            </div>
+                        `;
+                    }
                     cardHtml = `
                         <details class="group border rounded-2xl overflow-hidden transition-all shadow-lg text-base ${bgStyle}">
                             <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
                                 <div class="flex items-center gap-3 flex-wrap">
                                     ${typeBadge}
                                     ${winLoseBadge}
-                                    <span class="text-xs text-slate-400 font-medium">${item.date}</span>
-                                    <span class="text-xs text-slate-300 border-l border-slate-700/80 pl-2"><span class="text-slate-400">밸런스:</span> ${item.balance}</span>
+                                    <span class="text-xs font-medium">${item.type} ${item.date} | 밸런스: ${item.balance}</span>
                                 </div>
                                 <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                                     <div class="flex items-center gap-3 text-sm">
-                                        <span class="text-amber-300 font-bold">[목표] ${item.targetKills || ''}</span>
-                                        <span class="text-xs text-slate-300">${item.memberKills || ''}</span>
-                                        <span class="text-white font-bold">${item.totalScore || ''}</span>
+                                        <span class="text-amber-200 font-bold">[목표킬] ${item.targetKills || ''}</span>
+                                        <span class="text-xs">도현순수킬: ${item.memberKills || ''}</span>
+                                        <span class="font-bold">${item.totalScore || ''}</span>
                                     </div>
                                     <div class="flex items-center gap-3">
                                         ${adminBtns}
-                                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform"></i>
+                                        <i class="fa-solid fa-chevron-down text-xs group-open:rotate-180 transition-transform"></i>
                                     </div>
                                 </div>
                             </summary>
-                            <div class="px-5 py-3 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
-                                <span class="text-indigo-400 font-bold">전체 참여멤버:</span>
-                                <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
+                            <div class="px-5 py-3 border-t border-white/20 bg-slate-950/80 text-xs text-slate-200 flex flex-col gap-3">
+                                <div>
+                                    <span class="text-indigo-400 font-bold">전체 참여멤버:</span>
+                                    <div class="text-white font-medium bg-slate-900 p-3 rounded-xl border border-slate-800 leading-relaxed mt-1">${formattedMembers}</div>
+                                </div>
+                                ${pubgTableHtml ? `
+                                <div>
+                                    <span class="text-amber-400 font-bold">순수킬 팀별 상세 2단 표:</span>
+                                    ${pubgTableHtml}
+                                </div>` : ''}
                             </div>
                         </details>
                     `;
@@ -532,10 +564,233 @@
             });
         }
 
+        // 롤 멸망전 렌더링 함수들
+        function renderMwjTeams() {
+            const gridEl = document.getElementById('mwj-teams-grid');
+            const addBtn = document.getElementById('add-mwj-btn');
+            if(addBtn) {
+                if(isAdmin) addBtn.classList.remove('hidden');
+                else addBtn.classList.add('hidden');
+            }
+
+            gridEl.innerHTML = '';
+            if(mwjTeams.length === 0) {
+                gridEl.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm col-span-full">등록된 멸망전 팀이 없습니다.</div>`;
+                return;
+            }
+
+            mwjTeams.forEach(team => {
+                gridEl.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 transition-all shadow-xl flex flex-col justify-between space-y-4">
+                        <div class="cursor-pointer" onclick="openMwjDetail('${team.id}')">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-black text-lg">${team.logo || 'DH'}</div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-white">${team.name}</h3>
+                                    <span class="text-xs text-slate-400">${team.seasonTitle || ''}</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-amber-400 font-medium mb-1">${team.desc || ''}</p>
+                            <p class="text-xs text-slate-500">${team.period || ''}</p>
+                        </div>
+                        ${isAdmin ? `
+                            <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                                <button onclick="deleteMwjTeam('${team.id}')" class="px-2.5 py-1 bg-rose-900 hover:bg-rose-800 text-white rounded text-xs font-bold">팀 삭제</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        function openMwjDetail(teamId) {
+            currentSelectedTeamId = teamId;
+            document.getElementById('mwj-main-view').classList.add('hidden');
+            document.getElementById('mwj-detail-view').classList.remove('hidden');
+            renderMwjMatches(teamId);
+        }
+
+        function closeMwjDetail() {
+            currentSelectedTeamId = null;
+            document.getElementById('mwj-detail-view').classList.add('hidden');
+            document.getElementById('mwj-main-view').classList.remove('hidden');
+            renderMwjTeams();
+        }
+
+        function renderMwjMatches(teamId) {
+            const container = document.getElementById('mwj-matches-container');
+            const addMatchBtn = document.getElementById('add-match-btn');
+            if(addMatchBtn) {
+                if(isAdmin) addMatchBtn.classList.remove('hidden');
+                else addMatchBtn.classList.add('hidden');
+            }
+
+            const team = mwjTeams.find(x => x.id === teamId);
+            if(!team || !team.matches || team.matches.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">등록된 경기 기록이 없습니다.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            team.matches.forEach(match => {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-lg">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <div>
+                                <span class="text-xs bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-lg font-bold">${match.category}</span>
+                                <span class="text-xs text-slate-400 ml-2">${match.date}</span>
+                            </div>
+                            <span class="text-sm font-black ${match.matchResult === 'WIN' ? 'text-sky-400' : 'text-rose-400'}">${match.matchResult}</span>
+                        </div>
+                        <div class="text-sm text-slate-300">
+                            <div><strong>세트:</strong> ${match.setNum || ''}</div>
+                            <div><strong>결과 요약:</strong> ${match.resultSummary || ''}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 총겜동 렌더링 함수들
+        function renderChongEpisodes() {
+            const gridEl = document.getElementById('chong-grid');
+            const addBtn = document.getElementById('add-chong-btn');
+            if(addBtn) {
+                if(isAdmin) addBtn.classList.remove('hidden');
+                else addBtn.classList.add('hidden');
+            }
+
+            gridEl.innerHTML = '';
+            if(chongEpisodes.length === 0) {
+                gridEl.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm col-span-full">등록된 총겜동 에피소드가 없습니다.</div>`;
+                return;
+            }
+
+            chongEpisodes.forEach(ep => {
+                gridEl.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-indigo-500/50 transition-all shadow-xl flex flex-col justify-between space-y-4">
+                        <div class="cursor-pointer" onclick="openChongDetail('${ep.id}')">
+                            <h3 class="text-lg font-bold text-white mb-2">${ep.title}</h3>
+                            <p class="text-xs text-slate-400">${ep.desc || ''}</p>
+                        </div>
+                        ${isAdmin ? `
+                            <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                                <button onclick="deleteChongEpisode('${ep.id}')" class="px-2.5 py-1 bg-rose-900 hover:bg-rose-800 text-white rounded text-xs font-bold">삭제</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        function openChongDetail(epId) {
+            currentSelectedChongId = epId;
+            document.getElementById('chong-main-view').classList.add('hidden');
+            document.getElementById('chong-detail-view').classList.remove('hidden');
+            renderChongTimelines(epId);
+        }
+
+        function closeChongDetail() {
+            currentSelectedChongId = null;
+            document.getElementById('chong-detail-view').classList.add('hidden');
+            document.getElementById('chong-main-view').classList.remove('hidden');
+            renderChongEpisodes();
+        }
+
+        function renderChongTimelines(epId) {
+            const container = document.getElementById('chong-timelines-container');
+            const addTimelineBtn = document.getElementById('add-chong-timeline-btn');
+            if(addTimelineBtn) {
+                if(isAdmin) addTimelineBtn.classList.remove('hidden');
+                else addTimelineBtn.classList.add('hidden');
+            }
+
+            const ep = chongEpisodes.find(x => x.id === epId);
+            if(!ep || !ep.timelines || ep.timelines.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">등록된 타임라인이 없습니다.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            ep.timelines.forEach(t => {
+                container.innerHTML += `<div class="text-sm text-slate-200 border-b border-slate-800 pb-2"><strong>${t.time}</strong>: ${t.content}</div>`;
+            });
+        }
+
+        // 마크서버 렌더링 함수들
+        function renderMcGuilds() {
+            const gridEl = document.getElementById('mc-guilds-grid');
+            const addBtn = document.getElementById('add-mc-btn');
+            if(addBtn) {
+                if(isAdmin) addBtn.classList.remove('hidden');
+                else addBtn.classList.add('hidden');
+            }
+
+            gridEl.innerHTML = '';
+            if(mcGuilds.length === 0) {
+                gridEl.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm col-span-full">등록된 마크 길드가 없습니다.</div>`;
+                return;
+            }
+
+            mcGuilds.forEach(guild => {
+                gridEl.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/50 transition-all shadow-xl flex flex-col justify-between space-y-4">
+                        <div class="cursor-pointer" onclick="openMcDetail('${guild.id}')">
+                            <h3 class="text-lg font-bold text-white mb-2">${guild.name}</h3>
+                            <p class="text-xs text-slate-400">${guild.desc || ''}</p>
+                        </div>
+                        ${isAdmin ? `
+                            <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                                <button onclick="deleteMcGuild('${guild.id}')" class="px-2.5 py-1 bg-rose-900 hover:bg-rose-800 text-white rounded text-xs font-bold">삭제</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        function openMcDetail(guildId) {
+            currentSelectedGuildId = guildId;
+            document.getElementById('mc-main-view').classList.add('hidden');
+            document.getElementById('mc-detail-view').classList.remove('hidden');
+            renderMcDays(guildId);
+        }
+
+        function closeMcDetail() {
+            currentSelectedGuildId = null;
+            document.getElementById('mc-detail-view').classList.add('hidden');
+            document.getElementById('mc-main-view').classList.remove('hidden');
+            renderMcGuilds();
+        }
+
+        function renderMcDays(guildId) {
+            const container = document.getElementById('mc-categories-container');
+            const addDayBtn = document.getElementById('add-mc-day-btn');
+            if(addDayBtn) {
+                if(isAdmin) addDayBtn.classList.remove('hidden');
+                else addDayBtn.classList.add('hidden');
+            }
+
+            const guild = mcGuilds.find(x => x.id === guildId);
+            if(!guild || !guild.days || guild.days.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">등록된 일별 타임라인이 없습니다.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            guild.days.forEach(d => {
+                container.innerHTML += `<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-sm text-slate-200"><strong>${d.dayTitle}</strong>: ${d.content}</div>`;
+            });
+        }
+
+        // 모달 및 관리자 액션 함수들
         function openAddRecordModal(editId = null) {
             document.getElementById('modal-game-title').innerText = currentGameTab.toUpperCase();
             document.getElementById('edit-record-id').value = '';
             document.getElementById('m-year').value = currentYearTab || '2026';
+            document.getElementById('m-type').value = '내전';
+            document.getElementById('m-type-custom').value = '';
+            document.getElementById('m-type-custom-box').classList.add('hidden');
             document.getElementById('m-date').value = '';
             document.getElementById('m-balance').value = '';
             document.getElementById('m-members').value = '';
@@ -551,23 +806,27 @@
                     <div class="grid grid-cols-3 gap-3">
                         <div><label class="text-slate-400 block mb-1">ACS</label><input type="number" id="m-acs" placeholder="312" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                         <div><label class="text-slate-400 block mb-1">KDA</label><input type="text" id="m-kda" placeholder="24/12/5" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                        <div><label class="text-slate-400 block mb-1">스코어</label><input type="text" id="m-score" placeholder="13 : 9" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">점수</label><input type="text" id="m-score" placeholder="13:9" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                     </div>
                 `;
             } else if(currentGameTab === 'lol') {
                 specificFields.innerHTML = `
                     <div class="grid grid-cols-3 gap-3">
                         <div><label class="text-slate-400 block mb-1">포지션</label><input type="text" id="m-pos" placeholder="미드" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                        <div><label class="text-slate-400 block mb-1">챔피언</label><input type="text" id="m-champ" placeholder="아칼리" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">요원/챔피언</label><input type="text" id="m-champ" placeholder="아칼리" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                         <div><label class="text-slate-400 block mb-1">KDA</label><input type="text" id="m-lol-kda" placeholder="10/2/6" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                     </div>
                 `;
             } else if(currentGameTab === 'pubg') {
                 specificFields.innerHTML = `
                     <div class="grid grid-cols-3 gap-3">
-                        <div><label class="text-slate-400 block mb-1">목표킬</label><input type="text" id="m-target" placeholder="팀 40킬" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                        <div><label class="text-slate-400 block mb-1">멤버킬</label><input type="text" id="m-mkills" placeholder="도현: 30 (40-10)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">[목표킬]</label><input type="text" id="m-target" placeholder="팀 40킬" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">도현순수킬</label><input type="text" id="m-mkills" placeholder="도현: 30 (40-10)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                         <div><label class="text-slate-400 block mb-1">순위/점수</label><input type="text" id="m-score-pubg" placeholder="1위 (65점)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                    </div>
+                    <div>
+                        <label class="text-slate-400 block mb-1">순수킬 팀별 상세 (상세보기용, 엔터 줄바꿈)</label>
+                        <textarea id="m-pubg-teams" rows="2" placeholder="도현팀 40 (30-10)&#10;상대팀 25 (20-5)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 text-xs custom-scrollbar"></textarea>
                     </div>
                 `;
             }
@@ -577,7 +836,17 @@
                 if(item) {
                     document.getElementById('edit-record-id').value = item.id;
                     document.getElementById('m-year').value = item.year || '2026';
-                    document.getElementById('m-type').value = item.type || 'CK';
+                    
+                    const selectEl = document.getElementById('m-type');
+                    const standardTypes = ['내전', 'CK', '랜드'];
+                    if(standardTypes.includes(item.type)) {
+                        selectEl.value = item.type;
+                    } else {
+                        selectEl.value = '자유입력';
+                        document.getElementById('m-type-custom-box').classList.remove('hidden');
+                        document.getElementById('m-type-custom').value = item.type;
+                    }
+
                     document.getElementById('m-date').value = item.date || '';
                     document.getElementById('m-balance').value = item.balance || '';
                     document.getElementById('m-members').value = item.members || '';
@@ -597,6 +866,9 @@
                         document.getElementById('m-target').value = item.targetKills || '';
                         document.getElementById('m-mkills').value = item.memberKills || '';
                         document.getElementById('m-score-pubg').value = item.totalScore || '';
+                        if(item.pubgTeams) {
+                            document.getElementById('m-pubg-teams').value = item.pubgTeams.join('\n');
+                        }
                     }
                 }
             }
@@ -606,14 +878,17 @@
 
         function closeAddRecordModal() { document.getElementById('add-modal').classList.add('hidden'); }
 
-        function editGameRecord(id) {
-            openAddRecordModal(id);
-        }
+        function editGameRecord(id) { openAddRecordModal(id); }
 
         function saveNewRecord() {
             const editId = document.getElementById('edit-record-id').value;
             const year = document.getElementById('m-year').value || '2026';
-            const type = document.getElementById('m-type').value;
+            
+            let type = document.getElementById('m-type').value;
+            if(type === '자유입력') {
+                type = document.getElementById('m-type-custom').value || '자유입력';
+            }
+
             const date = document.getElementById('m-date').value || '11.21';
             const balance = document.getElementById('m-balance').value || '';
             const members = document.getElementById('m-members').value || '';
@@ -635,6 +910,8 @@
                 newItem.targetKills = document.getElementById('m-target').value || '';
                 newItem.memberKills = document.getElementById('m-mkills').value || '';
                 newItem.totalScore = document.getElementById('m-score-pubg').value || '';
+                const rawPubgTeams = document.getElementById('m-pubg-teams').value;
+                newItem.pubgTeams = rawPubgTeams ? rawPubgTeams.split('\n').filter(x => x.trim() !== '') : [];
             }
 
             if(!mockData[currentGameTab]) mockData[currentGameTab] = [];
@@ -660,6 +937,87 @@
             mockData[currentGameTab] = mockData[currentGameTab].filter(x => x.id !== id);
             saveData();
             renderRecords();
+        }
+
+        // 추가 관리 기능 플레이스홀더
+        function openAddTeamModal() {
+            const name = prompt("멸망전 팀 이름을 입력하세요:");
+            if(!name) return;
+            mwjTeams.push({ id: 'team_' + Date.now(), name, logo: name.substring(0,2), desc: '성적 미입력', period: '2026', seasonTitle: '2026 시즌', matches: [] });
+            saveData();
+            renderMwjTeams();
+        }
+
+        function deleteMwjTeam(id) {
+            mwjTeams = mwjTeams.filter(x => x.id !== id);
+            saveData();
+            renderMwjTeams();
+        }
+
+        function openAddMatchModal() {
+            if(!currentSelectedTeamId) return;
+            const category = prompt("경기 카테고리 (예: 본선 8강):", "본선 8강");
+            if(!category) return;
+            const team = mwjTeams.find(x => x.id === currentSelectedTeamId);
+            if(team) {
+                team.matches.push({ id: Date.now(), category, date: '2026.11.21', matchResult: 'WIN', setNum: '1세트', resultSummary: '승리' });
+                saveData();
+                renderMwjMatches(currentSelectedTeamId);
+            }
+        }
+
+        function openAddChongModal() {
+            const title = prompt("총겜동 에피소드 제목을 입력하세요:");
+            if(!title) return;
+            chongEpisodes.push({ id: 'chong_' + Date.now(), title, desc: '설명', timelines: [] });
+            saveData();
+            renderChongEpisodes();
+        }
+
+        function deleteChongEpisode(id) {
+            chongEpisodes = chongEpisodes.filter(x => x.id !== id);
+            saveData();
+            renderChongEpisodes();
+        }
+
+        function openAddChongTimelineModal() {
+            if(!currentSelectedChongId) return;
+            const time = prompt("시간대 (예: 14:30):", "14:30");
+            const content = prompt("타임라인 내용을 입력하세요:");
+            if(!content) return;
+            const ep = chongEpisodes.find(x => x.id === currentSelectedChongId);
+            if(ep) {
+                ep.timelines.push({ time, content });
+                saveData();
+                renderChongTimelines(currentSelectedChongId);
+            }
+        }
+
+        function openAddMcGuildModal() {
+            const name = prompt("마크 길드 이름을 입력하세요:");
+            if(!name) return;
+            mcGuilds.push({ id: 'mc_' + Date.now(), name, desc: '길드 설명', days: [] });
+            saveData();
+            renderMcGuilds();
+        }
+
+        function deleteMcGuild(id) {
+            mcGuilds = mcGuilds.filter(x => x.id !== id);
+            saveData();
+            renderMcGuilds();
+        }
+
+        function openAddMcDayModal() {
+            if(!currentSelectedGuildId) return;
+            const dayTitle = prompt("일차 입력 (예: 1일차):", "1일차");
+            const content = prompt("해당 일차 기록 내용을 입력하세요:");
+            if(!content) return;
+            const guild = mcGuilds.find(x => x.id === currentSelectedGuildId);
+            if(guild) {
+                guild.days.push({ dayTitle, content });
+                saveData();
+                renderMcDays(currentSelectedGuildId);
+            }
         }
 
         window.onload = () => { switchMainTab('history'); };
