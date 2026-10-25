@@ -104,7 +104,6 @@
                             <button onclick="closeMwjDetail()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all">
                                 <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
                             </button>
-                            <div><h2 id="detail-team-title" class="text-base sm:text-lg font-bold text-white">멸망전 상세 아카이브</h2></div>
                         </div>
                         <div class="flex items-center gap-3 w-full sm:w-auto justify-between">
                             <div class="flex space-x-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 shadow-inner">
@@ -141,7 +140,6 @@
                             <button onclick="closeChongDetail()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all">
                                 <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
                             </button>
-                            <div><h2 id="chong-detail-title" class="text-base sm:text-lg font-bold text-white">에피소드 상세 타임라인</h2></div>
                         </div>
                         <button onclick="openAddChongTimelineModal()" id="add-chong-timeline-btn" class="hidden px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap">
                             <i class="fa-solid fa-plus mr-1"></i>타임라인 추가
@@ -168,7 +166,6 @@
                             <button onclick="closeMcDetail()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all">
                                 <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
                             </button>
-                            <div><h2 id="mc-detail-title" class="text-base sm:text-lg font-bold text-white">마크서버 상세 아카이브</h2></div>
                         </div>
                         <button onclick="openAddMcDayModal()" id="add-mc-day-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all">
                             <i class="fa-solid fa-plus mr-1"></i>날짜(일차) 탭 추가
@@ -378,6 +375,7 @@
             document.getElementById(`section-${tab}`).classList.remove('hidden');
             document.getElementById(`nav-btn-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-indigo-600 text-white shadow-lg whitespace-nowrap";
 
+            if(tab === 'mwj') { renderMwjTeams(); }
             if(tab === 'chong') { document.getElementById('chong-main-view').classList.remove('hidden'); document.getElementById('chong-detail-view').classList.add('hidden'); renderChongEpisodes(); }
             if(tab === 'mc') { document.getElementById('mc-main-view').classList.remove('hidden'); document.getElementById('mc-detail-view').classList.add('hidden'); renderMcGuilds(); }
         }
@@ -447,7 +445,6 @@
             currentSelectedTeamId = teamId;
             const team = mwjTeams.find(t => t.id === teamId);
             if(!team) return;
-            document.getElementById('detail-team-title').innerText = `${team.name} 상세 아카이브`;
             document.getElementById('mwj-main-view').classList.add('hidden');
             document.getElementById('mwj-detail-view').classList.remove('hidden');
             switchMwjSubTab('스크림');
@@ -573,7 +570,7 @@
             if(t) { t.matches = t.matches.filter(m => m.id !== id); saveData(); renderMwjMatches(t); }
         }
 
-        // --- 3. 총겜동 (보라색 '상세 타임라인 보기') ---
+        // --- 3. 총겜동 ---
         function renderChongEpisodes() {
             const grid = document.getElementById('chong-grid');
             grid.innerHTML = '';
@@ -585,7 +582,9 @@
                         <div class="flex justify-between items-center"><span class="bg-indigo-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg">${ep.ep}</span><span class="text-xs text-slate-400">${ep.date}</span></div>
                         <h3 class="font-bold text-white text-base">${ep.title}</h3>
                         <p class="text-xs text-slate-400 whitespace-pre-line">${ep.desc || ''}</p>
-                        <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-xs text-slate-400"><span>멤버 공개</span><span class="text-purple-400 font-semibold">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
+                        <div class="border-t border-slate-800 pt-3 flex justify-end items-center text-xs">
+                            <span class="text-purple-400 font-semibold">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                        </div>
                         ${adminC}
                     </div>
                 `;
@@ -595,7 +594,6 @@
             currentSelectedChongId = epId;
             const ep = chongEpisodes.find(x => x.id === epId);
             if(!ep) return;
-            document.getElementById('chong-detail-title').innerText = `${ep.ep} - ${ep.title} 상세 타임라인`;
             document.getElementById('chong-main-view').classList.add('hidden');
             document.getElementById('chong-detail-view').classList.remove('hidden');
             renderChongDetail(ep);
@@ -670,7 +668,7 @@
             if(ep) { ep.timelines.splice(idx, 1); saveData(); renderChongDetail(ep); }
         }
 
-        // --- 4. 마크서버 (초록색 '상세 타임라인 보기') ---
+        // --- 4. 마크서버 ---
         function renderMcGuilds() {
             const grid = document.getElementById('mc-guilds-grid');
             grid.innerHTML = '';
@@ -684,7 +682,9 @@
                             <h3 class="text-lg font-bold text-white group-hover:text-emerald-400">${g.name}</h3>
                             <p class="text-xs text-slate-400 whitespace-pre-line">${g.period || ''}</p>
                         </div>
-                        <div class="border-t border-slate-800 pt-3 text-xs text-slate-400 flex justify-between items-center"><span>타임라인 기록 보기</span><span class="text-emerald-400 font-semibold">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span></div>
+                        <div class="border-t border-slate-800 pt-3 flex justify-end items-center text-xs">
+                            <span class="text-emerald-400 font-semibold">상세 타임라인 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                        </div>
                         ${adminC}
                     </div>
                 `;
@@ -694,7 +694,6 @@
             currentSelectedGuildId = guildId;
             const g = mcGuilds.find(x => x.id === guildId);
             if(!g) return;
-            document.getElementById('mc-detail-title').innerText = `${g.server || ''} - ${g.name} 상세 아카이브`;
             document.getElementById('mc-main-view').classList.add('hidden');
             document.getElementById('mc-detail-view').classList.remove('hidden');
             const dayKeys = Object.keys(g.days || {});
