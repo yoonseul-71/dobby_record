@@ -28,7 +28,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between text-base">
 
     <div>
         <!-- 상단 헤더 -->
@@ -74,7 +74,7 @@
                 
                 <!-- 상단 검색 및 필터 바 -->
                 <div class="bg-slate-900/80 backdrop-blur border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row gap-4 justify-between items-center shadow-xl">
-                    <!-- 게임 선택 탭 (VALORANT / LEAGUE OF LEGENDS / PUBG) - 아이콘 제거 -->
+                    <!-- 게임 선택 탭 (VALORANT / LEAGUE OF LEGENDS / PUBG) -->
                     <div class="flex space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 w-full md:w-auto">
                         <button id="game-tab-val" onclick="switchGameTab('val')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold bg-rose-600 text-white transition-all">
                             VALORANT
@@ -106,7 +106,7 @@
                     </div>
                 </div>
 
-                <!-- 전적 리스트 출력 구역 (가로형 알찬 구조) -->
+                <!-- 전적 리스트 출력 구역 -->
                 <div id="record-list" class="space-y-3">
                     <!-- Dynamic Render -->
                 </div>
@@ -123,30 +123,13 @@
                             <h2 class="text-xl font-bold text-white mb-1">참여 멸망전 목록</h2>
                             <p class="text-sm text-slate-400">팀 카드를 클릭하면 상세 아카이브를 확인할 수 있습니다.</p>
                         </div>
-                        <button onclick="alert('관리자 모드에서 팀 추가가 가능합니다.')" id="add-mwj-btn" class="hidden px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all">
-                            <i class="fa-solid fa-plus mr-1"></i>멸망전 시즌 추가
+                        <button onclick="openAddTeamModal()" id="add-mwj-btn" class="hidden px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all">
+                            <i class="fa-solid fa-plus mr-1"></i>멸망전 팀 추가
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div onclick="openMwjDetail('team1')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 hover:shadow-xl transition-all cursor-pointer relative overflow-hidden">
-                            <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/20">
-                                2025 ALL Season 1
-                            </div>
-                            <div class="flex items-center space-x-4 mb-4">
-                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center font-black text-2xl text-slate-950 shadow-lg group-hover:scale-105 transition-transform">
-                                    DH
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">도현팀 (승리 요정들)</h3>
-                                    <p class="text-xs text-slate-400">최종 성적: 준우승 🥈</p>
-                                </div>
-                            </div>
-                            <div class="border-t border-slate-800/80 pt-3 flex justify-between items-center text-xs text-slate-400">
-                                <span><i class="fa-regular fa-calendar mr-1"></i>2025.11.10 ~ 11.25</span>
-                                <span class="text-amber-400 font-semibold">기록 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
-                            </div>
-                        </div>
+                    <div id="mwj-teams-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- 동적 팀 카드 렌더링 -->
                     </div>
                 </div>
 
@@ -158,105 +141,18 @@
                                 <i class="fa-solid fa-arrow-left mr-1.5"></i>목록으로
                             </button>
                             <div>
-                                <h2 class="text-lg font-bold text-white">2025 ALL Season 1 - 도현팀 상세 아카이브</h2>
-                                <span class="text-xs text-amber-400 font-medium">총 스크림 통산: 14승 8패</span>
+                                <h2 id="detail-team-title" class="text-lg font-bold text-white">멸망전 상세 아카이브</h2>
+                                <span class="text-xs text-amber-400 font-medium">상세 경기 기록</span>
                             </div>
                         </div>
+                        <button onclick="openAddMatchModal()" id="add-match-btn" class="hidden px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all">
+                            <i class="fa-solid fa-plus mr-1"></i>경기 기록 추가
+                        </button>
                     </div>
 
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-4">
-                            <div class="flex items-center gap-2">
-                                <span class="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold px-2.5 py-1 rounded-lg">대회 본선 8강</span>
-                                <h3 class="text-lg font-bold text-white">[본선 1일차] 25.11.15 토</h3>
-                                <span class="text-xs text-slate-400 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">결과: 2승 1패</span>
-                            </div>
-                            <a href="#" target="_blank" class="inline-flex items-center text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl border border-rose-500/20 transition-all">
-                                <i class="fa-solid fa-play-circle mr-1.5"></i>풀영상 다시보기
-                            </a>
-                        </div>
-
-                        <!-- 멸망전 밴픽 표 (포지션 중앙, 진영 선택 가능, 칸 분리) -->
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center">
-                                <div class="flex space-x-2">
-                                    <button onclick="switchMatchSubTab(1)" id="match-subtab-1" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">19시 1세트 (승)</button>
-                                    <button onclick="switchMatchSubTab(2)" id="match-subtab-2" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-950">20시 2세트 (패)</button>
-                                </div>
-                                <div class="text-xs text-slate-400 font-medium bg-slate-950 px-3 py-1 rounded-lg border border-slate-800">
-                                    진영 선택: <span id="current-side-label" class="text-blue-400 font-bold">BLUE TEAM (승리)</span>
-                                </div>
-                            </div>
-
-                            <div class="overflow-x-auto custom-scrollbar">
-                                <table class="w-full text-center border-collapse min-w-[650px]">
-                                    <thead>
-                                        <tr class="text-xs text-slate-400 border-b border-slate-800 bg-slate-950/50">
-                                            <th class="py-2.5 text-blue-400 font-bold w-5/12" colspan="3">BLUE TEAM (승리)</th>
-                                            <th class="py-2.5 font-bold text-slate-400 w-2/12">포지션</th>
-                                            <th class="py-2.5 text-rose-400 font-bold w-5/12" colspan="3">RED TEAM (패배)</th>
-                                        </tr>
-                                        <tr class="text-[11px] text-slate-500 border-b border-slate-800/60 bg-slate-950/30">
-                                            <th class="py-1">스트리머</th>
-                                            <th class="py-1">티어/포인트</th>
-                                            <th class="py-1">챔피언</th>
-                                            <th class="py-1">-</th>
-                                            <th class="py-1">챔피언</th>
-                                            <th class="py-1">티어/포인트</th>
-                                            <th class="py-1">스트리머</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-800/40 text-xs sm:text-sm">
-                                        <tr>
-                                            <td class="py-2.5 font-semibold text-white">박사장</td>
-                                            <td class="text-slate-400 text-xs">[E] 31.2</td>
-                                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">카밀</span></td>
-                                            <td class="font-bold text-slate-400 bg-slate-950/40">탑</td>
-                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">모데카이저</span></td>
-                                            <td class="text-slate-400 text-xs">[P] 24.3</td>
-                                            <td class="font-semibold text-white">염보성</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="py-2.5 font-semibold text-white">저라뎃</td>
-                                            <td class="text-slate-400 text-xs">[C] 63.0</td>
-                                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">케인</span></td>
-                                            <td class="font-bold text-slate-400 bg-slate-950/40">정글</td>
-                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">사일러스</span></td>
-                                            <td class="text-slate-400 text-xs">[C] 68.0</td>
-                                            <td class="font-semibold text-white">클리드</td>
-                                        </tr>
-                                        <tr class="bg-amber-500/5">
-                                            <td class="py-2.5 font-bold text-amber-400">도현 ⭐</td>
-                                            <td class="text-slate-400 text-xs">[P] 31.5</td>
-                                            <td><span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-xs">멜</span></td>
-                                            <td class="font-bold text-amber-400 bg-slate-950/40">미드</td>
-                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">사이온</span></td>
-                                            <td class="text-slate-400 text-xs">[S] 10.0</td>
-                                            <td class="font-semibold text-white">박이언</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="py-2.5 font-semibold text-white">맛종욱</td>
-                                            <td class="text-slate-400 text-xs">[E] 22.1</td>
-                                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">바루스</span></td>
-                                            <td class="font-bold text-slate-400 bg-slate-950/40">원딜</td>
-                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">유나라</span></td>
-                                            <td class="text-slate-400 text-xs">[C] 60.4</td>
-                                            <td class="font-semibold text-white">바밤바</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="py-2.5 font-semibold text-white">한아밍</td>
-                                            <td class="text-slate-400 text-xs">[E] 36.0</td>
-                                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">레오나</span></td>
-                                            <td class="font-bold text-slate-400 bg-slate-950/40">서폿</td>
-                                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">유미</span></td>
-                                            <td class="text-slate-400 text-xs">[G] 21.0</td>
-                                            <td class="font-semibold text-white">애교용</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
+                    <!-- 경기별 상세 리스트 구역 -->
+                    <div id="mwj-matches-container" class="space-y-6">
+                        <!-- 동적 경기 카드 렌더링 -->
                     </div>
                 </div>
 
@@ -265,7 +161,7 @@
         </main>
     </div>
 
-    <!-- 하단 푸터 (요청하신 문구 및 제작자 표기 반영) -->
+    <!-- 하단 푸터 -->
     <footer class="bg-slate-900 border-t border-slate-800 py-4 px-4 sm:px-6 lg:px-8 mt-12">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
             <div>본 사이트는 비공식 전적 정리 사이트이므로 일부 누락이나 오류가 있을 수 있습니다.</div>
@@ -273,15 +169,15 @@
         </div>
     </footer>
 
-    <!-- 기록 추가 모달 (관리자 전용) -->
+    <!-- 게임 전적 추가 모달 -->
     <div id="add-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
             <h3 class="text-lg font-bold text-white"><span id="modal-game-title">VALORANT</span> 전적 추가 (관리자)</h3>
-            <div class="space-y-3 text-xs">
+            <div class="space-y-3 text-sm">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="text-slate-400 block mb-1">유형</label>
-                        <select id="m-type" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                        <select id="m-type" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
                             <option value="내전">내전</option>
                             <option value="CK">CK</option>
                             <option value="랜드">랜드</option>
@@ -290,28 +186,26 @@
                     </div>
                     <div>
                         <label class="text-slate-400 block mb-1">날짜</label>
-                        <input type="text" id="m-date" placeholder="2025.11.21" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                        <input type="text" id="m-date" placeholder="2025.11.21" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
                     </div>
                 </div>
                 <div>
                     <label class="text-slate-400 block mb-1">밸런스 (상대 스트리머 등)</label>
-                    <input type="text" id="m-balance" placeholder="예: 도현팀 vs 이상호팀" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                    <input type="text" id="m-balance" placeholder="예: 도현팀 vs 이상호팀" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
                 </div>
                 <div id="m-game-specific-fields" class="space-y-3">
-                    <!-- 종목별 동적 필드 채워짐 -->
+                    <!-- 동적 필드 -->
                 </div>
                 <div>
-                    <label class="text-slate-400 block mb-1">전체 멤버 (상세보기용 쉼표 구분)</label>
-                    <input type="text" id="m-members" placeholder="도현, 킴성태, 괴물쥐, 피넛, ..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
+                    <label class="text-slate-400 block mb-1">참여 멤버 (여러 줄 입력 가능)</label>
+                    <textarea id="m-members" rows="4" placeholder="도현&#10;킴성태&#10;괴물쥐&#10;피넛..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar"></textarea>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-slate-400 block mb-1">승패 여부</label>
-                        <select id="m-result" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2">
-                            <option value="WIN">WIN (승리)</option>
-                            <option value="LOSE">LOSE (패배)</option>
-                        </select>
-                    </div>
+                <div>
+                    <label class="text-slate-400 block mb-1">승패 여부</label>
+                    <select id="m-result" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                        <option value="WIN">WIN (승리)</option>
+                        <option value="LOSE">LOSE (패배)</option>
+                    </select>
                 </div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
@@ -321,45 +215,91 @@
         </div>
     </div>
 
+    <!-- 멸망전 팀 추가/수정 모달 -->
+    <div id="mwj-team-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="text-lg font-bold text-white">멸망전 팀 관리</h3>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="text-slate-400 block mb-1">팀 이름</label>
+                    <input type="text" id="t-name" placeholder="도현팀 (승리 요정들)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                </div>
+                <div>
+                    <label class="text-slate-400 block mb-1">로고 텍스트 (2~3글자)</label>
+                    <input type="text" id="t-logo" placeholder="DH" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                </div>
+                <div>
+                    <label class="text-slate-400 block mb-1">시즌 및 성적 설명</label>
+                    <input type="text" id="t-desc" placeholder="2025 ALL Season 1 / 준우승 🥈" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                </div>
+                <div>
+                    <label class="text-slate-400 block mb-1">기간</label>
+                    <input type="text" id="t-period" placeholder="2025.11.10 ~ 11.25" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
+                <button onclick="closeAddTeamModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all text-xs">취소</button>
+                <button onclick="saveTeam()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl transition-all text-xs">저장하기</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 스크립트 -->
     <script>
-        // 전적 데이터 샘플 (가로형 알찬 구조 및 다른 스트리머 밸런스 포함)
+        // 전적 데이터 샘플
         let mockData = {
             val: [
                 { 
                     id: 1, type: "CK", date: "2025.11.20", balance: "도현팀 vs 이상호팀", 
                     map: "헤이븐", agent: "제트", acs: 312, kda: "24 / 12 / 5", result: "WIN", score: "13 : 9", 
-                    members: "도현, 이상호, 뜨삭, 손오봉, 김블루, 눈을감자, 푸린, 다주, 서넹, 공파리파" 
-                },
-                { 
-                    id: 2, type: "내전", date: "2025.11.18", balance: "도현팀 vs 김계란팀", 
-                    map: "어센트", agent: "소바", acs: 198, kda: "14 / 15 / 11", result: "LOSE", score: "10 : 13", 
-                    members: "도현, 김계란, 푸린, 릴카, 풍월량, 침착맨, 주펄, 곽튜브, 빠니보틀, 승우아빠" 
+                    members: "도현\n이상호\n뜨삭\n손오봉\n김블루\n눈을감자\n푸린\n다주\n서넹\n공파리파" 
                 }
             ],
             lol: [
                 { 
                     id: 1, type: "CK", date: "2025.11.19", balance: "도현스쿼드 vs 저라뎃스쿼드", 
                     position: "미드", champion: "아칼리", kda: "10 / 2 / 6", result: "WIN", 
-                    members: "도현, 저라뎃, 박사장, 앰비션, 울프, 칸, 따효니, 철구, 염보성, 감스트" 
-                },
-                { 
-                    id: 2, type: "랜드", date: "2025.11.16", balance: "도현캠프 vs 민교캠프", 
-                    position: "미드", champion: "오리아나", kda: "3 / 5 / 8", result: "LOSE", 
-                    members: "도현, 김민교, 이상호, 기인, 룰러, 쵸비, 페이커, 쇼메이커, 베릴, 케리아" 
+                    members: "도현\n저라뎃\n박사장\n앰비션\n울프\n칸\n따효니\n철구\n염보성\n감스트" 
                 }
             ],
             pubg: [
                 { 
                     id: 1, type: "내전", date: "2025.11.17", balance: "도현스쿼드 vs 킴성태스쿼드", 
                     targetKills: "팀 40킬", memberKills: "도현: 30 (40-10)", totalScore: "1위 (65점)", result: "WIN", 
-                    members: "도현, 킴성태, 싸패, 에스카, 블랙워크, 주스텟, 섹시피그, 윤루트, 기스코, 실바" 
+                    members: "도현\n킴성태\n싸패\n에스카\n블랙워크\n주스텟\n섹시피그\n윤루트\n기스코\n실바" 
                 }
             ]
         };
 
+        // 멸망전 팀 데이터 샘플
+        let mwjTeams = [
+            {
+                id: 'team1', name: '도현팀 (승리 요정들)', logo: 'DH', desc: '최종 성적: 준우승 🥈', period: '2025.11.10 ~ 11.25', seasonTitle: '2025 ALL Season 1',
+                matches: [
+                    {
+                        id: 1, category: '본선 8강', date: '25.11.15 토', resultSummary: '2승 1패', vod: '#', side: 'BLUE', setNum: '19시 1세트', matchResult: 'WIN',
+                        blueTeam: [
+                            { pos: '탑', name: '박사장', tier: 'E 31.2', champ: '카밀' },
+                            { pos: '정글', name: '저라뎃', tier: 'C 63.0', champ: '케인' },
+                            { pos: '미드', name: '도현', tier: 'P 31.5', champ: '멜' },
+                            { pos: '원딜', name: '맛종욱', tier: 'E 22.1', champ: '바루스' },
+                            { pos: '서폿', name: '한아밍', tier: 'E 36.0', champ: '레오나' }
+                        ],
+                        redTeam: [
+                            { pos: '탑', name: '염보성', tier: 'P 24.3', champ: '모데카이저' },
+                            { pos: '정글', name: '클리드', tier: 'C 68.0', champ: '사일러스' },
+                            { pos: '미드', name: '박이언', tier: 'S 10.0', champ: '사이온' },
+                            { pos: '원딜', name: '바밤바', tier: 'C 60.4', champ: '유나라' },
+                            { pos: '서폿', name: '애교용', tier: 'G 21.0', champ: '유미' }
+                        ]
+                    }
+                ]
+            }
+        ];
+
         let currentGameTab = 'val';
         let isAdmin = false;
+        let currentSelectedTeamId = null;
 
         // 관리자 모드 토글
         function toggleAdminMode() {
@@ -367,17 +307,20 @@
             const btn = document.getElementById('admin-mode-btn');
             const addBtn = document.getElementById('add-record-btn');
             const addMwjBtn = document.getElementById('add-mwj-btn');
+            const addMatchBtn = document.getElementById('add-match-btn');
 
             if(isAdmin) {
                 btn.className = "px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border border-emerald-500 transition-all";
                 btn.innerHTML = '<i class="fa-solid fa-unlock mr-1"></i>관리자 ON';
                 addBtn.classList.remove('hidden');
                 addMwjBtn.classList.remove('hidden');
+                addMatchBtn.classList.remove('hidden');
             } else {
                 btn.className = "px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 transition-all";
                 btn.innerHTML = '<i class="fa-solid fa-lock mr-1"></i>관리자 OFF';
                 addBtn.classList.add('hidden');
                 addMwjBtn.classList.add('hidden');
+                addMatchBtn.classList.add('hidden');
             }
         }
 
@@ -398,10 +341,11 @@
                 mwjSec.classList.remove('hidden');
                 btnMwj.className = "px-4 py-2 rounded-lg text-sm font-bold transition-all bg-amber-600 text-white shadow-lg shadow-amber-500/20";
                 btnHistory.className = "px-4 py-2 rounded-lg text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50";
+                renderMwjTeams();
             }
         }
 
-        // 게임 종목 탭 전환 (영어 명칭 및 아이콘 제거)
+        // 게임 종목 탭 전환
         function switchGameTab(game) {
             currentGameTab = game;
             ['val', 'lol', 'pubg'].forEach(g => {
@@ -416,7 +360,7 @@
             renderRecords();
         }
 
-        // 전적 카드 렌더링 (가로형 구조, 연하늘/연분홍 승패 배경색 반영)
+        // 전적 카드 렌더링 (배경색만 변경, 글자 크기 키움, 줄바꿈 유지)
         function renderRecords() {
             const listEl = document.getElementById('record-list');
             const data = mockData[currentGameTab];
@@ -443,15 +387,18 @@
 
             filtered.forEach(item => {
                 const isWin = item.result === 'WIN';
-                // 승리 시 연하늘색(#e0f2fe / 투명도), 패배 시 연분홍색(#ffe4e6 / 투명도) 적용
+                // 승리 시 연하늘색, 패배 시 연분홍색 카드 배경 적용 (내부 구성요소 색상은 고정)
                 const bgStyle = isWin ? 'bg-sky-950/40 border-sky-500/40' : 'bg-rose-950/30 border-rose-500/40';
                 const badgeColor = isWin ? 'bg-sky-500/20 text-sky-300 border-sky-500/30' : 'bg-rose-500/20 text-rose-300 border-rose-500/30';
                 
                 let cardHtml = '';
 
+                // 줄바꿈(<br>) 처리를 위한 변환
+                const formattedMembers = item.members ? item.members.replace(/\n/g, '<br>') : '';
+
                 if(currentGameTab === 'val') {
                     cardHtml = `
-                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md ${bgStyle}">
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md text-base ${bgStyle}">
                             <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
                                 <div class="flex items-center gap-3 flex-wrap">
                                     <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
@@ -463,8 +410,8 @@
                                         <span class="font-bold text-white">${item.map}</span>
                                         <span class="bg-slate-900/60 text-rose-300 px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-700/50">${item.agent}</span>
                                         ${item.acs ? `<span class="text-xs text-amber-400 font-bold">ACS ${item.acs}</span>` : ''}
-                                        <span class="text-white font-bold">KDA: ${item.kda}</span>
-                                        <span class="text-xs text-slate-300">스코어: ${item.score}</span>
+                                        <span class="text-white font-bold">${item.kda}</span>
+                                        <span class="text-xs text-slate-300">${item.score}</span>
                                     </div>
                                     <div class="flex items-center gap-3">
                                         <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
@@ -474,13 +421,13 @@
                             </summary>
                             <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
                                 <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
-                                <div class="text-white font-medium bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">${item.members}</div>
+                                <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
                             </div>
                         </details>
                     `;
                 } else if(currentGameTab === 'lol') {
                     cardHtml = `
-                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md ${bgStyle}">
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md text-base ${bgStyle}">
                             <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
                                 <div class="flex items-center gap-3 flex-wrap">
                                     <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
@@ -491,7 +438,7 @@
                                     <div class="flex items-center gap-3 text-sm">
                                         <span class="bg-slate-900/60 text-indigo-300 px-2.5 py-1 rounded-lg text-xs font-semibold border border-slate-700/50">${item.position}</span>
                                         <span class="text-indigo-400 font-bold">${item.champion}</span>
-                                        <span class="text-white font-bold">KDA: ${item.kda}</span>
+                                        <span class="text-white font-bold">${item.kda}</span>
                                     </div>
                                     <div class="flex items-center gap-3">
                                         <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
@@ -501,13 +448,13 @@
                             </summary>
                             <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
                                 <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
-                                <div class="text-white font-medium bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">${item.members}</div>
+                                <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
                             </div>
                         </details>
                     `;
                 } else if(currentGameTab === 'pubg') {
                     cardHtml = `
-                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md ${bgStyle}">
+                        <details class="group border rounded-2xl overflow-hidden transition-all shadow-md text-base ${bgStyle}">
                             <summary class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer list-none select-none gap-3">
                                 <div class="flex items-center gap-3 flex-wrap">
                                     <span class="text-xs px-2.5 py-1 rounded-lg font-bold border ${badgeColor}">${item.type}</span>
@@ -518,7 +465,7 @@
                                     <div class="flex items-center gap-3 text-sm">
                                         <span class="text-amber-400 font-bold">목표: ${item.targetKills}</span>
                                         <span class="text-xs text-slate-300 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-slate-700/50">${item.memberKills}</span>
-                                        <span class="text-white font-bold">최종: ${item.totalScore}</span>
+                                        <span class="text-white font-bold">${item.totalScore}</span>
                                     </div>
                                     <div class="flex items-center gap-3">
                                         <span class="text-sm font-black ${isWin ? 'text-sky-400' : 'text-rose-400'}">${item.result}</span>
@@ -528,7 +475,7 @@
                             </summary>
                             <div class="px-5 py-3 border-t border-slate-800/50 bg-slate-950/60 text-xs text-slate-300 flex flex-col gap-1.5">
                                 <span class="text-slate-400 font-bold">참여 멤버 전체 목록:</span>
-                                <div class="text-white font-medium bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">${item.members}</div>
+                                <div class="text-white font-medium bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">${formattedMembers}</div>
                             </div>
                         </details>
                     `;
@@ -542,7 +489,7 @@
             renderRecords();
         }
 
-        // 모달 관리
+        // 게임 전적 추가 모달 열기
         function openAddRecordModal() {
             document.getElementById('modal-game-title').innerText = currentGameTab.toUpperCase();
             const specificFields = document.getElementById('m-game-specific-fields');
@@ -550,29 +497,29 @@
             if(currentGameTab === 'val') {
                 specificFields.innerHTML = `
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-slate-400 block mb-1">맵</label><input type="text" id="m-map" placeholder="헤이븐" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
-                        <div><label class="text-slate-400 block mb-1">요원</label><input type="text" id="m-agent" placeholder="제트" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">맵</label><input type="text" id="m-map" placeholder="헤이븐" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">요원</label><input type="text" id="m-agent" placeholder="제트" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                     </div>
                     <div class="grid grid-cols-3 gap-3">
-                        <div><label class="text-slate-400 block mb-1">ACS</label><input type="number" id="m-acs" placeholder="312" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
-                        <div><label class="text-slate-400 block mb-1">KDA</label><input type="text" id="m-kda" placeholder="24/12/5" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
-                        <div><label class="text-slate-400 block mb-1">스코어</label><input type="text" id="m-score" placeholder="13 : 9" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">ACS</label><input type="number" id="m-acs" placeholder="312" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">KDA</label><input type="text" id="m-kda" placeholder="24/12/5" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">스코어</label><input type="text" id="m-score" placeholder="13 : 9" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                     </div>
                 `;
             } else if(currentGameTab === 'lol') {
                 specificFields.innerHTML = `
                     <div class="grid grid-cols-3 gap-3">
-                        <div><label class="text-slate-400 block mb-1">포지션</label><input type="text" id="m-position" placeholder="미드" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
-                        <div><label class="text-slate-400 block mb-1">챔피언</label><input type="text" id="m-champion" placeholder="아칼리" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
-                        <div><label class="text-slate-400 block mb-1">KDA</label><input type="text" id="m-kda" placeholder="10/2/6" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">포지션</label><input type="text" id="m-position" placeholder="미드" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">챔피언</label><input type="text" id="m-champion" placeholder="아칼리" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">KDA</label><input type="text" id="m-kda" placeholder="10/2/6" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                     </div>
                 `;
             } else if(currentGameTab === 'pubg') {
                 specificFields.innerHTML = `
                     <div class="grid grid-cols-3 gap-3">
-                        <div><label class="text-slate-400 block mb-1">목표킬</label><input type="text" id="m-target" placeholder="팀 40킬" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
-                        <div><label class="text-slate-400 block mb-1">순수킬</label><input type="text" id="m-mkills" placeholder="도현: 30(40-10)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
-                        <div><label class="text-slate-400 block mb-1">최종점수</label><input type="text" id="m-score" placeholder="1위 (65점)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2"></div>
+                        <div><label class="text-slate-400 block mb-1">목표킬</label><input type="text" id="m-target" placeholder="팀 40킬" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">순수킬</label><input type="text" id="m-mkills" placeholder="도현: 30(40-10)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                        <div><label class="text-slate-400 block mb-1">최종점수</label><input type="text" id="m-score" placeholder="1위 (65점)" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                     </div>
                 `;
             }
@@ -615,10 +562,44 @@
             alert('새로운 전적이 성공적으로 추가되었습니다!');
         }
 
-        // 멸망전 관련
+        // --- 롤 멸망전 관련 기능 ---
+        function renderMwjTeams() {
+            const grid = document.getElementById('mwj-teams-grid');
+            grid.innerHTML = '';
+
+            mwjTeams.forEach(team => {
+                grid.innerHTML += `
+                    <div onclick="openMwjDetail('${team.id}')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 hover:shadow-xl transition-all cursor-pointer relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/20">
+                            ${team.seasonTitle}
+                        </div>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center font-black text-2xl text-slate-950 shadow-lg group-hover:scale-105 transition-transform">
+                                ${team.logo}
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">${team.name}</h3>
+                                <p class="text-xs text-slate-400">${team.desc}</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-slate-800/80 pt-3 flex justify-between items-center text-xs text-slate-400">
+                            <span><i class="fa-regular fa-calendar mr-1"></i>${team.period}</span>
+                            <span class="text-amber-400 font-semibold">기록 보기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         function openMwjDetail(teamId) {
+            currentSelectedTeamId = teamId;
+            const team = mwjTeams.find(t => t.id === teamId);
+            if(!team) return;
+
+            document.getElementById('detail-team-title').innerText = `${team.seasonTitle} - ${team.name} 상세 아카이브`;
             document.getElementById('mwj-main-view').classList.add('hidden');
             document.getElementById('mwj-detail-view').classList.remove('hidden');
+            renderMwjMatches(team);
         }
 
         function closeMwjDetail() {
@@ -626,17 +607,118 @@
             document.getElementById('mwj-main-view').classList.remove('hidden');
         }
 
-        function switchMatchSubTab(setNum) {
-            [1, 2].forEach(n => {
-                const btn = document.getElementById(`match-subtab-${n}`);
-                if(n === setNum) {
-                    btn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white";
-                } else {
-                    btn.className = "px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-950";
+        function renderMwjMatches(team) {
+            const container = document.getElementById('mwj-matches-container');
+            container.innerHTML = '';
+
+            if(!team.matches || team.matches.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">등록된 경기 기록이 없습니다.</div>`;
+                return;
+            }
+
+            team.matches.forEach(match => {
+                const isBlue = match.side === 'BLUE';
+                const sideText = isBlue ? 'BLUE TEAM (승리)' : 'RED TEAM (패배)';
+                const sideColor = isBlue ? 'text-sky-400' : 'text-rose-400';
+
+                let blueRows = '';
+                let redRows = '';
+
+                for(let i=0; i<5; i++) {
+                    const b = match.blueTeam[i] || { pos: '-', name: '-', tier: '-', champ: '-' };
+                    const r = match.redTeam[i] || { pos: '-', name: '-', tier: '-', champ: '-' };
+                    
+                    blueRows += `
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="py-2.5 font-semibold text-white">${b.name}</td>
+                            <td class="text-slate-400 text-xs">${b.tier}</td>
+                            <td><span class="bg-slate-800 text-blue-300 px-2 py-0.5 rounded text-xs">${b.champ}</span></td>
+                            <td class="font-bold text-slate-400 bg-slate-950/40">${b.pos}</td>
+                            <td><span class="bg-slate-800 text-rose-300 px-2 py-0.5 rounded text-xs">${r.champ}</span></td>
+                            <td class="text-slate-400 text-xs">${r.tier}</td>
+                            <td class="font-semibold text-white">${r.name}</td>
+                        </tr>
+                    `;
                 }
+
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-4">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold px-2.5 py-1 rounded-lg">${match.category}</span>
+                                <h3 class="text-lg font-bold text-white">${match.date}</h3>
+                                <span class="text-xs text-slate-400 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">결과: ${match.resultSummary}</span>
+                            </div>
+                            <a href="${match.vod}" target="_blank" class="inline-flex items-center text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl border border-rose-500/20 transition-all">
+                                <i class="fa-solid fa-play-circle mr-1.5"></i>풀영상 다시보기
+                            </a>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">${match.setNum}</div>
+                                <div class="text-xs text-slate-400 font-medium bg-slate-950 px-3 py-1 rounded-lg border border-slate-800">
+                                    선택 진영: <span class="${sideColor} font-bold">${sideText}</span>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto custom-scrollbar">
+                                <table class="w-full text-center border-collapse min-w-[650px]">
+                                    <thead>
+                                        <tr class="text-xs text-slate-400 border-b border-slate-800 bg-slate-950/50">
+                                            <th class="py-2.5 text-blue-400 font-bold w-5/12" colspan="3">BLUE TEAM</th>
+                                            <th class="py-2.5 font-bold text-slate-400 w-2/12">포지션</th>
+                                            <th class="py-2.5 text-rose-400 font-bold w-5/12" colspan="3">RED TEAM</th>
+                                        </tr>
+                                        <tr class="text-[11px] text-slate-500 border-b border-slate-800/60 bg-slate-950/30">
+                                            <th class="py-1">스트리머</th>
+                                            <th class="py-1">티어/포인트</th>
+                                            <th class="py-1">챔피언</th>
+                                            <th class="py-1">-</th>
+                                            <th class="py-1">챔피언</th>
+                                            <th class="py-1">티어/포인트</th>
+                                            <th class="py-1">스트리머</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/40 text-xs sm:text-sm">
+                                        ${blueRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
-            document.getElementById('current-side-label').innerText = setNum === 1 ? "BLUE TEAM (승리)" : "RED TEAM (패배)";
-            document.getElementById('current-side-label').className = setNum === 1 ? "text-sky-400 font-bold" : "text-rose-400 font-bold";
+        }
+
+        function openAddTeamModal() {
+            document.getElementById('mwj-team-modal').classList.remove('hidden');
+        }
+
+        function closeAddTeamModal() {
+            document.getElementById('mwj-team-modal').classList.add('hidden');
+        }
+
+        function saveTeam() {
+            const name = document.getElementById('t-name').value || '새로운 팀';
+            const logo = document.getElementById('t-logo').value || 'NEW';
+            const desc = document.getElementById('t-desc').value || '성적 미정';
+            const period = document.getElementById('t-period').value || '2025.11.01 ~ 11.15';
+
+            mwjTeams.push({
+                id: 'team_' + Date.now(),
+                name, logo, desc, period,
+                seasonTitle: '2025 SOOP 멸망전',
+                matches: []
+            });
+
+            renderMwjTeams();
+            closeAddTeamModal();
+            alert('새로운 멸망전 팀이 추가되었습니다!');
+        }
+
+        function openAddMatchModal() {
+            alert('관리자 모드: 경기 기록 추가 기능은 추후 확장 가능합니다. 현재 기본 샘플 데이터가 렌더링되어 있습니다.');
         }
 
         window.onload = () => {
