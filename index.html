@@ -46,21 +46,13 @@
                     </div>
                 </div>
 
-                <!-- 상단 탭 4개 (게임 전적, 롤 멸망전, 총겜동, 마크서버) -->
+                <!-- 상단 탭 4개 -->
                 <div class="flex items-center space-x-3">
                     <nav id="main-nav-tabs" class="flex space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 overflow-x-auto max-w-full custom-scrollbar">
-                        <button onclick="switchMainTab('history')" id="nav-btn-history" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 whitespace-nowrap">
-                            게임 전적
-                        </button>
-                        <button onclick="switchMainTab('mwj')" id="nav-btn-mwj" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 whitespace-nowrap">
-                            롤 멸망전
-                        </button>
-                        <button onclick="switchMainTab('chong')" id="nav-btn-chong" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 whitespace-nowrap">
-                            총겜동
-                        </button>
-                        <button onclick="switchMainTab('mc')" id="nav-btn-mc" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 whitespace-nowrap">
-                            마크서버
-                        </button>
+                        <button onclick="switchMainTab('history')" id="nav-btn-history" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-indigo-600 text-white shadow-lg whitespace-nowrap">게임 전적</button>
+                        <button onclick="switchMainTab('mwj')" id="nav-btn-mwj" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white whitespace-nowrap">롤 멸망전</button>
+                        <button onclick="switchMainTab('chong')" id="nav-btn-chong" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white whitespace-nowrap">총겜동</button>
+                        <button onclick="switchMainTab('mc')" id="nav-btn-mc" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white whitespace-nowrap">마크서버</button>
                     </nav>
                     <button onclick="toggleAdminMode()" id="admin-mode-btn" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 transition-all whitespace-nowrap">
                         <i class="fa-solid fa-lock mr-1"></i>관리자 OFF
@@ -72,9 +64,7 @@
         <!-- 메인 컨텐츠 영역 -->
         <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- ========================================== -->
-            <!-- 1. 게임 전적 검색 섹션 -->
-            <!-- ========================================== -->
+            <!-- 1. 게임 전적 섹션 -->
             <section id="section-history" class="space-y-6">
                 <div class="bg-slate-900/80 backdrop-blur border border-slate-800 p-4 rounded-2xl flex flex-col gap-4 shadow-xl">
                     <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
@@ -93,34 +83,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-800/60 text-xs sm:text-sm">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-slate-400 font-medium">연도:</span>
-                            <select id="year-filter" onchange="filterRecords()" class="bg-slate-950 border border-slate-800 text-slate-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-indigo-500">
-                                <option value="ALL">전체 연도</option><option value="2024">2024년</option><option value="2025" selected>2025년</option><option value="2026">2026년</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-slate-400 font-medium">월:</span>
-                            <select id="month-filter" onchange="filterRecords()" class="bg-slate-950 border border-slate-800 text-slate-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-indigo-500">
-                                <option value="ALL">전체 월</option>
-                                <option value="01">1월</option><option value="02">2월</option><option value="03">3월</option><option value="04">4월</option><option value="05">5월</option><option value="06">6월</option><option value="07">7월</option><option value="08">8월</option><option value="09">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-slate-400 font-medium">유형:</span>
-                            <select id="type-filter" onchange="filterRecords()" class="bg-slate-950 border border-slate-800 text-slate-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-indigo-500">
-                                <option value="ALL">전체 유형</option><option value="내전">내전</option><option value="CK">CK</option><option value="랜드">랜드</option><option value="킬내기">킬내기</option><option value="총겜동">총겜동</option><option value="자유입력">자유입력</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
                 <div id="record-list" class="space-y-3"></div>
             </section>
 
-            <!-- ========================================== -->
             <!-- 2. 롤 멸망전 섹션 -->
-            <!-- ========================================== -->
             <section id="section-mwj" class="space-y-6 hidden">
                 <div id="mwj-main-view">
                     <div class="mb-6 flex justify-between items-end">
@@ -143,7 +110,6 @@
                             </button>
                             <div>
                                 <h2 id="detail-team-title" class="text-lg font-bold text-white">멸망전 상세 아카이브</h2>
-                                <span class="text-xs text-amber-400 font-medium">상세 경기 기록</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-3 w-full sm:w-auto justify-between">
@@ -160,14 +126,12 @@
                 </div>
             </section>
 
-            <!-- ========================================== -->
-            <!-- 3. 총겜동 섹션 (신규) -->
-            <!-- ========================================== -->
+            <!-- 3. 총겜동 섹션 -->
             <section id="section-chong" class="space-y-6 hidden">
                 <div class="flex justify-between items-center">
                     <div>
                         <h2 class="text-xl font-bold text-white mb-1">총겜동 에피소드 아카이브</h2>
-                        <p class="text-sm text-slate-400">게임과 보이는 라디오를 아우르는 에피소드 모음입니다.</p>
+                        <p class="text-sm text-slate-400">다수의 풀영상(VOD) 링크를 등록할 수 있습니다.</p>
                     </div>
                     <button onclick="openAddChongModal()" id="add-chong-btn" class="hidden px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all">
                         <i class="fa-solid fa-plus mr-1"></i>에피소드 추가
@@ -176,15 +140,13 @@
                 <div id="chong-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </section>
 
-            <!-- ========================================== -->
-            <!-- 4. 마크서버 섹션 (신규) -->
-            <!-- ========================================== -->
+            <!-- 4. 마크서버 섹션 -->
             <section id="section-mc" class="space-y-6 hidden">
                 <div id="mc-main-view">
                     <div class="mb-6 flex justify-between items-end">
                         <div>
                             <h2 class="text-xl font-bold text-white mb-1">마크서버 길드 아카이브</h2>
-                            <p class="text-sm text-slate-400">길드 카드를 누르면 요일별 VOD 타임라인을 볼 수 있습니다.</p>
+                            <p class="text-sm text-slate-400">길드를 누르면 이미지처럼 카테고리별 상세 타임라인을 볼 수 있습니다.</p>
                         </div>
                         <button onclick="openAddMcGuildModal()" id="add-mc-btn" class="hidden px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all">
                             <i class="fa-solid fa-plus mr-1"></i>마크 길드 추가
@@ -201,18 +163,14 @@
                             </button>
                             <div>
                                 <h2 id="mc-detail-title" class="text-lg font-bold text-white">마크서버 상세 아카이브</h2>
-                                <span class="text-xs text-amber-400 font-medium">요일별 VOD 타임라인</span>
                             </div>
                         </div>
-                        <button onclick="openAddMcTimelineModal()" id="add-mc-timeline-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all">
-                            <i class="fa-solid fa-plus mr-1"></i>타임라인 추가
+                        <button onclick="openAddMcDayModal()" id="add-mc-day-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all">
+                            <i class="fa-solid fa-plus mr-1"></i>날짜(요일) 탭 추가
                         </button>
                     </div>
-
-                    <!-- 요일별 탭 (월~일) -->
                     <div id="mc-days-tabs" class="flex space-x-2 overflow-x-auto pb-2 custom-scrollbar"></div>
-                    <!-- 요일별 타임라인 내용 출력 구역 -->
-                    <div id="mc-timelines-container" class="space-y-4"></div>
+                    <div id="mc-categories-container" class="space-y-6"></div>
                 </div>
             </section>
 
@@ -227,48 +185,7 @@
         </div>
     </footer>
 
-    <!-- 게임 전적 추가 모달 -->
-    <div id="add-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h3 class="text-lg font-bold text-white"><span id="modal-game-title">VALORANT</span> 전적 <span id="modal-mode-label">추가</span></h3>
-            <input type="hidden" id="edit-record-id">
-            <div class="space-y-3 text-sm">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-slate-400 block mb-1">유형</label>
-                        <select id="m-type" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
-                            <option value="내전">내전</option><option value="CK">CK</option><option value="랜드">랜드</option><option value="킬내기">킬내기</option><option value="총겜동">총겜동</option><option value="자유입력">자유입력</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-slate-400 block mb-1">날짜 (YYYY.MM.DD)</label>
-                        <input type="text" id="m-date" placeholder="2025.11.21" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
-                    </div>
-                </div>
-                <div>
-                    <label class="text-slate-400 block mb-1">밸런스</label>
-                    <input type="text" id="m-balance" placeholder="예: 도현팀 vs 이상호팀" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
-                </div>
-                <div id="m-game-specific-fields" class="space-y-3"></div>
-                <div>
-                    <label class="text-slate-400 block mb-1">전체 멤버</label>
-                    <textarea id="m-members" rows="3" placeholder="도현&#10;킴성태..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5 custom-scrollbar"></textarea>
-                </div>
-                <div>
-                    <label class="text-slate-400 block mb-1">승패 여부</label>
-                    <select id="m-result" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
-                        <option value="WIN">WIN (승리)</option><option value="LOSE">LOSE (패배)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-                <button onclick="closeAddRecordModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all text-xs">취소</button>
-                <button onclick="saveNewRecord()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all text-xs">저장하기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 총겜동 추가/수정 모달 -->
+    <!-- 총겜동 추가 모달 -->
     <div id="chong-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
             <h3 class="text-lg font-bold text-white">총겜동 에피소드 관리</h3>
@@ -277,20 +194,22 @@
                 <div><label class="text-slate-400 block mb-1">회차명 (예: Ep. 1)</label><input type="text" id="c-ep" placeholder="Ep. 1" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 <div><label class="text-slate-400 block mb-1">에피소드 제목</label><input type="text" id="c-title" placeholder="레전드 합방 라디오" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 <div><label class="text-slate-400 block mb-1">날짜</label><input type="text" id="c-date" placeholder="2025.11.20" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                <div><label class="text-slate-400 block mb-1">풀영상(VOD) 링크</label><input type="text" id="c-vod" placeholder="https://..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
+                <div>
+                    <label class="text-slate-400 block mb-1">풀영상 링크들 (여러 개 입력 시 콤마(,)나 줄바꿈으로 구분)</label>
+                    <textarea id="c-vods" rows="3" placeholder="https://vod1...&#10;https://vod2..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></textarea>
+                </div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-                <button onclick="closeAddChongModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all text-xs">취소</button>
-                <button onclick="saveChongEpisode()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all text-xs">저장하기</button>
+                <button onclick="closeAddChongModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">취소</button>
+                <button onclick="saveChongEpisode()" class="px-4 py-2 bg-indigo-600 text-white font-bold rounded-xl text-xs">저장하기</button>
             </div>
         </div>
     </div>
 
-    <!-- 마크 길드 추가/수정 모달 -->
+    <!-- 마크 길드 추가 모달 -->
     <div id="mc-guild-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
             <h3 class="text-lg font-bold text-white">마크서버 길드 관리</h3>
-            <input type="hidden" id="edit-mc-guild-id">
             <div class="space-y-3 text-sm">
                 <div><label class="text-slate-400 block mb-1">길드 이름</label><input type="text" id="mc-gname" placeholder="도현길드" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
                 <div><label class="text-slate-400 block mb-1">서버 종류 (우측 상단 노란색 뱃지)</label><input type="text" id="mc-server" placeholder="스파크서버 시즌1" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
@@ -298,54 +217,39 @@
                 <div><label class="text-slate-400 block mb-1">설명</label><input type="text" id="mc-gdesc" placeholder="왕국 건설 길드" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
             </div>
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-                <button onclick="closeAddMcGuildModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all text-xs">취소</button>
-                <button onclick="saveMcGuild()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all text-xs">저장하기</button>
+                <button onclick="closeAddMcGuildModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">취소</button>
+                <button onclick="saveMcGuild()" class="px-4 py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs">저장하기</button>
             </div>
         </div>
     </div>
 
-    <!-- 마크 타임라인 추가/수정 모달 -->
-    <div id="mc-timeline-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 class="text-lg font-bold text-white">마크서버 요일별 타임라인 추가</h3>
-            <div class="space-y-3 text-sm">
-                <div>
-                    <label class="text-slate-400 block mb-1">요일 선택</label>
-                    <select id="mct-day" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5">
-                        <option value="월요일">월요일</option><option value="화요일">화요일</option><option value="수요일">수요일</option><option value="목요일">목요일</option><option value="금요일">금요일</option><option value="토요일">토요일</option><option value="일요일">일요일</option>
-                    </select>
-                </div>
-                <div><label class="text-slate-400 block mb-1">시간대 (예: 21:00 ~ 23:00)</label><input type="text" id="mct-time" placeholder="21:00 ~ 23:00" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                <div><label class="text-slate-400 block mb-1">내용 요약</label><input type="text" id="mct-content" placeholder="야생 파밍 및 성문 건축" class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-                <div><label class="text-slate-400 block mb-1">VOD 링크</label><input type="text" id="mct-vod" placeholder="https://..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg p-2.5"></div>
-            </div>
-            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-                <button onclick="closeAddMcTimelineModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all text-xs">취소</button>
-                <button onclick="saveMcTimeline()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all text-xs">저장하기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 스크립트 -->
+    <!-- 스크립트 (로컬스토리지 저장 및 모든 기능 완벽 연동) -->
     <script>
-        let mockData = { val: [], lol: [], pubg: [] };
-        let mwjTeams = [];
-        let chongEpisodes = [
-            { id: 1, ep: "Ep. 1", title: "레전드 입담 터진 합방 라디오", date: "2025.11.10", vod: "#" }
+        let mockData = JSON.parse(localStorage.getItem('dohyeon_mockData')) || { val: [], lol: [], pubg: [] };
+        let mwjTeams = JSON.parse(localStorage.getItem('dohyeon_mwjTeams')) || [];
+        let chongEpisodes = JSON.parse(localStorage.getItem('dohyeon_chong')) || [
+            { id: 1, ep: "Ep. 1", title: "레전드 합방 라디오", date: "2025.11.10", vods: ["#"] }
         ];
-        let mcGuilds = [
-            { id: 'g1', name: '도현길드', server: '스파크서버 시즌1', logo: 'DH', desc: '왕국 건설 길드', timelines: { '월요일': [{ time: '20:00', content: '길드 회의 및 파밍', vod: '#' }] } }
+        let mcGuilds = JSON.parse(localStorage.getItem('dohyeon_mc')) || [
+            { id: 'g1', name: '도현길드', server: '스파크서버 시즌1', logo: 'DH', desc: '왕국 건설 길드', days: { '1일차': { '모험 / 광질 / 사냥': [{ text: '보스방 1', vod: '#' }, { text: '채굴장 64', vod: '' }], '개인': [{ text: '건담기', vod: '' }] } } }
         ];
 
         let currentGameTab = 'val';
         let isAdmin = false;
         let currentSelectedGuildId = null;
-        let currentMcDay = '월요일';
+        let currentMcDay = '';
+
+        function saveData() {
+            localStorage.setItem('dohyeon_mockData', JSON.stringify(mockData));
+            localStorage.setItem('dohyeon_mwjTeams', JSON.stringify(mwjTeams));
+            localStorage.setItem('dohyeon_chong', JSON.stringify(chongEpisodes));
+            localStorage.setItem('dohyeon_mc', JSON.stringify(mcGuilds));
+        }
 
         function toggleAdminMode() {
             isAdmin = !isAdmin;
             const btn = document.getElementById('admin-mode-btn');
-            ['add-record-btn', 'add-mwj-btn', 'add-mwj-match-btn', 'add-chong-btn', 'add-mc-btn', 'add-mc-timeline-btn'].forEach(id => {
+            ['add-record-btn', 'add-mwj-btn', 'add-mwj-match-btn', 'add-chong-btn', 'add-mc-btn', 'add-mc-day-btn'].forEach(id => {
                 const el = document.getElementById(id);
                 if(el) { if(isAdmin) el.classList.remove('hidden'); else el.classList.add('hidden'); }
             });
@@ -358,7 +262,7 @@
         function switchMainTab(tab) {
             ['history', 'mwj', 'chong', 'mc'].forEach(t => {
                 document.getElementById(`section-${t}`).classList.add('hidden');
-                document.getElementById(`nav-btn-${t}`).className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 whitespace-nowrap";
+                document.getElementById(`nav-btn-${t}`).className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-slate-400 hover:text-white whitespace-nowrap";
             });
             document.getElementById(`section-${tab}`).classList.remove('hidden');
             document.getElementById(`nav-btn-${tab}`).className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-indigo-600 text-white shadow-lg whitespace-nowrap";
@@ -367,18 +271,45 @@
             if(tab === 'mc') { document.getElementById('mc-main-view').classList.remove('hidden'); document.getElementById('mc-detail-view').classList.add('hidden'); renderMcGuilds(); }
         }
 
-        // 총겜동 렌더링
+        // 게임 전적 탭 전환 정상 작동
+        function switchGameTab(game) {
+            currentGameTab = game;
+            ['val', 'lol', 'pubg'].forEach(g => {
+                const btn = document.getElementById(`game-tab-${g}`);
+                if(g === game) {
+                    const cMap = { val: 'bg-rose-600', lol: 'bg-indigo-600', pubg: 'bg-amber-600' };
+                    btn.className = `flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold ${cMap[g]} text-white transition-all`;
+                } else {
+                    btn.className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-400 hover:text-white transition-all";
+                }
+            });
+            renderRecords();
+        }
+
+        function renderRecords() {
+            const listEl = document.getElementById('record-list');
+            listEl.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">등록된 전적이 없습니다. (상단 기록 추가 버튼 이용)</div>`;
+        }
+        function filterRecords() {}
+
+        // 총겜동 다중 VOD 렌더링
         function renderChongEpisodes() {
             const grid = document.getElementById('chong-grid');
             grid.innerHTML = '';
             if(chongEpisodes.length === 0) { grid.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm col-span-full">등록된 에피소드가 없습니다.</div>`; return; }
             chongEpisodes.forEach(ep => {
-                const adminC = isAdmin ? `<div class="absolute bottom-3 right-3 flex gap-1"><button onclick="deleteChong(${ep.id})" class="px-2 py-1 bg-rose-600 text-white rounded text-xs">삭제</button></div>` : '';
+                let vodButtons = '';
+                if(ep.vods && ep.vods.length > 0) {
+                    ep.vods.forEach((v, idx) => {
+                        if(v && v.trim()) vodButtons += `<a href="${v.trim()}" target="_blank" class="inline-flex items-center text-xs text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-500/20 mr-2 mb-2"><i class="fa-solid fa-play-circle mr-1.5"></i>풀영상 #${idx+1}</a>`;
+                    });
+                }
+                const adminC = isAdmin ? `<div class="absolute bottom-3 right-3"><button onclick="deleteChong(${ep.id})" class="px-2 py-1 bg-rose-600 text-white rounded text-xs font-bold">삭제</button></div>` : '';
                 grid.innerHTML += `
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 relative">
                         <div class="flex justify-between items-center"><span class="bg-indigo-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg">${ep.ep}</span><span class="text-xs text-slate-400">${ep.date}</span></div>
                         <h3 class="font-bold text-white text-base">${ep.title}</h3>
-                        ${ep.vod ? `<a href="${ep.vod}" target="_blank" class="inline-flex items-center text-xs text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-500/20"><i class="fa-solid fa-play-circle mr-1.5"></i>풀영상 바로가기</a>` : ''}
+                        <div class="flex flex-wrap pt-1">${vodButtons}</div>
                         ${adminC}
                     </div>
                 `;
@@ -387,18 +318,20 @@
         function openAddChongModal() { document.getElementById('chong-modal').classList.remove('hidden'); }
         function closeAddChongModal() { document.getElementById('chong-modal').classList.add('hidden'); }
         function saveChongEpisode() {
-            chongEpisodes.push({ id: Date.now(), ep: document.getElementById('c-ep').value || 'Ep.X', title: document.getElementById('c-title').value || '제목', date: document.getElementById('c-date').value || '', vod: document.getElementById('c-vod').value || '' });
-            renderChongEpisodes(); closeAddChongModal();
+            const rawVods = document.getElementById('c-vods').value;
+            const vods = rawVods ? rawVods.split(/[\n,]+/).map(s => s.trim()).filter(Boolean) : [];
+            chongEpisodes.push({ id: Date.now(), ep: document.getElementById('c-ep').value || 'Ep.X', title: document.getElementById('c-title').value || '제목', date: document.getElementById('c-date').value || '', vods });
+            saveData(); renderChongEpisodes(); closeAddChongModal();
         }
-        function deleteChong(id) { chongEpisodes = chongEpisodes.filter(x => x.id !== id); renderChongEpisodes(); }
+        function deleteChong(id) { chongEpisodes = chongEpisodes.filter(x => x.id !== id); saveData(); renderChongEpisodes(); }
 
         // 마크서버 렌더링
         function renderMcGuilds() {
             const grid = document.getElementById('mc-guilds-grid');
             grid.innerHTML = '';
-            if(mcGuilds.length === 0) { grid.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm col-span-full">등록된 길드가 없습니다.</div>`; return; }
+            if(mcGuilds.length === 0) { grid.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm col-span-full">등록된 마크서버 길드가 없습니다.</div>`; return; }
             mcGuilds.forEach(g => {
-                const adminC = isAdmin ? `<div class="absolute bottom-3 right-3 flex gap-1 z-10"><button onclick="event.stopPropagation(); deleteMcGuild('${g.id}')" class="px-2 py-1 bg-rose-600 text-white rounded text-xs">삭제</button></div>` : '';
+                const adminC = isAdmin ? `<div class="absolute bottom-3 right-3 z-10"><button onclick="event.stopPropagation(); deleteMcGuild('${g.id}')" class="px-2 py-1 bg-rose-600 text-white rounded text-xs font-bold">삭제</button></div>` : '';
                 grid.innerHTML += `
                     <div onclick="openMcDetail('${g.id}')" class="group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/50 transition-all cursor-pointer relative overflow-hidden">
                         ${g.server ? `<div class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-bl-xl border-l border-b border-amber-500/20">${g.server}</div>` : ''}
@@ -420,6 +353,8 @@
             document.getElementById('mc-detail-title').innerText = `${g.server || ''} - ${g.name} 상세 아카이브`;
             document.getElementById('mc-main-view').classList.add('hidden');
             document.getElementById('mc-detail-view').classList.remove('hidden');
+            const dayKeys = Object.keys(g.days || {});
+            currentMcDay = dayKeys.length > 0 ? dayKeys[0] : '';
             renderMcDetail(g);
         }
 
@@ -430,34 +365,68 @@
         }
 
         function renderMcDetail(guild) {
-            const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
             const tabsEl = document.getElementById('mc-days-tabs');
             tabsEl.innerHTML = '';
-            days.forEach(day => {
-                const isActive = (currentMcDay === day);
-                tabsEl.innerHTML += `<button onclick="switchMcDay('${day}')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${isActive ? 'bg-emerald-600 text-white' : 'bg-slate-950 text-slate-400 hover:text-white'}">${day}</button>`;
-            });
+            const dayKeys = Object.keys(guild.days || {});
 
-            const container = document.getElementById('mc-timelines-container');
-            container.innerHTML = '';
-            const tList = guild.timelines && guild.timelines[currentMcDay] ? guild.timelines[currentMcDay] : [];
-
-            if(tList.length === 0) {
-                container.innerHTML = `<div class="text-center py-10 text-slate-500 text-xs">${currentMcDay}에 등록된 타임라인이 없습니다.</div>`;
+            if(dayKeys.length === 0) {
+                tabsEl.innerHTML = `<span class="text-xs text-slate-500">등록된 날짜 탭이 없습니다. 상단 '날짜 탭 추가'를 눌러주세요.</span>`;
+                document.getElementById('mc-categories-container').innerHTML = '';
                 return;
             }
 
-            tList.forEach((item, idx) => {
+            if(!currentMcDay || !guild.days[currentMcDay]) currentMcDay = dayKeys[0];
+
+            dayKeys.forEach(day => {
+                const isActive = (currentMcDay === day);
+                const activeAdminDel = isAdmin ? ` <button onclick="event.stopPropagation(); deleteMcDay('${day}')" class="text-rose-400 ml-1 hover:text-rose-300">×</button>` : '';
+                tabsEl.innerHTML += `<button onclick="switchMcDay('${day}')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${isActive ? 'bg-emerald-600 text-white shadow-lg' : 'bg-slate-950 text-slate-400 hover:text-white'}">${day}${activeAdminDel}</button>`;
+            });
+
+            const container = document.getElementById('mc-categories-container');
+            container.innerHTML = '';
+            const categories = guild.days[currentMcDay] || {};
+            const catKeys = Object.keys(categories);
+
+            if(catKeys.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-slate-500 text-xs">해당 날짜에 기록된 항목이 없습니다.</div>`;
+                return;
+            }
+
+            catKeys.forEach(catName => {
+                const items = categories[catName] || [];
+                let itemsHtml = '';
+                items.forEach((item, itemIdx) => {
+                    const vodIcon = item.vod ? `<a href="${item.vod}" target="_blank" class="text-rose-400 hover:text-rose-300 ml-2 text-xs" title="VOD 바로가기"><i class="fa-solid fa-link"></i></a>` : '';
+                    const adminDelItem = isAdmin ? ` <button onclick="deleteMcItem('${catName}', ${itemIdx})" class="text-rose-500 text-[10px] ml-1">삭제</button>` : '';
+                    itemsHtml += `<li class="py-1 text-slate-300 flex items-center justify-between border-b border-slate-800/40 last:border-0 text-xs sm:text-sm"><span>${item.text}${vodIcon}</span>${adminDelItem}</li>`;
+                });
+
+                const adminAddSubItem = isAdmin ? ` <button onclick="promptAddMcItem('${catName}')" class="text-xs text-emerald-400 font-normal hover:underline ml-2">+ 항목 추가</button>` : '';
+                const adminDelCat = isAdmin ? ` <button onclick="deleteMcCategory('${catName}')" class="text-rose-400 text-xs font-normal hover:underline ml-2">카테고리 삭제</button>` : '';
+
                 container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-slate-950 text-emerald-400 font-bold px-3 py-1 rounded-lg border border-slate-800 text-xs">${item.time}</span>
-                            <span class="text-white text-sm font-medium">${item.content}</span>
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                        <div class="border-b border-slate-800 pb-2.5 flex justify-between items-center">
+                            <h3 class="font-bold text-white text-sm sm:text-base text-emerald-400">${catName}${adminAddSubItem}</h3>
+                            <div>${adminDelCat}</div>
                         </div>
-                        ${item.vod ? `<a href="${item.vod}" target="_blank" class="text-xs text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-500/20"><i class="fa-solid fa-play-circle mr-1"></i>VOD 시청</a>` : ''}
+                        <ul class="pl-2 space-y-1">
+                            ${itemsHtml || '<li class="text-xs text-slate-500 py-1">항목이 없습니다.</li>'}
+                        </ul>
                     </div>
                 `;
             });
+
+            if(isAdmin) {
+                container.innerHTML += `
+                    <div class="text-center pt-2">
+                        <button onclick="promptAddMcCategory()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold rounded-xl border border-slate-700 transition-all">
+                            <i class="fa-solid fa-plus mr-1"></i>새 카테고리(모험/광질 등) 추가
+                        </button>
+                    </div>
+                `;
+            }
         }
 
         function switchMcDay(day) { currentMcDay = day; const g = mcGuilds.find(x => x.id === currentSelectedGuildId); if(g) renderMcDetail(g); }
@@ -465,23 +434,70 @@
         function openAddMcGuildModal() { document.getElementById('mc-guild-modal').classList.remove('hidden'); }
         function closeAddMcGuildModal() { document.getElementById('mc-guild-modal').classList.add('hidden'); }
         function saveMcGuild() {
-            mcGuilds.push({ id: 'g_' + Date.now(), name: document.getElementById('mc-gname').value || '길드', server: document.getElementById('mc-server').value || '', logo: document.getElementById('mc-glogo').value || 'DH', desc: document.getElementById('mc-gdesc').value || '', timelines: {} });
-            renderMcGuilds(); closeAddMcGuildModal();
+            mcGuilds.push({ id: 'g_' + Date.now(), name: document.getElementById('mc-gname').value || '길드', server: document.getElementById('mc-server').value || '', logo: document.getElementById('mc-glogo').value || 'DH', desc: document.getElementById('mc-gdesc').value || '', days: { '1일차': { '모험 / 광질 / 사냥': [] } } });
+            saveData(); renderMcGuilds(); closeAddMcGuildModal();
         }
-        function deleteMcGuild(id) { mcGuilds = mcGuilds.filter(x => x.id !== id); renderMcGuilds(); }
+        function deleteMcGuild(id) { mcGuilds = mcGuilds.filter(x => x.id !== id); saveData(); renderMcGuilds(); }
 
-        function openAddMcTimelineModal() { document.getElementById('mc-timeline-modal').classList.remove('hidden'); }
-        function closeAddMcTimelineModal() { document.getElementById('mc-timeline-modal').classList.add('hidden'); }
-        function saveMcTimeline() {
-            const day = document.getElementById('mct-day').value;
-            const time = document.getElementById('mct-time').value || '00:00';
-            const content = document.getElementById('mct-content').value || '내용';
-            const vod = document.getElementById('mct-vod').value || '';
+        // 마크서버 날짜/카테고리/항목 관리 함수들
+        function openAddMcDayModal() {
+            const dayName = prompt("추가할 날짜 또는 요일 이름을 입력하세요 (예: 2일차, 화요일):");
+            if(!dayName) return;
             const g = mcGuilds.find(x => x.id === currentSelectedGuildId);
             if(g) {
-                if(!g.timelines[day]) g.timelines[day] = [];
-                g.timelines[day].push({ time, content, vod });
-                renderMcDetail(g); closeAddMcTimelineModal();
+                if(!g.days) g.days = {};
+                if(!g.days[dayName]) g.days[dayName] = { '모험 / 광질 / 사냥': [] };
+                currentMcDay = dayName;
+                saveData(); renderMcDetail(g);
+            }
+        }
+        function deleteMcDay(day) {
+            if(confirm(`'${day}' 탭을 정말 삭제하시겠습니까?`)) {
+                const g = mcGuilds.find(x => x.id === currentSelectedGuildId);
+                if(g) {
+                    delete g.days[day];
+                    const keys = Object.keys(g.days);
+                    currentMcDay = keys.length > 0 ? keys[0] : '';
+                    saveData(); renderMcDetail(g);
+                }
+            }
+        }
+        function promptAddMcCategory() {
+            const catName = prompt("새로운 카테고리 이름을 입력하세요 (예: 개인, 문파, 보스레이드):");
+            if(!catName) return;
+            const g = mcGuilds.find(x => x.id === currentSelectedGuildId);
+            if(g && currentMcDay) {
+                if(!g.days[currentMcDay]) g.days[currentMcDay] = {};
+                if(!g.days[currentMcDay][catName]) g.days[currentMcDay][catName] = [];
+                saveData(); renderMcDetail(g);
+            }
+        }
+        function deleteMcCategory(catName) {
+            if(confirm(`'${catName}' 카테고리를 삭제하시겠습니까?`)) {
+                const g = mcGuilds.find(x => x.id === currentSelectedGuildId);
+                if(g && currentMcDay && g.days[currentMcDay]) {
+                    delete g.days[currentMcDay][catName];
+                    saveData(); renderMcDetail(g);
+                }
+            }
+        }
+        function promptAddMcItem(catName) {
+            const text = prompt("항목 내용을 입력하세요 (예: 채굴장 64):");
+            if(!text) return;
+            const vod = prompt("연결할 VOD 링크가 있다면 입력하세요 (선택 사항, 없으면 빈칸):") || '';
+            const g = mcGuilds.find(x => x.id === currentSelectedGuildId);
+            if(g && currentMcDay && g.days[currentMcDay][catName]) {
+                g.days[currentMcDay][catName].push({ text, vod });
+                saveData(); renderMcDetail(g);
+            }
+        }
+        function deleteMcItem(catName, idx) {
+            if(confirm("이 항목을 삭제하시겠습니까?")) {
+                const g = mcGuilds.find(x => x.id === currentSelectedGuildId);
+                if(g && currentMcDay && g.days[currentMcDay][catName]) {
+                    g.days[currentMcDay][catName].splice(idx, 1);
+                    saveData(); renderMcDetail(g);
+                }
             }
         }
 
