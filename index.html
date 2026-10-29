@@ -375,7 +375,7 @@ function openDetail(idx) {
         <div class="val text-pre">${r.allMembersText}</div>
       </div>`;
   }
-  document.getElementById("mTitle").textContent = `${r.date} ${r.game} (${r.set||'상세'}) 멤버 상세`;
+  document.getElementById("mTitle").textContent = `${r.date || ''} ${r.game} (${r.set||'상세'}) 멤버 상세`;
   document.getElementById("modalContent").innerHTML = html || '<div style="padding:20px;text-align:center;">등록된 멤버 정보가 없습니다.</div>';
   document.getElementById("detailModal").style.display = "flex";
 }
@@ -960,13 +960,13 @@ function renderMinecraft(subId, dayIndex = 0) {
     </div>`;
 }
 
-/* 총겜동 에피소드 넘어가기 완전 수정 */
+/* 총겜동 에피소드 네비게이션 인덱싱 및 연결 완벽 수정 */
 function renderChong(subEp) {
   if (subEp !== null && subEp !== undefined && subEp !== "") {
     const curIdx = CHONG_EPS.findIndex(e => String(e.ep) === String(subEp));
     const epObj = curIdx !== -1 ? CHONG_EPS[curIdx] : CHONG_EPS[0];
     
-    // 배열 순서상 이전/다음 에피소드 자동 매칭
+    // 이전/다음 에피소드 자동 매칭
     const prevEp = curIdx > 0 ? CHONG_EPS[curIdx - 1] : null;
     const nextEp = curIdx !== -1 && curIdx < CHONG_EPS.length - 1 ? CHONG_EPS[curIdx + 1] : null;
 
