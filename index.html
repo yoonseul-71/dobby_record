@@ -37,13 +37,11 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--page); color: var(--page-fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 28px 16px 56px; }
 
-/* 전체 박스 크기 5% 확대 (1040px -> 1090px) */
+/* 전체 컨테이너 5% 확대 적용 (1090px) */
 .wrap { max-width: 1090px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
 a { color: inherit; text-decoration: none; }
 
 header.top { display: flex; justify-content: space-between; align-items: flex-start; }
-
-/* ARCHIVE 글씨체 원래대로 복원 (Barlow Condensed 굵은 이탤릭) */
 h1 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 56px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; }
 h1 em { font-family: var(--font-display); font-style: italic; font-weight: 800; }
 
@@ -118,21 +116,38 @@ td.mono { font-family: var(--font-mono); }
 .nms { display: flex; flex-wrap: wrap; gap: 4px; }
 .nm { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--neutral-bg); }
 
-/* 카드 그리드 스타일 */
+/* 총겜동 탭 보라색 글씨 통일 */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 15px; }
-.card { display: flex; flex-direction: column; gap: 10px; min-height: 120px; padding: 16px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; text-decoration: none; color: var(--page-fg); }
-.card .k { font-family: var(--font-display); font-weight: 800; font-size: 14px; opacity: 0.7; }
+.card { display: flex; flex-direction: column; gap: 8px; min-height: 120px; padding: 18px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; text-decoration: none; color: var(--page-fg); }
+.card .k { font-family: var(--font-display); font-weight: 800; font-size: 32px; color: var(--violet); line-height: 1; }
 .card .ttl { font-size: 18px; font-weight: 700; }
-.card .meta { font-size: 12px; opacity: 0.8; }
+.card .meta { font-size: 12px; color: var(--page-muted); }
+
+/* 총겜동 에피소드 상세 타임라인 & 박스 */
+.ep-detail-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
+@media (max-width: 768px) { .ep-detail-wrap { grid-template-columns: 1fr; } }
+.ep-box { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); }
+.ep-box-title { display: inline-block; padding: 2px 12px; border-radius: 999px; background: var(--violet-bg); color: var(--violet-ink); border: 1px solid var(--violet); font-size: 13px; font-weight: bold; margin-bottom: 14px; }
+.timeline-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.timeline-list li { position: relative; padding-left: 18px; }
+.timeline-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--violet); }
+.timeline-list a { color: var(--violet-ink); font-weight: 500; text-decoration: none; }
+.timeline-list a:hover { text-decoration: underline; }
 
 /* 모달 */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-.modal { background: var(--panel); border-radius: 12px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid var(--line); }
+.modal { background: var(--panel); border-radius: 12px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid var(--line); }
 .modal h3 { margin-top: 0; font-size: 20px; border-bottom: 1px solid var(--line); padding-bottom: 10px; display: flex; justify-content: space-between; }
 .modal .close-btn { cursor: pointer; border: 0; background: transparent; font-size: 20px; }
 .detail-sec { margin-bottom: 16px; }
 .detail-sec label { font-size: 12px; color: var(--page-muted); font-weight: bold; display: block; margin-bottom: 4px; }
-.detail-sec .val { font-size: 14px; }
+.detail-sec .val { font-size: 14px; white-space: pre-wrap; line-height: 1.6; }
+
+/* 배그 전용 멤버 테이블 */
+.pubg-team-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.pubg-team-table th, .pubg-team-table td { border: 1px solid var(--line); padding: 6px 10px; font-size: 13px; text-align: center; }
+.pubg-team-table th { background: var(--surface-2); }
+
 .form-group { margin-bottom: 12px; }
 .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; font: inherit; padding: 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--page-fg); }
@@ -178,7 +193,7 @@ td.mono { font-family: var(--font-mono); }
   </div>
 </div>
 
-<!-- 추가/수정 모달 -->
+<!-- 전적 추가/수정 모달 -->
 <div class="modal-overlay" id="formModal">
   <div class="modal">
     <h3><span id="formTitle">전적 추가</span><button class="close-btn" onclick="closeModal('formModal')">✕</button></h3>
@@ -195,14 +210,18 @@ td.mono { font-family: var(--font-mono); }
       <div class="form-group"><label>결과</label>
         <select id="fResult"><option value="W">승</option><option value="L">패</option></select>
       </div>
-      <div class="form-group"><label>맵 / 챔피언 / 순수킬</label><input type="text" id="fDetail" placeholder="헤이븐 또는 아리 등"></div>
-      <div class="form-group"><label>요원 (발로란트 전용)</label><input type="text" id="fAgent" placeholder="소바"></div>
-      <div class="form-group"><label>도현 팀 주요 멤버 (쉼표 구분)</label><input type="text" id="fMembers" placeholder="예시A, 예시B, 예시C"></div>
+      <div class="form-group"><label>맵 / 챔피언</label><input type="text" id="fDetail" placeholder="어센트 또는 아리 등"></div>
+      <div class="form-group"><label>순수킬 (배그 전용, 없을시 비워둠)</label><input type="text" id="fKills" placeholder="숫자만 입력"></div>
+      <div class="form-group"><label>요원 (발로란트 전용)</label><input type="text" id="fAgent" placeholder="제트"></div>
+      <div class="form-group"><label>주요 표출 멤버 (쉼표 구분)</label><input type="text" id="fMembers" placeholder="예시A, 예시B, 예시C"></div>
       <hr style="margin: 15px 0; border:0; border-top:1px solid var(--line);">
-      <div class="form-group"><label>[상세] 도현 팀 전체 멤버 (전체 라인업)</label><input type="text" id="fOurTeam" placeholder="탑:A, 정글:B, 미드:도현..."></div>
-      <div class="form-group"><label>[상세] 상대 팀 전체 멤버</label><input type="text" id="fTheirTeam" placeholder="상대1, 상대2, 상대3..."></div>
-      <div class="form-group"><label>[상세] 풀영상 VOD 링크</label><input type="url" id="fVod" placeholder="https://youtube.com/..."></div>
-      <div class="form-group"><label>[상세] 경기 메모 / 비고</label><textarea id="fNote" rows="2" placeholder="주요 하이라이트 및 경기 메모"></textarea></div>
+      <div class="form-group">
+        <label>전체 멤버 상세 내용 (엔터/줄바꿈 가능)</label>
+        <textarea id="fAllMembersText" rows="4" placeholder="팀 구분 없이 전체 멤버 목록이나 줄바꿈으로 기재할 수 있습니다."></textarea>
+      </div>
+      <div class="form-group"><label>배그 3:3 ~ 8:8 팀별 멤버 (배그 전용, 형식: A팀: 멤버1,멤버2 / B팀: 멤버3,멤버4)</label><input type="text" id="fPubgTeams" placeholder="A팀: A,B,C / B팀: D,E,F"></div>
+      <div class="form-group"><label>풀영상 VOD 링크</label><input type="url" id="fVod" placeholder="https://youtube.com/..."></div>
+      <div class="form-group"><label>경기 메모 / 비고</label><textarea id="fNote" rows="2" placeholder="경기 하이라이트 및 메모"></textarea></div>
       <button type="submit" class="btn-accent" style="width:100%; margin-top:10px;">저장하기</button>
     </form>
   </div>
@@ -211,22 +230,21 @@ td.mono { font-family: var(--font-mono); }
 <script>
 const DEFAULT_SETS = [
   {
-    date: "2026-05-23", game: "발로란트", mode: "랜드", set: "1세트", result: "W", map: "헤이븐", agent: "소바",
-    members: ["예시A", "예시B", "예시G", "예시H", "예시I"], sample: true,
-    ourTeam: "도현(소바), 예시A(제트), 예시B(브리치), 예시G(킬조이), 예시H(오멘)",
-    theirTeam: "상대A, 상대B, 상대C, 상대D, 상대E", vod: "https://youtube.com", note: "랜드 첫 경기 깔끔한 승리"
+    date: "2026-10-24", game: "롤", mode: "내전", set: "1세트", result: "W", champ: "아리",
+    members: ["예시B", "예시E", "예시I", "예시L", "예시A"], sample: true,
+    allMembersText: "도현(아리)\n예시B\n예시E\n예시I\n예시L\n예시A", vod: "", note: "내전 1세트 승리"
   },
   {
-    date: "2024-11-02", game: "발로란트", mode: "내전", set: "1세트", result: "L", map: "어센트", agent: "제트",
-    members: ["예시A", "예시B", "예시C", "예시D", "예시E"], sample: true,
-    ourTeam: "도현(제트), 예시A, 예시B, 예시C, 예시D",
-    theirTeam: "상대팀 5명", vod: "", note: "아쉬운 패배"
+    date: "2026-09-12", game: "배그", mode: "랜드", set: "1세트", result: "W", kills: "7",
+    members: ["예시A", "예시E", "예시F"], sample: true,
+    allMembersText: "도현 팀: 도현, 예시A, 예시E, 예시F\n상대 팀: 상대A, 상대B, 상대C, 상대D",
+    pubgTeams: "A팀: 도현, 예시A, 예시E, 예시F / B팀: 상대A, 상대B, 상대C, 상대D",
+    vod: "", note: "랜드 7순수킬 기록"
   },
   {
-    date: "2024-11-02", game: "발로란트", mode: "내전", set: "2세트", result: "W", map: "바인드", agent: "제트",
-    members: ["예시A", "예시B", "예시C", "예시D", "예시F"], sample: true,
-    ourTeam: "도현(제트), 예시A, 예시B, 예시C, 예시F",
-    theirTeam: "상대팀 5명", vod: "", note: "2세트 승리 복수 성공"
+    date: "2026-03-14", game: "배그", mode: "내전", set: "1세트", result: "W", kills: "",
+    members: ["예시A", "예시B", "예시C", "예시D"], sample: true,
+    allMembersText: "전체 참여 멤버 8명 내전 진행", vod: "", note: "순수킬 미기록 경과"
   }
 ];
 
@@ -234,7 +252,7 @@ let setsData = JSON.parse(localStorage.getItem("dohyeon_sets")) || DEFAULT_SETS;
 function saveSets() { localStorage.setItem("dohyeon_sets", JSON.stringify(setsData)); }
 
 let isAdmin = false;
-let S = { game: "발로란트", mode: "all", who: "", newest: true, monthOrder: {} };
+let S = { game: "롤", mode: "all", who: "", newest: true, monthOrder: {} };
 
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
@@ -261,12 +279,31 @@ function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
 function openDetail(idx) {
   const r = setsData[idx];
+  let pubgTableHtml = "";
+
+  if (r.pubgTeams) {
+    const teams = r.pubgTeams.split("/").map(t => t.trim());
+    pubgTableHtml = `
+      <div class="detail-sec"><label>⚔️ 배그 매치 라인업</label>
+        <table class="pubg-team-table">
+          <thead><tr><th>팀</th><th>멤버</th></tr></thead>
+          <tbody>
+            ${teams.map(t => {
+              const [tName, tMems] = t.split(":");
+              return `<tr><td><b>${tName || '팀'}</b></td><td>${tMems || t}</td></tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
   document.getElementById("mTitle").textContent = `${r.date} ${r.game} (${r.set})`;
   document.getElementById("modalContent").innerHTML = `
     <div class="detail-sec"><label>경기 종류 / 결과</label><div class="val">${r.mode} · <span class="pill ${r.result==='W'?'w':'l'}">${r.result==='W'?'승리':'패배'}</span></div></div>
-    <div class="detail-sec"><label>맵 / 챔피언 / 요원</label><div class="val">${r.map || r.champ || r.kills || '-'} ${r.agent ? '('+r.agent+')' : ''}</div></div>
-    <div class="detail-sec"><label>🔵 도현 팀 전체 멤버</label><div class="val">${r.ourTeam || r.members.join(', ')}</div></div>
-    <div class="detail-sec"><label>🔴 상대 팀 멤버</label><div class="val">${r.theirTeam || '정보 없음'}</div></div>
+    <div class="detail-sec"><label>맵 / 챔피언 / 요원</label><div class="val">${r.map || r.champ || '-'} ${r.agent ? '('+r.agent+')' : ''}</div></div>
+    ${r.kills ? `<div class="detail-sec"><label>🎯 순수킬</label><div class="val">${r.kills} 킬</div></div>` : ''}
+    <div class="detail-sec"><label>👥 전체 멤버</label><div class="val">${r.allMembersText || r.members.join(', ')}</div></div>
+    ${pubgTableHtml}
     ${r.note ? `<div class="detail-sec"><label>📝 경기 메모</label><div class="val">${r.note}</div></div>` : ''}
     ${r.vod ? `<div class="detail-sec"><label>🎬 풀영상</label><div class="val"><a href="${r.vod}" target="_blank" style="color:var(--accent);font-weight:bold;">영상 보러가기 ↗</a></div></div>` : ''}
   `;
@@ -286,11 +323,12 @@ function openForm(idx = -1) {
     document.getElementById("fMode").value = r.mode;
     document.getElementById("fSet").value = r.set;
     document.getElementById("fResult").value = r.result;
-    document.getElementById("fDetail").value = r.map || r.champ || r.kills || "";
+    document.getElementById("fDetail").value = r.map || r.champ || "";
+    document.getElementById("fKills").value = r.kills || "";
     document.getElementById("fAgent").value = r.agent || "";
     document.getElementById("fMembers").value = r.members ? r.members.join(", ") : "";
-    document.getElementById("fOurTeam").value = r.ourTeam || "";
-    document.getElementById("fTheirTeam").value = r.theirTeam || "";
+    document.getElementById("fAllMembersText").value = r.allMembersText || "";
+    document.getElementById("fPubgTeams").value = r.pubgTeams || "";
     document.getElementById("fVod").value = r.vod || "";
     document.getElementById("fNote").value = r.note || "";
   }
@@ -311,11 +349,11 @@ function saveRecord(e) {
     result: document.getElementById("fResult").value,
     map: game === "발로란트" ? detailVal : "",
     champ: game === "롤" ? detailVal : "",
-    kills: game === "배그" ? detailVal : "",
+    kills: document.getElementById("fKills").value.trim(),
     agent: document.getElementById("fAgent").value,
     members: document.getElementById("fMembers").value.split(",").map(s => s.trim()).filter(Boolean),
-    ourTeam: document.getElementById("fOurTeam").value,
-    theirTeam: document.getElementById("fTheirTeam").value,
+    allMembersText: document.getElementById("fAllMembersText").value,
+    pubgTeams: document.getElementById("fPubgTeams").value,
     vod: document.getElementById("fVod").value,
     note: document.getElementById("fNote").value,
   };
@@ -362,6 +400,8 @@ function renderRecords() {
     const mWin = sorted.filter(r => r.result === "W").length;
     const mRate = Math.round((mWin / sorted.length) * 100);
 
+    const isPubg = S.game === "배그";
+
     const trs = sorted.map(r => {
       const realIdx = setsData.indexOf(r);
       return `
@@ -370,8 +410,8 @@ function renderRecords() {
           <td>${r.mode}</td>
           <td><a href="javascript:void(0)" onclick="openDetail(${realIdx})" style="font-weight:bold;color:var(--accent);">${r.set}</a> ${r.sample ? '<span class="tag-sample">예시</span>' : ''}</td>
           <td><span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
-          <td>${r.map || r.champ || r.kills || '-'}</td>
-          <td>${r.agent || '-'}</td>
+          ${isPubg ? `<td>${r.kills ? r.kills : ''}</td>` : `<td>${r.map || r.champ || '-'}</td>`}
+          ${!isPubg ? `<td>${r.agent || '-'}</td>` : ''}
           <td><div class="nms">${r.members.map(m => `<span class="nm">${m}</span>`).join('')}</div></td>
           <td>
             <button class="btn-btn" onclick="openDetail(${realIdx})">상세</button>
@@ -396,7 +436,13 @@ function renderRecords() {
         </summary>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>날짜</th><th>종류</th><th>세트</th><th>결과</th><th>맵</th><th>요원</th><th>멤버</th><th>상세보기</th></tr></thead>
+            <thead>
+              <tr>
+                <th>날짜</th><th>종류</th><th>세트</th><th>결과</th>
+                ${isPubg ? '<th>순수킬</th>' : '<th>맵/챔피언</th><th>요원</th>'}
+                <th>멤버</th><th>상세보기</th>
+              </tr>
+            </thead>
             <tbody>${trs}</tbody>
           </table>
         </div>
@@ -451,10 +497,39 @@ function renderMinecraft() {
 }
 
 function renderChong() {
-  return `<div class="block"><h2>총겜동</h2>
-    <div class="cards">
-      <div class="card"><span class="k">Ep.1</span><span class="ttl">첫 정기전</span><span class="meta">2025-05-01</span></div>
-    </div></div>`;
+  return `
+    <div class="block">
+      <h2>총겜동</h2>
+      <div class="cards">
+        <div class="card">
+          <span class="k">EP.0</span>
+          <span class="ttl">프롤로그 <span class="tag-sample">예시</span></span>
+          <span class="meta">멤버 3명</span>
+        </div>
+        <div class="card">
+          <span class="k">EP.1</span>
+          <span class="ttl">첫 정기전 <span class="tag-sample">예시</span></span>
+          <span class="meta">멤버 4명</span>
+        </div>
+      </div>
+
+      <!-- 총겜동 에피소드 상세 예시 구조 -->
+      <div class="ep-detail-wrap">
+        <div class="ep-box">
+          <span class="ep-box-title">방송 타임라인</span>
+          <ul class="timeline-list">
+            <li><a href="https://youtube.com" target="_blank">오프닝 ↗</a></li>
+            <li><a href="https://youtube.com" target="_blank">동아리 소개 ↗</a></li>
+            <li><a href="https://youtube.com" target="_blank">첫 게임 시작 ↗</a></li>
+            <li><a href="https://youtube.com" target="_blank">엔딩 ↗</a></li>
+          </ul>
+        </div>
+        <div class="ep-box">
+          <span class="ep-box-title">에피소드 내용</span>
+          <p style="margin:0; line-height:1.6;">총겜동의 시작을 알린 첫 방송. 이 칸에 에피소드 내용을 적습니다.</p>
+        </div>
+      </div>
+    </div>`;
 }
 
 function getWd(d) {
