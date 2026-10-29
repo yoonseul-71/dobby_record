@@ -21,19 +21,6 @@
   --font-body: "Noto Sans KR", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --page: #0f1318; --page-fg: #e8ecf2; --page-muted: #9aa5b4;
-    --panel: #171c23; --surface: #171c23; --surface-2: #212833; --line: #2a323e;
-    --accent: #7ea3ff; --accent-ink: #0c1220; --soft: #1c2740; --soft-ink: #a9c1ff;
-    --win: #5fd39a; --win-bg: #163527; --loss: #ff8a8f; --loss-bg: #3b1d20; --neutral-bg: #2a2a31;
-    --pink: #ef8fc3; --pink-bg: #3a1c2d; --pink-ink: #ffd3ea;
-    --yellow: #f2c744; --yellow-bg: #3b3210; --yellow-ink: #ffe9a0;
-    --sky: #7bb8f5; --sky-bg: #14293f; --sky-ink: #cfe6ff;
-    --violet: #bf9cff; --violet-bg: #2a1f45; --violet-ink: #e3d4ff;
-    color-scheme: dark;
-  }
-}
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--page); color: var(--page-fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 28px 16px 56px; }
 
@@ -107,22 +94,26 @@ td.mono { font-family: var(--font-mono); }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
 
-/* 카드 스타일 */
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 15px; }
-.card { display: flex; flex-direction: column; justify-content: space-between; gap: 12px; min-height: 140px; padding: 20px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; text-decoration: none; color: var(--page-fg); transition: border-color 0.15s, transform 0.15s; position: relative; }
+/* 카드 공통 스타일 (상세보기 우측 하단 고정) */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 15px; }
+.card { display: flex; flex-direction: column; justify-content: space-between; min-height: 140px; padding: 20px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; text-decoration: none; color: var(--page-fg); transition: border-color 0.15s, transform 0.15s; position: relative; overflow: hidden; }
 .card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
-.card-mc .server-name { font-size: 18px; font-weight: 800; color: #000; }
-.card-mc .guild-name { font-size: 13px; font-weight: 500; color: var(--sky); margin-top: 2px; }
-.card-more { align-self: flex-end; font-size: 12px; color: var(--page-muted); font-weight: 500; }
+/* 마크서버 카드: 코창서버(작은글씨), 북해빙궁(큰글씨)[cite: 20, 22] */
+.card-mc .server-name { font-size: 13px; font-weight: 500; color: var(--page-muted); }
+.card-mc .guild-name { font-size: 18px; font-weight: 800; color: #000; margin-top: 2px; }
 
+/* 총겜동 카드 */
 .card-chong .ep-no { font-family: var(--font-display); font-weight: 800; font-size: 32px; color: var(--violet); line-height: 1; }
-.card-chong .ep-title { font-size: 18px; font-weight: 700; color: #000; }
+.card-chong .ep-title { font-size: 18px; font-weight: 700; color: #000; margin-top: 4px; }
 
-.card-scrim .scrim-no { font-family: var(--font-display); font-weight: 800; font-size: 32px; color: var(--yellow); line-height: 1; }
-.card-scrim .scrim-title { font-size: 18px; font-weight: 700; color: #000; }
+/* 롤 멸망전 카드 (노란색 팀명 및 우측 상단 북마크 배지)[cite: 23] */
+.card-scrim .scrim-no { font-family: var(--font-display); font-weight: 800; font-size: 32px; color: #c49400; line-height: 1; }
+.card-scrim .scrim-title { font-size: 18px; font-weight: 700; color: #000; margin-top: 4px; }
+.card-badge { position: absolute; top: 0; right: 0; background: var(--yellow-bg); color: var(--yellow-ink); font-size: 11px; font-weight: bold; padding: 4px 10px; border-bottom-left-radius: 8px; border: 1px solid var(--yellow); border-top: 0; border-right: 0; }
 
-.card-admin-btns { position: absolute; top: 12px; right: 12px; display: flex; gap: 4px; }
+.card-more { align-self: flex-end; font-size: 12px; color: var(--page-muted); font-weight: 500; margin-top: auto; padding-top: 15px; }
+.card-admin-btns { position: absolute; top: 12px; right: 12px; display: flex; gap: 4px; z-index: 2; }
 
 /* 배그 킬내기 표 스타일 */
 .kill-summary-box { border-left: 4px solid #12161c; padding-left: 12px; margin-bottom: 16px; }
@@ -133,7 +124,7 @@ td.mono { font-family: var(--font-mono); }
 .pubg-card-table td { padding: 10px; border: 1px solid #e0ddd7; text-align: center; font-size: 13px; background: #fff; }
 .pubg-card-table tr.team-row-2 th { background: #e8f0fe; color: #1a73e8; }
 
-/* 라이트 테마 관리자 모달 폼 스타일 (흰색 배경) */
+/* 관리자 모달 (흰색 깔끔한 배경) */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
 .light-modal { background: var(--panel); color: var(--page-fg); border-radius: 12px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; padding: 24px; border: 1px solid var(--line); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
 .light-modal h3 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -148,10 +139,10 @@ td.mono { font-family: var(--font-mono); }
 .detail-sec label { font-size: 12px; color: var(--page-muted); font-weight: bold; display: block; margin-bottom: 6px; }
 .detail-sec .val { font-size: 14px; white-space: pre-wrap; line-height: 1.6; }
 
-/* 타임라인 스타일 (링크 화살표 ↗ 가 앞으로 오도록 고정) */
+/* 타임라인 스타일 (링크 화살표 ↗ 앞으로 배치) */
 .ep-detail-wrap { display: flex; flex-direction: column; gap: 20px; margin-top: 15px; }
 .ep-box { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); }
-.ep-box-title { font-size: 15px; font-weight: bold; color: var(--page-fg); margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.ep-box-title { font-size: 15px; font-weight: bold; color: var(--page-fg); margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
 .timeline-clean { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .timeline-clean li { font-size: 14px; display: flex; align-items: center; gap: 6px; }
 .timeline-clean a { color: var(--accent); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
@@ -202,13 +193,14 @@ td.mono { font-family: var(--font-mono); }
   </div>
 </div>
 
-<!-- 라이트 테마 관리자 폼 모달 (흰색 배경) -->
+<!-- 라이트 테마 관리자 폼 모달 -->
 <div class="modal-overlay" id="adminFormModal">
   <div class="light-modal">
     <h3><span id="adminFormTitle">항목 편집</span><button class="close-btn" onclick="closeModal('adminFormModal')">✕</button></h3>
     <form id="adminForm" onsubmit="handleAdminFormSubmit(event)">
       <input type="hidden" id="afTarget">
       <input type="hidden" id="afIdx" value="-1">
+      <input type="hidden" id="afSubIdx" value="-1">
       <div id="afFields"></div>
       <div class="btn-group">
         <button type="button" class="btn-cancel" onclick="closeModal('adminFormModal')">취소</button>
@@ -242,7 +234,7 @@ const DEFAULT_SETS = [
 
 const DEFAULT_MC = [
   { 
-    id: "mc-1", serverName: "코창서버", guildName: "코창길드", 
+    id: "mc-1", serverName: "코창서버", guildName: "북해빙궁", 
     days: [
       { 
         date: "1일차", 
@@ -257,21 +249,19 @@ const DEFAULT_MC = [
 
 const DEFAULT_CHONG = [
   { ep: 0, title: "FPS 동아리: 총겜동", desc: "총겜동의 시작을 알린 첫 방송.", timeline: [{text: "오프닝 방송 시작", url: "https://youtube.com"}, {text: "동아리 소개", url: ""}] },
-  { ep: 1, title: "배그 서열정리 킬내기", desc: "첫 번째 공식 정기전 킬내기 매치.", timeline: [{text: "룰 설명", url: "https://youtube.com"}, {text: "본 경기 시작", url: ""}] },
-  { ep: 1, title: "벌칙 술먹방", desc: "패배팀 벌칙 수행 방송.", timeline: [{text: "술먹방 오프닝", url: "https://youtube.com"}] }
+  { ep: 1, title: "배그 서열정리 킬내기", desc: "첫 번째 공식 정기전 킬내기 매치.", timeline: [{text: "룰 설명", url: "https://youtube.com"}, {text: "본 경기 시작", url: ""}] }
 ];
 
 const DEFAULT_SCRIM = [
-  { id: "do2", no: "DO2", title: "도이온2 멸망전", desc: "멸망전 전적 기록", data: [{ date: "2025-11-15", type: "스크림", title: "스크림 1일차", result: "1승 2패", note: "라인전 점검" }] }
+  { id: "do2", no: "도이온2", badge: "2025 시즌2 멸망전", title: "도이온2 멸망전", desc: "멸망전 전적 기록", data: [{ date: "2025-11-15", type: "스크림", title: "스크림 1일차", result: "1승 2패", note: "라인전 점검" }] }
 ];
 
-// 로컬스토리지 복구 및 구버전 데이터 호환 migration 로직
 function initData() {
   let mc = JSON.parse(localStorage.getItem("dohyeon_mc"));
-  if (!mc || !Array.isArray(mc) || !mc[0] || !mc[0].serverName) mc = DEFAULT_MC;
+  if (!mc || !Array.isArray(mc) || !mc[0]) mc = DEFAULT_MC;
 
   let chong = JSON.parse(localStorage.getItem("dohyeon_chong"));
-  if (!chong || !Array.isArray(chong) || typeof chong[0]?.ep === 'string') chong = DEFAULT_CHONG;
+  if (!chong || !Array.isArray(chong)) chong = DEFAULT_CHONG;
 
   let scrim = JSON.parse(localStorage.getItem("dohyeon_scrim"));
   if (!scrim || !Array.isArray(scrim)) scrim = DEFAULT_SCRIM;
@@ -322,7 +312,6 @@ function closeModal(id) { document.getElementById(id).style.display = "none"; }
 function openDetail(idx) {
   const r = setsData[idx];
   let html = "";
-
   if (r.game === "배그" && r.pubgTableData) {
     html += `
       <div class="kill-summary-box">
@@ -342,7 +331,6 @@ function openDetail(idx) {
         </tbody>
       </table>`;
   }
-
   if (r.allMembersText) {
     html += `
       <div class="detail-sec" style="margin-top:16px;">
@@ -350,15 +338,16 @@ function openDetail(idx) {
         <div class="val">${r.allMembersText}</div>
       </div>`;
   }
-
   document.getElementById("mTitle").textContent = `${r.date} ${r.game} (${r.set}) 멤버 상세`;
   document.getElementById("modalContent").innerHTML = html || '<div style="padding:20px;text-align:center;">등록된 멤버 정보가 없습니다.</div>';
   document.getElementById("detailModal").style.display = "flex";
 }
 
-function openAdminModal(target, idx = -1) {
+// 관리자 폼 열기 (총겜동 타임라인, 마크서버 타임라인 편집 기능 완벽 포함)
+function openAdminModal(target, idx = -1, subIdx = -1) {
   document.getElementById("afTarget").value = target;
   document.getElementById("afIdx").value = idx;
+  document.getElementById("afSubIdx").value = subIdx;
   const container = document.getElementById("afFields");
   container.innerHTML = "";
 
@@ -382,25 +371,28 @@ function openAdminModal(target, idx = -1) {
     `;
   } else if (target === "chong") {
     const e = idx >= 0 ? CHONG_EPS[idx] : {};
-    document.getElementById("adminFormTitle").textContent = idx >= 0 ? "에피소드 수정" : "새 에피소드 추가";
+    document.getElementById("adminFormTitle").textContent = idx >= 0 ? "총겜동 에피소드 수정" : "새 총겜동 에피소드 추가";
     container.innerHTML = `
       <label>에피소드 번호 (숫자)</label><input type="number" id="afEpNo" value="${e.ep??CHONG_EPS.length}">
       <label>에피소드 제목</label><input type="text" id="afEpTitle" value="${e.title||''}" required>
       <label>상세 설명</label><textarea id="afEpDesc" rows="3">${e.desc||''}</textarea>
+      <label>타임라인 항목들 (형식: 내용 | 링크주소, 줄바꿈으로 여러 개 작성)</label>
+      <textarea id="afChongTimeline" rows="4">${(e.timeline||[]).map(t => t.url ? `${t.text} | ${t.url}` : t.text).join('\n')}</textarea>
     `;
   } else if (target === "mc") {
     const m = idx >= 0 ? MC_SERVERS[idx] : {};
     document.getElementById("adminFormTitle").textContent = idx >= 0 ? "마크서버 수정" : "새 마크서버 추가";
     container.innerHTML = `
-      <label>서버명 (검정 굵은 글씨)</label><input type="text" id="afMcServer" value="${m.serverName||''}" required>
-      <label>길드명 (파란 글씨)</label><input type="text" id="afMcGuild" value="${m.guildName||''}">
+      <label>서버명 (작은 글씨)</label><input type="text" id="afMcServer" value="${m.serverName||''}" required>
+      <label>길드명 / 타이틀 (큰 글씨)</label><input type="text" id="afMcGuild" value="${m.guildName||''}" required>
     `;
   } else if (target === "scrim") {
     const s = idx >= 0 ? SCRIM_CARDS[idx] : {};
-    document.getElementById("adminFormTitle").textContent = idx >= 0 ? "멸망전 카드 수정" : "새 멸망전 카드 추가";
+    document.getElementById("adminFormTitle").textContent = idx >= 0 ? "롤 멸망전 카드 수정" : "새 롤 멸망전 카드 추가";
     container.innerHTML = `
-      <label>카드 식별 태그 (예: DO2)</label><input type="text" id="afScrimNo" value="${s.no||''}" required>
-      <label>멸망전 타이틀</label><input type="text" id="afScrimTitle" value="${s.title||''}" required>
+      <label>팀명 / 타이틀 (노란색 글씨)</label><input type="text" id="afScrimNo" value="${s.no||''}" required>
+      <label>우측 상단 북마크 시즌 설명</label><input type="text" id="afScrimBadge" value="${s.badge||''}" required>
+      <label>전체 타이틀</label><input type="text" id="afScrimTitle" value="${s.title||''}" required>
       <label>설명</label><textarea id="afScrimDesc" rows="2">${s.desc||''}</textarea>
     `;
   }
@@ -426,11 +418,17 @@ function handleAdminFormSubmit(e) {
     if (idx >= 0) setsData[idx] = { ...setsData[idx], ...item };
     else setsData.push(item);
   } else if (target === "chong") {
+    const rawLines = document.getElementById("afChongTimeline").value.split("\n");
+    const timelineArr = rawLines.map(line => {
+      const parts = line.split("|");
+      return { text: parts[0].trim(), url: parts[1] ? parts[1].trim() : "" };
+    }).filter(t => t.text);
+
     const item = {
       ep: parseInt(document.getElementById("afEpNo").value),
       title: document.getElementById("afEpTitle").value,
       desc: document.getElementById("afEpDesc").value,
-      timeline: [{text: "오프닝 방송 시작", url: "https://youtube.com"}]
+      timeline: timelineArr.length ? timelineArr : [{text: "오프닝 방송", url: ""}]
     };
     if (idx >= 0) CHONG_EPS[idx] = { ...CHONG_EPS[idx], ...item };
     else CHONG_EPS.push(item);
@@ -439,7 +437,7 @@ function handleAdminFormSubmit(e) {
       id: "mc-" + Date.now(),
       serverName: document.getElementById("afMcServer").value,
       guildName: document.getElementById("afMcGuild").value,
-      days: [{ date: "1일차", sections: [{ title: "모험", timelines: [{text: "입장", url: ""}] }] }]
+      days: [{ date: "1일차", sections: [{ title: "모험 및 탐색", timelines: [{text: "입장", url: ""}] }] }]
     };
     if (idx >= 0) MC_SERVERS[idx] = { ...MC_SERVERS[idx], serverName: item.serverName, guildName: item.guildName };
     else MC_SERVERS.push(item);
@@ -447,11 +445,12 @@ function handleAdminFormSubmit(e) {
     const item = {
       id: "scrim-" + Date.now(),
       no: document.getElementById("afScrimNo").value,
+      badge: document.getElementById("afScrimBadge").value,
       title: document.getElementById("afScrimTitle").value,
       desc: document.getElementById("afScrimDesc").value,
       data: [{ date: "2025-11-15", type: "스크림", title: "첫 연습매치", result: "1승", note: "좋음" }]
     };
-    if (idx >= 0) SCRIM_CARDS[idx] = { ...SCRIM_CARDS[idx], no: item.no, title: item.title, desc: item.desc };
+    if (idx >= 0) SCRIM_CARDS[idx] = { ...SCRIM_CARDS[idx], no: item.no, badge: item.badge, title: item.title, desc: item.desc };
     else SCRIM_CARDS.push(item);
   }
 
@@ -591,14 +590,15 @@ function renderScrims(subId) {
       <div class="cards">
         ${SCRIM_CARDS.map((c, idx) => `
           <div class="card card-scrim">
+            ${c.badge ? `<div class="card-badge">${c.badge}</div>` : ''}
             ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('scrim', ${idx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('scrim', ${idx})">삭제</button></div>` : ''}
-            <a href="#scrim-${c.id}" style="text-decoration:none; color:inherit;">
+            <a href="#scrim-${c.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
               <div>
                 <div class="scrim-no">${c.no}</div>
                 <div class="scrim-title">${c.title}</div>
                 <div style="font-size:12px; color:var(--page-muted); margin-top:4px;">${c.desc}</div>
               </div>
-              <div class="card-more" style="margin-top:10px;">상세보기 →</div>
+              <div class="card-more">상세보기 →</div>
             </a>
           </div>
         `).join('')}
@@ -606,7 +606,6 @@ function renderScrims(subId) {
     </div>`;
 }
 
-// 마크서버 탭 (타임라인 링크가 앞으로 오도록 설정 완료)
 function renderMinecraft(subId, dayIndex = 0) {
   if (subId) {
     const srv = MC_SERVERS.find(s => s.id === subId) || MC_SERVERS[0];
@@ -650,12 +649,12 @@ function renderMinecraft(subId, dayIndex = 0) {
         ${MC_SERVERS.map((s, idx) => `
           <div class="card card-mc">
             ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('mc', ${idx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('mc', ${idx})">삭제</button></div>` : ''}
-            <a href="#mc-${s.id}-d0" style="text-decoration:none; color:inherit;">
+            <a href="#mc-${s.id}-d0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
               <div>
                 <div class="server-name">${s.serverName}</div>
                 <div class="guild-name">${s.guildName}</div>
               </div>
-              <div class="card-more" style="margin-top:10px;">상세보기 →</div>
+              <div class="card-more">상세보기 →</div>
             </a>
           </div>
         `).join('')}
@@ -663,7 +662,6 @@ function renderMinecraft(subId, dayIndex = 0) {
     </div>`;
 }
 
-// 총겜동 탭 (EP 번호 파싱 오류 및 화살표 위치 수정 완료)
 function renderChong(subEp) {
   if (subEp !== null && subEp !== undefined && subEp !== "") {
     const epIdx = CHONG_EPS.findIndex(e => e.ep === parseInt(subEp));
@@ -678,7 +676,10 @@ function renderChong(subEp) {
         </div>
         <div class="ep-detail-wrap">
           <div class="ep-box">
-            <div class="ep-box-title">방송 타임라인</div>
+            <div class="ep-box-title">
+              <span>방송 타임라인</span>
+              ${isAdmin ? `<button class="btn-btn" onclick="openAdminModal('chong', ${epIdx})">타임라인 편집</button>` : ''}
+            </div>
             <ul class="timeline-clean">
               ${epObj.timeline.map(item => `
                 <li>
@@ -701,12 +702,12 @@ function renderChong(subEp) {
         ${CHONG_EPS.map((e, idx) => `
           <div class="card card-chong">
             ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('chong', ${idx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('chong', ${idx})">삭제</button></div>` : ''}
-            <a href="#chong-ep${e.ep}" style="text-decoration:none; color:inherit;">
+            <a href="#chong-ep${e.ep}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
               <div>
                 <div class="ep-no">EP.${e.ep}</div>
                 <div class="ep-title">${e.title}</div>
               </div>
-              <div class="card-more" style="margin-top:10px;">EP.${e.ep} 보기 →</div>
+              <div class="card-more">EP.${e.ep} 보기 →</div>
             </a>
           </div>
         `).join('')}
