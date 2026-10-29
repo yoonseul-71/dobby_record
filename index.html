@@ -115,7 +115,7 @@ td.mono { font-family: var(--font-mono); }
 .card-more { align-self: flex-end; font-size: 12px; color: var(--page-muted); font-weight: 500; margin-top: auto; padding-top: 12px; }
 .card-admin-btns { position: absolute; top: 12px; right: 12px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 5:5 상세 테이블 스타일 (사진 참조)[cite: 22] */
+/* 롤 멸망전 5:5 상세 테이블 스타일 */
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow: hidden; }
 .scrim-box-header { padding: 12px 16px; font-weight: bold; font-size: 15px; background: #fafafa; border-bottom: 1px solid #dcdcdc; display: flex; justify-content: space-between; align-items: center; }
 .lol-match-table { width: 100%; border-collapse: collapse; }
@@ -164,10 +164,10 @@ td.mono { font-family: var(--font-mono); }
 .day-tab-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; }
 .day-tab-btn[aria-selected="true"] { background: var(--sky-bg); border-color: var(--sky); color: var(--sky-ink); }
 
-/* 하단 에피소드 연결 버튼 */
+/* 하단 에피소드 연결 버튼 (보라색 포인트 컬러 적용) */
 .ep-footer-nav { display: flex; justify-content: space-between; margin-top: 24px; gap: 10px; }
-.ep-nav-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 2px solid #12161c; border-radius: 8px; font-weight: bold; font-size: 13px; background: #fff; cursor: pointer; text-decoration: none; color: #000; }
-.ep-nav-box:hover { background: var(--soft); border-color: var(--accent); }
+.ep-nav-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 2px solid #12161c; border-radius: 8px; font-weight: bold; font-size: 13px; background: #fff; cursor: pointer; text-decoration: none; color: var(--violet-ink); }
+.ep-nav-box:hover { background: var(--violet-bg); border-color: var(--violet); }
 
 #admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #18181b; color: #fff; padding: 10px 24px; display: none; justify-content: space-between; align-items: center; z-index: 999; font-weight: bold; }
 #admin-bar button { background: #ef4444; color: #fff; border: 0; padding: 6px 14px; border-radius: 6px; cursor: pointer; }
@@ -294,16 +294,6 @@ const DEFAULT_SCRIM = [
           { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "멜", p2: "박이언", t2: "[S] 10", c2: "사이온" },
           { pos: "원딜", p1: "맛종욱", t1: "[E] 22.1", c1: "바루스", p2: "바밤바", t2: "[C] 60.4", c2: "유나라" },
           { pos: "서포터", p1: "한아밍", t1: "[E] 36", c1: "레오나", p2: "애교용", t2: "[G] 21", c2: "유미" }
-        ]
-      },
-      {
-        matchType: "대회", timeLabel: "결승전", date: "2025-11-20", side: "블루", result: "승",
-        positions: [
-          { pos: "탑", p1: "도현", t1: "[P] 33", c1: "그웬", p2: "상대탑", t2: "[P] 22", c2: "잭스" },
-          { pos: "정글", p1: "예시", t1: "[E] 12", c1: "리신", p2: "상대정글", t2: "[E] 5", c2: "비에고" },
-          { pos: "미드", p1: "예시", t1: "[P] 33", c1: "아리", p2: "상대미드", t2: "[S] 14", c2: "신드라" },
-          { pos: "원딜", p1: "예시", t1: "[E] 25", c1: "자야", p2: "상대원딜", t2: "[P] 40", c2: "애쉬" },
-          { pos: "서포터", p1: "예시", t1: "[E] 30", c1: "레오나", p2: "상대서폿", t2: "[G] 30", c2: "카르마" }
         ]
       }
     ]
@@ -608,12 +598,16 @@ function renderRecords() {
   const games = ["발로란트", "롤", "배그"];
   const currentModes = GAME_MODES[S.game] || ["전체"];
 
-  const yearsSet = new Set(["전체년"]);
+  // 년도 목록: 전체, 2024, 2025, 2026 기본 및 데이터 입력 시 자동 생성
+  const yearsSet = new Set(["전체년", "2024년", "2025년", "2026년"]);
   setsData.forEach(r => {
     if (r.date && r.date.length >= 4) yearsSet.add(r.date.slice(0, 4) + "년");
   });
-  yearsSet.add("2024년"); yearsSet.add("2025년"); yearsSet.add("2026년"); yearsSet.add("2027년");
-  const years = Array.from(yearsSet).sort();
+  const years = Array.from(yearsSet).sort((a, b) => {
+    if (a === "전체년") return -1;
+    if (b === "전체년") return 1;
+    return a.localeCompare(b);
+  });
 
   let rows = setsData.filter(r => r.game === S.game);
   if (S.mode !== "전체") rows = rows.filter(r => r.mode === S.mode);
@@ -742,7 +736,6 @@ function renderRecords() {
     </div>`;
 }
 
-// 롤 멸망전 탭 (스크림/대회 필터박스 상단 추가 및 5:5 표 구조 완벽 반영)
 function renderScrims(subId) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
@@ -767,27 +760,27 @@ function renderScrims(subId) {
         ${filteredMatches.map(m => `
           <div class="scrim-detail-box">
             <div class="scrim-box-header">
-              <span>#${m.timeLabel} ${m.matchType} 단판 (${m.side}/${m.result})</span>
-              <span style="font-size:12px; font-weight:normal; color:var(--page-muted);">${m.date}</span>
+              <span>#${m.timeLabel || ''} ${m.matchType || ''} 단판 (${m.side || ''}/${m.result || ''})</span>
+              <span style="font-size:12px; font-weight:normal; color:var(--page-muted);">${m.date || ''}</span>
             </div>
             <table class="lol-match-table">
               <tbody>
-                ${m.positions.map(pos => `
+                ${(m.positions || []).map(pos => `
                   <tr>
                     <td style="width: 45%;">
                       <div class="player-row">
-                        <span><b>${pos.p1}</b></span>
-                        <span class="tier-badge">${pos.t1}</span>
+                        <span><b>${pos.p1 || ''}</b></span>
+                        <span class="tier-badge">${pos.t1 || ''}</span>
                       </div>
-                      <div class="champ-row">${pos.c1}</div>
+                      <div class="champ-row">${pos.c1 || ''}</div>
                     </td>
-                    <td class="pos-col">${pos.pos}</td>
+                    <td class="pos-col">${pos.pos || ''}</td>
                     <td style="width: 45%;">
                       <div class="player-row">
-                        <span><b>${pos.p2}</b></span>
-                        <span class="tier-badge">${pos.t2}</span>
+                        <span><b>${pos.p2 || ''}</b></span>
+                        <span class="tier-badge">${pos.t2 || ''}</span>
                       </div>
-                      <div class="champ-row">${pos.c2}</div>
+                      <div class="champ-row">${pos.c2 || ''}</div>
                     </td>
                   </tr>
                 `).join('')}
@@ -910,10 +903,10 @@ function renderChong(subEp) {
         </div>
         <div class="ep-footer-nav">
           <div>
-            ${prevEp ? `<a class="ep-nav-box" href="#chong-ep${prevEp.ep}">← Ep.${prevEp.ep} 보기</a>` : ''}
+            ${prevEp ? `<a class="ep-nav-box" href="#chong-ep${prevEp.ep}">← Ep.${prevEp.ep} ${prevEp.title} 보기</a>` : ''}
           </div>
           <div>
-            ${nextEp ? `<a class="ep-nav-box" href="#chong-ep${nextEp.ep}">Ep.${nextEp.ep} 보기 →</a>` : `<a class="ep-nav-box" href="#chong-ep${epNum}">Ep.${epNum} 벌칙 / Ep.${epNum+1} 보기 →</a>`}
+            ${nextEp ? `<a class="ep-nav-box" href="#chong-ep${nextEp.ep}">Ep.${nextEp.ep} ${nextEp.title} 보기 →</a>` : `<a class="ep-nav-box" href="#chong-ep${epNum}">Ep.${epNum} 벌칙 / Ep.${epNum+1} 보기 →</a>`}
           </div>
         </div>
       </div>`;
