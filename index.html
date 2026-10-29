@@ -115,10 +115,11 @@ td.mono { font-family: var(--font-mono); }
   background: var(--tag-bg, #f5f5f5); color: var(--tag-ink, #333); border-top: 0; border-right: 0;
 }
 
-/* 마크서버 및 멸망전 카드 수정 (제목 위치 1~1.5단 하향 및 레이아웃 정리) */
 .card-mc-style .main-title { font-size: 20px; font-weight: 800; color: #12161c; margin-top: 18px; margin-bottom: 4px; }
 .card-mc-style .sub-meta { font-size: 13px; color: var(--page-muted); font-family: var(--font-mono); margin-bottom: 12px; }
-.card-mc-style .card-footer-link { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 12px; font-size: 13px; font-weight: bold; }
+
+/* 글씨 먼저, 화살표 우측 배치 규칙 적용 */
+.card-footer-link { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 12px; font-size: 13px; font-weight: bold; }
 
 .card-chong .chong-badge {
   display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px;
@@ -131,12 +132,16 @@ td.mono { font-family: var(--font-mono); }
 
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 단판 탭바 */
-.match-tabs-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.match-tab-btn { padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--line); background: #fff; font-weight: bold; cursor: pointer; font-size: 13px; }
-.match-tab-btn[aria-pressed="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
+/* 롤 멸망전 2단계 탭 스타일 */
+.scrim-group-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; border-bottom: 2px solid var(--line); padding-bottom: 8px; }
+.scrim-group-btn { padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--line); background: #f8f9fa; font-weight: bold; cursor: pointer; font-size: 14px; }
+.scrim-group-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
 
-/* 롤 멸망전 상세 표 스타일 (팀 이름 헤더 배경 및 선수-티어-챔피언 재배치) */
+.match-tabs-bar { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.match-tab-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-weight: bold; cursor: pointer; font-size: 13px; }
+.match-tab-btn[aria-selected="true"] { background: #12161c; border-color: #12161c; color: #fff; }
+
+/* 롤 멸망전 표 스타일 */
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow: hidden; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
 .scrim-box-header { padding: 12px 18px; font-weight: bold; font-size: 15px; background: #fafafa; border-bottom: 1px solid #dcdcdc; display: flex; justify-content: space-between; align-items: center; }
 
@@ -149,11 +154,11 @@ td.mono { font-family: var(--font-mono); }
 .lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 14px; vertical-align: middle; font-size: 14.5px; background: #fff; }
 .lol-match-table .pos-col { width: 80px; text-align: center; background: #f9f9f9 !important; font-weight: bold; color: #555; font-size: 13.5px; }
 
-/* 팀명 칸 전용 진영 배경 색상 (글자 중앙 정렬) */
-th.header-team-blue { background-color: var(--blue-team-bg) !important; color: var(--blue-team-ink) !important; }
-th.header-team-red { background-color: var(--red-team-bg) !important; color: var(--red-team-ink) !important; }
+/* 팀명 칸 반대 진영 색상 클래스 */
+th.header-blue { background-color: var(--blue-team-bg) !important; color: var(--blue-team-ink) !important; }
+th.header-red { background-color: var(--red-team-bg) !important; color: var(--red-team-ink) !important; }
 
-/* 선수이름/티어/챔피언 레이아웃 */
+/* 선수 정보 정렬 */
 .player-info-left { text-align: left; }
 .player-info-right { text-align: right; }
 .player-name { font-weight: 800; font-size: 15px; color: #12161c; }
@@ -322,16 +327,21 @@ const DEFAULT_CHONG = [
 const DEFAULT_SCRIM = [
   { 
     id: "do2", no: "도이온2", badge: "2025 시즌2 멸망전", 
-    matches: [
+    groups: [
       {
-        matchType: "스크림", timeLabel: "19시", subtitle: "결승전 1세트", date: "2025-11-15", side: "레드", result: "패",
-        leftTeamName: "도현팀", rightTeamName: "상대팀",
-        positions: [
-          { pos: "탑", p1: "선수1", t1: "[P] 30", c1: "챔피언1", p2: "상대1", t2: "[G] 20", c2: "상대챔1" },
-          { pos: "정글", p1: "선수2", t1: "[E] 10", c1: "챔피언2", p2: "상대2", t2: "[E] 10", c2: "상대챔2" },
-          { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "아리", p2: "상대3", t2: "[P] 20", c2: "상대챔3" },
-          { pos: "원딜", p1: "선수4", t1: "[C] 40", c1: "챔피언4", p2: "상대4", t2: "[C] 40", c2: "상대챔4" },
-          { pos: "서포터", p1: "선수5", t1: "[G] 15", c1: "챔피언5", p2: "상대5", t2: "[G] 15", c2: "상대챔5" }
+        groupTitle: "19시 스크림",
+        sets: [
+          {
+            setName: "1세트", timeLabel: "19시", date: "2025-11-15", side: "레드", result: "패",
+            leftTeamName: "도현팀", rightTeamName: "상대팀",
+            positions: [
+              { pos: "탑", p1: "선수1", t1: "[P] 30", c1: "챔피언1", p2: "상대1", t2: "[G] 20", c2: "상대챔1" },
+              { pos: "정글", p1: "선수2", t1: "[E] 10", c1: "챔피언2", p2: "상대2", t2: "[E] 10", c2: "상대챔2" },
+              { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "아리", p2: "상대3", t2: "[P] 20", c2: "상대챔3" },
+              { pos: "원딜", p1: "선수4", t1: "[C] 40", c1: "챔피언4", p2: "상대4", t2: "[C] 40", c2: "상대챔4" },
+              { pos: "서포터", p1: "선수5", t1: "[G] 15", c1: "챔피언5", p2: "상대5", t2: "[G] 15", c2: "상대챔5" }
+            ]
+          }
         ]
       }
     ]
@@ -548,7 +558,7 @@ function handleAdminFormSubmit(e) {
       id: "scrim-" + Date.now(),
       no: document.getElementById("afScrimNo").value,
       badge: document.getElementById("afScrimBadge").value,
-      matches: []
+      groups: []
     };
     if (idx >= 0) SCRIM_CARDS[idx] = { ...SCRIM_CARDS[idx], no: item.no, badge: item.badge };
     else SCRIM_CARDS.push(item);
@@ -587,7 +597,24 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "") {
   const container = document.getElementById("asFields");
   container.innerHTML = "";
 
-  if (type === "mc-day") {
+  if (type === "scrim-group-add") {
+    document.getElementById("asTitle").textContent = "경기 회차/단계 탭 추가";
+    container.innerHTML = `
+      <label>회차/단계 이름 (예: 19시 스크림, 본선, 4강)</label><input type="text" id="asGroupTitle" value="19시 스크림">
+    `;
+  } else if (type === "scrim-set-add") {
+    document.getElementById("asTitle").textContent = "세트 단판 전적 추가";
+    container.innerHTML = `
+      <label>세트 이름 (예: 1세트, 2세트)</label><input type="text" id="asSetName" value="1세트">
+      <label>시간 (예: 19시)</label><input type="text" id="asTimeLabel" value="19시">
+      <label>날짜</label><input type="text" id="asScrimDate" value="2025-11-15">
+      <label>도현팀 진영 (블루/레드 선택 시 상대팀은 반대 색상 자동 적용)</label>
+      <select id="asSide"><option value="레드">레드 (도현팀:빨강 / 상대팀:파랑)</option><option value="블루">블루 (도현팀:파랑 / 상대팀:빨강)</option></select>
+      <label>결과</label><select id="asScrimRes"><option value="승">승</option><option value="패">패</option></select>
+      <label>왼쪽 팀 이름 (도현팀)</label><input type="text" id="asLeftTeam" value="도현팀">
+      <label>오른쪽 팀 이름 (상대팀)</label><input type="text" id="asRightTeam" value="상대팀">
+    `;
+  } else if (type === "mc-day") {
     document.getElementById("asTitle").textContent = "마크서버 일차 추가";
     container.innerHTML = `
       <label>일차 제목 (예: 2일차)</label><input type="text" id="asDayTitle" value="2일차">
@@ -622,18 +649,6 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "") {
       <label>내용</label><textarea id="asChongText" rows="3">${item.text}</textarea>
       <label>링크 주소</label><input type="text" id="asChongUrl" value="${item.url||''}">
     `;
-  } else if (type === "scrim-match-add") {
-    document.getElementById("asTitle").textContent = "롤 멸망전 단판 세트 추가";
-    container.innerHTML = `
-      <label>구분</label><select id="asMatchType"><option value="스크림">스크림</option><option value="대회">대회</option></select>
-      <label>시간 (예: 19시)</label><input type="text" id="asTimeLabel" value="19시">
-      <label>세트/부제목 (예: 결승전 1세트)</label><input type="text" id="asSubtitle" value="1세트">
-      <label>날짜</label><input type="text" id="asScrimDate" value="2025-11-15">
-      <label>진영 (블루/레드 선택 시 헤더 팀명 배경색 반영)</label><select id="asSide"><option value="블루">블루</option><option value="레드">레드</option></select>
-      <label>결과</label><select id="asScrimRes"><option value="승">승</option><option value="패">패</option></select>
-      <label>왼쪽 팀 이름 입력 (기본: 도현팀)</label><input type="text" id="asLeftTeam" value="도현팀">
-      <label>오른쪽 팀 이름 입력 (기본: 상대팀)</label><input type="text" id="asRightTeam" value="상대팀">
-    `;
   }
   document.getElementById("adminSubModal").style.display = "flex";
 }
@@ -645,7 +660,38 @@ function handleSubFormSubmit(e) {
   const ex1 = document.getElementById("asExtra1").value;
   const ex2 = document.getElementById("asExtra2").value;
 
-  if (type === "mc-day") {
+  if (type === "scrim-group-add") {
+    const card = SCRIM_CARDS.find(c => c.id === parentId);
+    if (card) {
+      if (!card.groups) card.groups = [];
+      card.groups.push({
+        groupTitle: document.getElementById("asGroupTitle").value,
+        sets: []
+      });
+      saveData();
+    }
+  } else if (type === "scrim-set-add") {
+    const card = SCRIM_CARDS.find(c => c.id === parentId);
+    if (card && card.groups[ex1]) {
+      card.groups[ex1].sets.push({
+        setName: document.getElementById("asSetName").value,
+        timeLabel: document.getElementById("asTimeLabel").value,
+        date: document.getElementById("asScrimDate").value,
+        side: document.getElementById("asSide").value,
+        result: document.getElementById("asScrimRes").value,
+        leftTeamName: document.getElementById("asLeftTeam").value || "도현팀",
+        rightTeamName: document.getElementById("asRightTeam").value || "상대팀",
+        positions: [
+          { pos: "탑", p1: "선수1", t1: "[P] 30", c1: "챔피언1", p2: "상대1", t2: "[G] 20", c2: "상대챔1" },
+          { pos: "정글", p1: "선수2", t1: "[E] 10", c1: "챔피언2", p2: "상대2", t2: "[E] 10", c2: "상대챔2" },
+          { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "아리", p2: "상대3", t2: "[P] 20", c2: "상대챔3" },
+          { pos: "원딜", p1: "선수4", t1: "[C] 40", c1: "챔피언4", p2: "상대4", t2: "[C] 40", c2: "상대챔4" },
+          { pos: "서포터", p1: "선수5", t1: "[G] 15", c1: "챔피언5", p2: "상대5", t2: "[G] 15", c2: "상대챔5" }
+        ]
+      });
+      saveData();
+    }
+  } else if (type === "mc-day") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     if (srv) {
       srv.days.push({
@@ -694,29 +740,6 @@ function handleSubFormSubmit(e) {
       epObj.timeline[ex1].url = document.getElementById("asChongUrl").value;
       saveData();
     }
-  } else if (type === "scrim-match-add") {
-    const card = SCRIM_CARDS.find(c => c.id === parentId);
-    if (card) {
-      if (!card.matches) card.matches = [];
-      card.matches.push({
-        matchType: document.getElementById("asMatchType").value,
-        timeLabel: document.getElementById("asTimeLabel").value,
-        subtitle: document.getElementById("asSubtitle").value,
-        date: document.getElementById("asScrimDate").value,
-        side: document.getElementById("asSide").value,
-        result: document.getElementById("asScrimRes").value,
-        leftTeamName: document.getElementById("asLeftTeam").value || "도현팀",
-        rightTeamName: document.getElementById("asRightTeam").value || "상대팀",
-        positions: [
-          { pos: "탑", p1: "선수1", t1: "[P] 30", c1: "챔피언1", p2: "상대1", t2: "[G] 20", c2: "상대챔1" },
-          { pos: "정글", p1: "선수2", t1: "[E] 10", c1: "챔피언2", p2: "상대2", t2: "[E] 10", c2: "상대챔2" },
-          { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "아리", p2: "상대3", t2: "[P] 20", c2: "상대챔3" },
-          { pos: "원딜", p1: "선수4", t1: "[C] 40", c1: "챔피언4", p2: "상대4", t2: "[C] 40", c2: "상대챔4" },
-          { pos: "서포터", p1: "선수5", t1: "[G] 15", c1: "챔피언5", p2: "상대5", t2: "[G] 15", c2: "상대챔5" }
-        ]
-      });
-      saveData();
-    }
   }
   closeModal("adminSubModal");
   render();
@@ -724,12 +747,15 @@ function handleSubFormSubmit(e) {
 
 function deleteSubItem(target, id, idx1, idx2) {
   if (!confirm("해당 항목을 삭제하시겠습니까?")) return;
-  if (target === "chong-timeline") {
+  if (target === "scrim-group") {
+    const card = SCRIM_CARDS.find(c => c.id === id);
+    if (card && card.groups) card.groups.splice(idx1, 1);
+  } else if (target === "scrim-set") {
+    const card = SCRIM_CARDS.find(c => c.id === id);
+    if (card && card.groups && card.groups[idx1]) card.groups[idx1].sets.splice(idx2, 1);
+  } else if (target === "chong-timeline") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(id));
     if (epObj && epObj.timeline) epObj.timeline.splice(idx1, 1);
-  } else if (target === "scrim-match") {
-    const card = SCRIM_CARDS.find(c => c.id === id);
-    if (card && card.matches) card.matches.splice(idx1, 1);
   } else if (target === "mc-timeline") {
     const srv = MC_SERVERS.find(s => s.id === id);
     if (srv && srv.days[0] && srv.days[0].sections[idx1]) {
@@ -891,55 +917,71 @@ function renderRecords() {
     </div>`;
 }
 
-function renderScrims(subId, matchIndex = 0) {
+function renderScrims(subId, groupIdx = 0, setIdx = 0) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
-    const matches = card.matches || [];
-    const curMatch = matches[matchIndex] || matches[0];
+    const groups = card.groups || [];
+    const curGroup = groups[groupIdx] || groups[0];
+    const sets = curGroup ? (curGroup.sets || []) : [];
+    const curSet = sets[setIdx] || sets[0];
 
-    const leftTeam = curMatch ? (curMatch.leftTeamName || "도현팀") : "도현팀";
-    const rightTeam = curMatch ? (curMatch.rightTeamName || "상대팀") : "상대팀";
-    const sideClass = (curMatch && curMatch.side === "블루") ? "blue" : "red";
-    const headerTeamClass = (curMatch && curMatch.side === "블루") ? "header-team-blue" : "header-team-red";
+    // 도현팀 진영 기준 반대 색상 설정
+    const isDhRed = curSet ? (curSet.side === "레드") : true;
+    const leftHeaderClass = isDhRed ? "header-red" : "header-blue";
+    const rightHeaderClass = isDhRed ? "header-blue" : "header-red";
+    const sideClass = isDhRed ? "red" : "blue";
 
     return `
       <div class="block">
         <a class="back-btn" onclick="location.hash='#scrim'">← 멸망전 목록으로</a>
         <h2>${card.no} 상세 전적</h2>
 
-        <!-- 세트별 단판 탭바 -->
-        <div class="match-tabs-bar">
-          ${matches.map((m, idx) => `
-            <button class="match-tab-btn" onclick="location.hash='#scrim-${card.id}-m${idx}'" ${idx === matchIndex ? 'aria-selected="true"' : ''}>
-              #${m.timeLabel || ''} ${m.matchType || ''} (${m.subtitle || (idx+1+'세트')})
+        <!-- 1단계: 경기 회차/단계 탭 (19시 스크림, 본선, 4강 등) -->
+        <div class="scrim-group-bar">
+          ${groups.map((g, gI) => `
+            <button class="scrim-group-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-s0'" ${gI === groupIdx ? 'aria-selected="true"' : ''}>
+              #${g.groupTitle}
             </button>
           `).join('')}
-          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-match-add')">+ 새 단판 세트 추가</button>` : ''}
+          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 새 경기 탭 추가</button>` : ''}
         </div>
 
-        ${curMatch ? `
+        <!-- 2단계: 세트 단판 선택 탭 (1세트 승/패) -->
+        ${curGroup ? `
+          <div class="match-tabs-bar">
+            ${sets.map((s, sI) => `
+              <button class="match-tab-btn" onclick="location.hash='#scrim-${card.id}-g${groupIdx}-s${sI}'" ${sI === setIdx ? 'aria-selected="true"' : ''}>
+                ${s.setName || (sI+1+'세트')} (${s.result === '승' ? '승' : '패'})
+              </button>
+            `).join('')}
+            ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-set-add', ${groupIdx})">+ 새 세트 전적 추가</button>` : ''}
+            ${isAdmin && groups.length > 0 ? `<button class="btn-btn" style="color:red; margin-left:auto;" onclick="deleteSubItem('scrim-group', '${card.id}', ${groupIdx})">현재 경기 탭 삭제</button>` : ''}
+          </div>
+        ` : ''}
+
+        ${curSet ? `
           <div class="scrim-detail-box">
             <div class="scrim-box-header">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span class="scrim-memo-tab ${sideClass}">#${curMatch.timeLabel || ''} ${curMatch.matchType || ''} (${curMatch.side || ''}/${curMatch.result || ''})</span>
-                <span style="font-weight: 800; font-size: 14px; margin-left: 4px;">${curMatch.subtitle || ''}</span>
+                <span class="scrim-memo-tab ${sideClass}">#${curGroup.groupTitle} (${curSet.side || '레드'}/${curSet.result || '승'})</span>
+                <span style="font-weight: 800; font-size: 14px; margin-left: 4px;">${curSet.setName || ''}</span>
               </div>
               <div>
-                <span style="font-size:12px; font-weight:normal; color:var(--page-muted); margin-right:10px;">${curMatch.date || ''}</span>
-                ${isAdmin ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-match', '${card.id}', ${matchIndex})">경기 삭제</button>` : ''}
+                <span style="font-size:12px; font-weight:normal; color:var(--page-muted); margin-right:10px;">${curSet.date || ''}</span>
+                ${isAdmin ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-set', '${card.id}', ${groupIdx}, ${setIdx})">세트 삭제</button>` : ''}
               </div>
             </div>
             <table class="lol-match-table">
               <thead>
                 <tr>
-                  <!-- 도현팀 / 상대팀 글자가 적힌 칸만 색상 배경 적용 & 중앙 정렬 -->
-                  <th class="${headerTeamClass}" style="width: 44%;">${leftTeam}</th>
+                  <!-- 도현팀 기준 반대 진영 색상 적용 및 중앙 정렬 -->
+                  <th class="${leftHeaderClass}" style="width: 44%;">${curSet.leftTeamName || '도현팀'}</th>
                   <th class="pos-col">포지션</th>
-                  <th class="${headerTeamClass}" style="width: 44%;">${rightTeam}</th>
+                  <th class="${rightHeaderClass}" style="width: 44%;">${curSet.rightTeamName || '상대팀'}</th>
                 </tr>
               </thead>
               <tbody>
-                ${(curMatch.positions || []).map(pos => `
+                ${(curSet.positions || []).map(pos => `
                   <tr>
                     <td style="width: 44%;">
                       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -965,7 +1007,7 @@ function renderScrims(subId, matchIndex = 0) {
               </tbody>
             </table>
           </div>
-        ` : '<div style="padding:20px;text-align:center;">등록된 단판 경기가 없습니다.</div>'}
+        ` : '<div style="padding:30px;text-align:center;color:#888;">등록된 세트 정보가 없습니다. 관리자 모드에서 추가해보세요!</div>'}
       </div>`;
   }
 
@@ -980,12 +1022,12 @@ function renderScrims(subId, matchIndex = 0) {
           <div class="card card-mc-style" style="border-top: 4px solid var(--yellow);">
             <div class="card-corner-tag" style="--tag-bg: var(--yellow-bg); --tag-ink: var(--yellow-ink); --tag-border: var(--yellow);">${c.badge || '멸망전'}</div>
             ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('scrim', ${idx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('scrim', ${idx})">삭제</button></div>` : ''}
-            <a href="#scrim-${c.id}-m0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+            <a href="#scrim-${c.id}-g0-s0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
               <div>
                 <div class="main-title" style="color: var(--yellow-ink);">${c.no}</div>
               </div>
               <div class="card-footer-link" style="color: var(--yellow-ink);">
-                <span>입장</span>
+                <span>상세보기</span>
                 <span>→</span>
               </div>
             </a>
@@ -1058,7 +1100,7 @@ function renderMinecraft(subId, dayIndex = 0) {
                 <div class="sub-meta">${s.dateRange || ''}</div>
               </div>
               <div class="card-footer-link" style="color: var(--sky);">
-                <span>상세 타임라인 보기</span>
+                <span>상세보기</span>
                 <span>→</span>
               </div>
             </a>
@@ -1136,7 +1178,7 @@ function renderChong(subEp) {
                 <div class="chong-date">${e.dateStr || ''}</div>
               </div>
               <div class="chong-footer">
-                <span>상세 타임라인 보기</span>
+                <span>상세보기</span>
                 <span>→</span>
               </div>
             </a>
@@ -1170,12 +1212,12 @@ function render() {
   const view = document.getElementById("view");
   if (cat === "record") view.innerHTML = renderRecords();
   else if (cat === "scrim") {
-    const match = hash.match(/^scrim-(.+)-m(\d+)$/);
+    const match = hash.match(/^scrim-(.+)-g(\d+)-s(\d+)$/);
     if (match) {
-      view.innerHTML = renderScrims(match[1], parseInt(match[2]));
+      view.innerHTML = renderScrims(match[1], parseInt(match[2]), parseInt(match[3]));
     } else {
       const simpleMatch = hash.match(/^scrim-(.+)$/);
-      view.innerHTML = renderScrims(simpleMatch ? simpleMatch[1] : null, 0);
+      view.innerHTML = renderScrims(simpleMatch ? simpleMatch[1] : null, 0, 0);
     }
   } else if (cat === "mc") {
     const match = hash.match(/^mc-([a-z0-9-]+)-d(\d+)$/);
