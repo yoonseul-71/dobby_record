@@ -37,7 +37,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--page); color: var(--page-fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 28px 16px 56px; }
 
-/* 전체 컨테이너 5% 확대 적용 (1090px) */
+/* 전체 컨테이너 5% 확대 (1090px) */
 .wrap { max-width: 1090px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
 a { color: inherit; text-decoration: none; }
 
@@ -68,8 +68,8 @@ nav.bar a[aria-current="page"] {
 
 .panel { background: var(--panel); border-radius: 0 0 12px 12px; padding: 24px; border: 1px solid var(--line); border-top: 0; }
 .block { display: flex; flex-direction: column; gap: 20px; }
-.subnav { display: flex; gap: 8px; }
-.subnav a { padding: 5px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); font-size: 13px; }
+.subnav { display: flex; gap: 8px; flex-wrap: wrap; }
+.subnav a { padding: 5px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); font-size: 13px; cursor: pointer; }
 .subnav a[aria-current="page"] { background: var(--soft); border-color: var(--accent); color: var(--soft-ink); font-weight: 700; }
 .subnav .n { font-family: var(--font-mono); opacity: 0.7; margin-left: 4px; }
 
@@ -88,7 +88,6 @@ h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; backgro
 .filters { display: flex; gap: 6px; align-items: center; }
 .chip { font: inherit; font-size: 13px; padding: 4px 14px; border-radius: 999px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); }
 .chip[aria-pressed="true"] { background: var(--soft); border-color: var(--accent); color: var(--soft-ink); font-weight: 700; }
-select { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); }
 
 /* 월별 아코디언 */
 .month { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); margin-bottom: 16px; }
@@ -116,14 +115,21 @@ td.mono { font-family: var(--font-mono); }
 .nms { display: flex; flex-wrap: wrap; gap: 4px; }
 .nm { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--neutral-bg); }
 
-/* 총겜동 탭 보라색 글씨 통일 */
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 15px; }
-.card { display: flex; flex-direction: column; gap: 8px; min-height: 120px; padding: 18px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; text-decoration: none; color: var(--page-fg); }
-.card .k { font-family: var(--font-display); font-weight: 800; font-size: 32px; color: var(--violet); line-height: 1; }
-.card .ttl { font-size: 18px; font-weight: 700; }
-.card .meta { font-size: 12px; color: var(--page-muted); }
+/* 카드 스타일 (마크서버 & 총겜동) */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 15px; }
+.card { display: flex; flex-direction: column; justify-content: space-between; gap: 12px; min-height: 140px; padding: 20px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; text-decoration: none; color: var(--page-fg); position: relative; transition: border-color 0.15s, transform 0.15s; }
+.card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
-/* 총겜동 에피소드 상세 타임라인 & 박스 */
+/* 마크서버 전용 스타일 */
+.card-mc .guild-name { font-size: 13px; font-weight: bold; color: var(--sky); }
+.card-mc .server-name { font-size: 20px; font-weight: 800; color: #000; }
+.card-more { align-self: flex-end; font-size: 12px; color: var(--page-muted); font-weight: 500; display: flex; align-items: center; gap: 2px; }
+
+/* 총겜동 전용 스타일 */
+.card-chong .ep-no { font-family: var(--font-display); font-weight: 800; font-size: 32px; color: var(--violet); line-height: 1; }
+.card-chong .ep-title { font-size: 18px; font-weight: 700; color: #000; }
+
+/* 에피소드 & 서버 상세페이지 레이아웃 */
 .ep-detail-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
 @media (max-width: 768px) { .ep-detail-wrap { grid-template-columns: 1fr; } }
 .ep-box { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); }
@@ -134,6 +140,9 @@ td.mono { font-family: var(--font-mono); }
 .timeline-list a { color: var(--violet-ink); font-weight: 500; text-decoration: none; }
 .timeline-list a:hover { text-decoration: underline; }
 
+.back-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--page-muted); margin-bottom: 10px; cursor: pointer; text-decoration: none; }
+.back-btn:hover { color: var(--page-fg); }
+
 /* 모달 */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
 .modal { background: var(--panel); border-radius: 12px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid var(--line); }
@@ -143,7 +152,6 @@ td.mono { font-family: var(--font-mono); }
 .detail-sec label { font-size: 12px; color: var(--page-muted); font-weight: bold; display: block; margin-bottom: 4px; }
 .detail-sec .val { font-size: 14px; white-space: pre-wrap; line-height: 1.6; }
 
-/* 배그 전용 멤버 테이블 */
 .pubg-team-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
 .pubg-team-table th, .pubg-team-table td { border: 1px solid var(--line); padding: 6px 10px; font-size: 13px; text-align: center; }
 .pubg-team-table th { background: var(--surface-2); }
@@ -204,7 +212,13 @@ td.mono { font-family: var(--font-mono); }
         <select id="fGame"><option value="발로란트">발로란트</option><option value="롤">롤</option><option value="배그">배그</option></select>
       </div>
       <div class="form-group"><label>종류</label>
-        <select id="fMode"><option value="내전">내전</option><option value="랜드">랜드</option><option value="CK">CK</option></select>
+        <select id="fMode">
+          <option value="내전">내전</option>
+          <option value="랜드">랜드</option>
+          <option value="CK">CK</option>
+          <option value="킬내기">킬내기</option>
+          <option value="공장">공장</option>
+        </select>
       </div>
       <div class="form-group"><label>세트</label><input type="text" id="fSet" required placeholder="1세트"></div>
       <div class="form-group"><label>결과</label>
@@ -217,9 +231,9 @@ td.mono { font-family: var(--font-mono); }
       <hr style="margin: 15px 0; border:0; border-top:1px solid var(--line);">
       <div class="form-group">
         <label>전체 멤버 상세 내용 (엔터/줄바꿈 가능)</label>
-        <textarea id="fAllMembersText" rows="4" placeholder="팀 구분 없이 전체 멤버 목록이나 줄바꿈으로 기재할 수 있습니다."></textarea>
+        <textarea id="fAllMembersText" rows="4" placeholder="줄바꿈으로 전체 멤버 목록을 자유롭게 적을 수 있습니다."></textarea>
       </div>
-      <div class="form-group"><label>배그 3:3 ~ 8:8 팀별 멤버 (배그 전용, 형식: A팀: 멤버1,멤버2 / B팀: 멤버3,멤버4)</label><input type="text" id="fPubgTeams" placeholder="A팀: A,B,C / B팀: D,E,F"></div>
+      <div class="form-group"><label>배그 3:3 ~ 8:8 팀별 멤버 (형식: A팀: 멤버1,멤버2 / B팀: 멤버3,멤버4)</label><input type="text" id="fPubgTeams" placeholder="A팀: A,B,C / B팀: D,E,F"></div>
       <div class="form-group"><label>풀영상 VOD 링크</label><input type="url" id="fVod" placeholder="https://youtube.com/..."></div>
       <div class="form-group"><label>경기 메모 / 비고</label><textarea id="fNote" rows="2" placeholder="경기 하이라이트 및 메모"></textarea></div>
       <button type="submit" class="btn-accent" style="width:100%; margin-top:10px;">저장하기</button>
@@ -228,31 +242,54 @@ td.mono { font-family: var(--font-mono); }
 </div>
 
 <script>
+// 게임별 종류 옵션 정의
+const GAME_MODES = {
+  "발로란트": ["전체", "내전", "랜드", "CK"],
+  "롤": ["전체", "랜드", "CK"],
+  "배그": ["전체", "킬내기", "랜드", "공장"]
+};
+
 const DEFAULT_SETS = [
   {
-    date: "2026-10-24", game: "롤", mode: "내전", set: "1세트", result: "W", champ: "아리",
+    date: "2026-10-24", game: "롤", mode: "랜드", set: "1세트", result: "W", champ: "아리",
     members: ["예시B", "예시E", "예시I", "예시L", "예시A"], sample: true,
-    allMembersText: "도현(아리)\n예시B\n예시E\n예시I\n예시L\n예시A", vod: "", note: "내전 1세트 승리"
+    allMembersText: "도현(아리)\n예시B\n예시E\n예시I\n예시L\n예시A", vod: "", note: "롤 랜드 1세트 승리"
   },
   {
-    date: "2026-09-12", game: "배그", mode: "랜드", set: "1세트", result: "W", kills: "7",
+    date: "2026-09-12", game: "배그", mode: "킬내기", set: "1세트", result: "W", kills: "7",
     members: ["예시A", "예시E", "예시F"], sample: true,
     allMembersText: "도현 팀: 도현, 예시A, 예시E, 예시F\n상대 팀: 상대A, 상대B, 상대C, 상대D",
     pubgTeams: "A팀: 도현, 예시A, 예시E, 예시F / B팀: 상대A, 상대B, 상대C, 상대D",
-    vod: "", note: "랜드 7순수킬 기록"
+    vod: "", note: "배그 킬내기 7순수킬 기록"
   },
   {
-    date: "2026-03-14", game: "배그", mode: "내전", set: "1세트", result: "W", kills: "",
+    date: "2026-03-14", game: "배그", mode: "공장", set: "1세트", result: "W", kills: "",
     members: ["예시A", "예시B", "예시C", "예시D"], sample: true,
-    allMembersText: "전체 참여 멤버 8명 내전 진행", vod: "", note: "순수킬 미기록 경과"
+    allMembersText: "공장 매치 8명 진행", vod: "", note: "순수킬 미기록"
+  },
+  {
+    date: "2026-05-23", game: "발로란트", mode: "내전", set: "1세트", result: "W", map: "헤이븐", agent: "소바",
+    members: ["예시A", "예시B", "예시G"], sample: true,
+    allMembersText: "도현, 예시A, 예시B, 예시G", vod: "", note: "발로 내전 승리"
   }
+];
+
+// 마크서버 & 총겜동 데이터
+const MC_SERVERS = [
+  { id: "mc-1", guild: "코창길드", name: "코창서버", desc: "코창서버 모험 기록" },
+  { id: "mc-2", guild: "맹든길드", name: "맹든링서버", desc: "맹든링서버 1일차~5일차 모험" }
+];
+
+const CHONG_EPS = [
+  { ep: 0, title: "프롤로그", date: "2025-04-15", memCount: "3명", summary: "총겜동의 시작을 알린 첫 방송.", timeline: ["오프닝", "동아리 소개", "첫 게임 시작", "엔딩"] },
+  { ep: 1, title: "첫 정기전", date: "2025-05-01", memCount: "4명", summary: "첫 번째 정기 모임 방송.", timeline: ["오프닝", "팀 나누기", "1경기 진행", "최종 소감"] }
 ];
 
 let setsData = JSON.parse(localStorage.getItem("dohyeon_sets")) || DEFAULT_SETS;
 function saveSets() { localStorage.setItem("dohyeon_sets", JSON.stringify(setsData)); }
 
 let isAdmin = false;
-let S = { game: "롤", mode: "all", who: "", newest: true, monthOrder: {} };
+let S = { game: "발로란트", mode: "전체", monthOrder: {} };
 
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
@@ -284,7 +321,7 @@ function openDetail(idx) {
   if (r.pubgTeams) {
     const teams = r.pubgTeams.split("/").map(t => t.trim());
     pubgTableHtml = `
-      <div class="detail-sec"><label>⚔️ 배그 매치 라인업</label>
+      <div class="detail-sec"><label>⚔️ 팀별 멤버 구성</label>
         <table class="pubg-team-table">
           <thead><tr><th>팀</th><th>멤버</th></tr></thead>
           <tbody>
@@ -374,18 +411,30 @@ function deleteRecord(idx) {
   }
 }
 
+// 전적 페이지 렌더링
 function renderRecords() {
   const games = ["발로란트", "롤", "배그"];
-  let rows = setsData.filter(r => S.mode === "all" || r.mode === S.mode);
-  const allNames = [...new Set(setsData.filter(r => r.game === S.game).flatMap(r => r.members))].sort();
+  const currentModes = GAME_MODES[S.game] || ["전체"];
 
-  rows = rows.filter(r => r.game === S.game);
-  if (S.who) rows = rows.filter(r => r.members.includes(S.who));
+  // 선택된 게임 및 모드 필터링
+  let rows = setsData.filter(r => r.game === S.game);
+  if (S.mode !== "전체") {
+    rows = rows.filter(r => r.mode === S.mode);
+  }
 
   const total = rows.length;
   const winCount = rows.filter(r => r.result === "W").length;
   const lossCount = total - winCount;
   const winRate = total ? Math.round((winCount / total) * 100) : 0;
+
+  // 게임별 카운트 계산용 (전체 모드 기준)
+  const allGameRows = setsData.filter(r => r.game === S.game);
+
+  // 서브탭 HTML (게임별 개별 옵션)
+  const subnavHtml = currentModes.map(m => {
+    const count = m === "전체" ? allGameRows.length : allGameRows.filter(r => r.mode === m).length;
+    return `<a onclick="setMode('${m}')" ${S.mode === m ? 'aria-current="page"' : ''}>${m} <span class="n">${count}</span></a>`;
+  }).join("");
 
   const groups = new Map();
   rows.forEach(r => {
@@ -394,13 +443,13 @@ function renderRecords() {
     groups.get(k).push(r);
   });
 
+  const isPubg = S.game === "배그";
+
   const monthsHtml = [...groups.entries()].map(([k, list]) => {
     const desc = S.monthOrder[k] === "desc";
     const sorted = [...list].sort((a, b) => desc ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date));
     const mWin = sorted.filter(r => r.result === "W").length;
     const mRate = Math.round((mWin / sorted.length) * 100);
-
-    const isPubg = S.game === "배그";
 
     const trs = sorted.map(r => {
       const realIdx = setsData.indexOf(r);
@@ -451,12 +500,7 @@ function renderRecords() {
 
   return `
     <div class="block">
-      <div class="subnav">
-        <a href="javascript:void(0)" onclick="setMode('all')" ${S.mode==='all'?'aria-current="page"':''}>전체 <span class="n">${setsData.length}</span></a>
-        <a href="javascript:void(0)" onclick="setMode('내전')" ${S.mode==='내전'?'aria-current="page"':''}>내전</a>
-        <a href="javascript:void(0)" onclick="setMode('랜드')" ${S.mode==='랜드'?'aria-current="page"':''}>랜드</a>
-        <a href="javascript:void(0)" onclick="setMode('CK')" ${S.mode==='CK'?'aria-current="page"':''}>CK</a>
-      </div>
+      <div class="subnav">${subnavHtml}</div>
 
       <h2>전체 전적</h2>
 
@@ -472,15 +516,11 @@ function renderRecords() {
       <div class="toolbar">
         <div class="filters">
           ${games.map(g=>`<button class="chip" onclick="setGame('${g}')" aria-pressed="${S.game===g}">${g}</button>`).join('')}
-          <select onchange="setWho(this.value)">
-            <option value="">전체 멤버</option>
-            ${allNames.map(n=>`<option value="${n}" ${S.who===n?'selected':''}>${n}</option>`).join('')}
-          </select>
         </div>
         ${isAdmin ? `<button class="btn-accent" onclick="openForm()">+ 새 전적 추가</button>` : ''}
       </div>
 
-      ${monthsHtml || '<div style="padding:40px;text-align:center;color:#888;">기록이 없습니다.</div>'}
+      ${monthsHtml || '<div style="padding:40px;text-align:center;color:#888;">선택한 종류의 전적 기록이 없습니다.</div>'}
     </div>`;
 }
 
@@ -488,46 +528,84 @@ function renderScrims() {
   return `<div class="block"><h2>롤 멸망전 기록</h2><p style="color:var(--page-muted)">멸망전 기록 페이지입니다.</p></div>`;
 }
 
-function renderMinecraft() {
-  return `<div class="block"><h2>마크서버 기록</h2>
-    <div class="cards">
-      <div class="card"><span class="k">Server</span><span class="ttl">코창서버</span><span class="meta">기록 없음</span></div>
-      <div class="card"><span class="k">Server</span><span class="ttl">맹든링서버</span><span class="meta">1일차 기록</span></div>
-    </div></div>`;
+// 마크서버 목록 & 상세페이지
+function renderMinecraft(subId) {
+  if (subId) {
+    const srv = MC_SERVERS.find(s => s.id === subId) || MC_SERVERS[0];
+    return `
+      <div class="block">
+        <a class="back-btn" onclick="location.hash='#mc'">← 마크서버 목록으로</a>
+        <h2>${srv.name} 상세 정보</h2>
+        <div class="ep-detail-wrap">
+          <div class="ep-box">
+            <span class="ep-box-title" style="background:var(--sky-bg);color:var(--sky-ink);border-color:var(--sky);">서버 모험 타임라인</span>
+            <ul class="timeline-list">
+              <li><a href="https://youtube.com" target="_blank" style="color:var(--sky-ink);">1일차: 서버 입장 및 광질 ↗</a></li>
+              <li><a href="https://youtube.com" target="_blank" style="color:var(--sky-ink);">2일차: 길드 하우스 건축 ↗</a></li>
+              <li><a href="https://youtube.com" target="_blank" style="color:var(--sky-ink);">3일차: 보스 레이드 ↗</a></li>
+            </ul>
+          </div>
+          <div class="ep-box">
+            <span class="ep-box-title" style="background:var(--sky-bg);color:var(--sky-ink);border-color:var(--sky);">서버 안내</span>
+            <p style="margin:0; line-height:1.6;">${srv.guild} 소속으로 참여한 ${srv.name} 기록 페이지입니다.</p>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  return `
+    <div class="block">
+      <h2>마크서버</h2>
+      <div class="cards">
+        ${MC_SERVERS.map(s => `
+          <a class="card card-mc" href="#mc-${s.id}">
+            <div>
+              <div class="guild-name">${s.guild}</div>
+              <div class="server-name">${s.name}</div>
+            </div>
+            <div class="card-more">→ 상세보기</div>
+          </a>
+        `).join('')}
+      </div>
+    </div>`;
 }
 
-function renderChong() {
+// 총겜동 목록 & 상세페이지
+function renderChong(subEp) {
+  if (subEp !== null && subEp !== undefined) {
+    const epObj = CHONG_EPS.find(e => e.ep === parseInt(subEp)) || CHONG_EPS[0];
+    return `
+      <div class="block">
+        <a class="back-btn" onclick="location.hash='#chong'">← 총겜동 목록으로</a>
+        <h2>EP.${epObj.ep} ${epObj.title}</h2>
+        <div class="ep-detail-wrap">
+          <div class="ep-box">
+            <span class="ep-box-title">방송 타임라인</span>
+            <ul class="timeline-list">
+              ${epObj.timeline.map(t => `<li><a href="https://youtube.com" target="_blank">${t} ↗</a></li>`).join('')}
+            </ul>
+          </div>
+          <div class="ep-box">
+            <span class="ep-box-title">에피소드 내용</span>
+            <p style="margin:0; line-height:1.6;">${epObj.summary}</p>
+          </div>
+        </div>
+      </div>`;
+  }
+
   return `
     <div class="block">
       <h2>총겜동</h2>
       <div class="cards">
-        <div class="card">
-          <span class="k">EP.0</span>
-          <span class="ttl">프롤로그 <span class="tag-sample">예시</span></span>
-          <span class="meta">멤버 3명</span>
-        </div>
-        <div class="card">
-          <span class="k">EP.1</span>
-          <span class="ttl">첫 정기전 <span class="tag-sample">예시</span></span>
-          <span class="meta">멤버 4명</span>
-        </div>
-      </div>
-
-      <!-- 총겜동 에피소드 상세 예시 구조 -->
-      <div class="ep-detail-wrap">
-        <div class="ep-box">
-          <span class="ep-box-title">방송 타임라인</span>
-          <ul class="timeline-list">
-            <li><a href="https://youtube.com" target="_blank">오프닝 ↗</a></li>
-            <li><a href="https://youtube.com" target="_blank">동아리 소개 ↗</a></li>
-            <li><a href="https://youtube.com" target="_blank">첫 게임 시작 ↗</a></li>
-            <li><a href="https://youtube.com" target="_blank">엔딩 ↗</a></li>
-          </ul>
-        </div>
-        <div class="ep-box">
-          <span class="ep-box-title">에피소드 내용</span>
-          <p style="margin:0; line-height:1.6;">총겜동의 시작을 알린 첫 방송. 이 칸에 에피소드 내용을 적습니다.</p>
-        </div>
+        ${CHONG_EPS.map(e => `
+          <a class="card card-chong" href="#chong-ep${e.ep}">
+            <div>
+              <div class="ep-no">EP.${e.ep}</div>
+              <div class="ep-title">${e.title}</div>
+            </div>
+            <div class="card-more">→ 상세보기</div>
+          </a>
+        `).join('')}
       </div>
     </div>`;
 }
@@ -537,9 +615,17 @@ function getWd(d) {
   return days[new Date(d).getDay()];
 }
 
-function setGame(g) { S.game = g; render(); }
-function setMode(m) { S.mode = m; render(); }
-function setWho(w) { S.who = w; render(); }
+function setGame(g) {
+  S.game = g;
+  S.mode = "전체"; // 게임 교체 시 기본 전체 모드로 초기화
+  render();
+}
+
+function setMode(m) {
+  S.mode = m;
+  render();
+}
+
 function setMonthOrd(k, ord) { S.monthOrder[k] = ord; render(); }
 
 function render() {
@@ -552,11 +638,21 @@ function render() {
   });
 
   const view = document.getElementById("view");
-  if (cat === "record") view.innerHTML = renderRecords();
-  else if (cat === "scrim") view.innerHTML = renderScrims();
-  else if (cat === "mc") view.innerHTML = renderMinecraft();
-  else if (cat === "chong") view.innerHTML = renderChong();
-  else view.innerHTML = renderRecords();
+
+  if (cat === "record") {
+    view.innerHTML = renderRecords();
+  } else if (cat === "scrim") {
+    view.innerHTML = renderScrims();
+  } else if (cat === "mc") {
+    const subId = hash.startsWith("mc-") ? hash : null;
+    view.innerHTML = renderMinecraft(subId);
+  } else if (cat === "chong") {
+    const epMatch = hash.match(/^chong-ep(\d+)$/);
+    const subEp = epMatch ? epMatch[1] : null;
+    view.innerHTML = renderChong(subEp);
+  } else {
+    view.innerHTML = renderRecords();
+  }
 }
 
 window.addEventListener("hashchange", render);
