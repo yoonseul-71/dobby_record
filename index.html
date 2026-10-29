@@ -1,32 +1,32 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DOHYEON ARCHIVE</title>
-<meta name="viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
 :root {
-  --page: #f1f3f6; --page-fg: #12161c; --page-muted: #566170; --bar: #ffffff; --bar-line: #d8dee6;
-  --panel: #ffffff; --surface: #ffffff; --surface-2: #eef1f5; --fg: #12161c; --muted: #566170; --line: #dde2ea;
+  --page: #f1f3f6; --page-fg: #12161c; --page-muted: #566170;
+  --panel: #ffffff; --surface: #ffffff; --surface-2: #f8fa00; --line: #dde2ea;
   --accent: #2a56d6; --accent-ink: #ffffff; --soft: #e4ebfc; --soft-ink: #1f3fa6;
   --win: #16794c; --win-bg: #dff2e6; --loss: #b3282d; --loss-bg: #fae3e3; --neutral-bg: #e6e9ee;
-  --blue: #2f6fd0; --blue-bg: #e1ecfb; --red: #c4443a; --red-bg: #fbe6e3; --hl: #fff2b8; --hl-ink: #3d3200;
   --pink: #d65a9e; --pink-bg: #fbe3f0; --pink-ink: #7d1f55;
   --yellow: #d9a200; --yellow-bg: #fdf0b8; --yellow-ink: #5a4400;
   --sky: #4a9be8; --sky-bg: #dcecfd; --sky-ink: #0f4a86;
   --violet: #9b6fe0; --violet-bg: #eadfff; --violet-ink: #4a2a8c;
-  --font-display: "Barlow Condensed", "Noto Sans KR", "Arial Narrow", sans-serif;
+  --font-display: "Barlow Condensed", "Noto Sans KR", sans-serif;
   --font-body: "Noto Sans KR", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: "JetBrains Mono", monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --page: #0f1318; --page-fg: #e8ecf2; --page-muted: #9aa5b4; --bar: #171c23; --bar-line: #2a323e;
-    --panel: #171c23; --surface: #171c23; --surface-2: #212833; --fg: #e8ecf2; --muted: #9aa5b4; --line: #2a323e;
+    --page: #0f1318; --page-fg: #e8ecf2; --page-muted: #9aa5b4;
+    --panel: #171c23; --surface: #171c23; --surface-2: #212833; --line: #2a323e;
     --accent: #7ea3ff; --accent-ink: #0c1220; --soft: #1c2740; --soft-ink: #a9c1ff;
     --win: #5fd39a; --win-bg: #163527; --loss: #ff8a8f; --loss-bg: #3b1d20; --neutral-bg: #2a2a31;
-    --blue: #7fb0ff; --blue-bg: #17283f; --red: #ff9a90; --red-bg: #3b2020; --hl: #4a3f12; --hl-ink: #fff2b8;
     --pink: #ef8fc3; --pink-bg: #3a1c2d; --pink-ink: #ffd3ea;
     --yellow: #f2c744; --yellow-bg: #3b3210; --yellow-ink: #ffe9a0;
     --sky: #7bb8f5; --sky-bg: #14293f; --sky-ink: #cfe6ff;
@@ -35,113 +35,197 @@
   }
 }
 * { box-sizing: border-box; }
-body {
-  background: var(--page); color: var(--page-fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
-  padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-}
-.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 58px; }
-a { color: inherit; }
-header.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px 24px; padding-top: 4px; }
-.brand { display: flex; flex-direction: column; gap: 8px; }
-h1 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 9vw, 68px); line-height: 1; text-transform: uppercase; }
-h1 em { font-style: normal; }
+body { margin: 0; background: var(--page); color: var(--page-fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 28px 16px 56px; }
+.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+a { color: inherit; text-decoration: none; }
 
-.sheet { display: flex; flex-direction: column; }
-nav.bar { display: flex; align-items: flex-end; gap: 6px; padding: 16px 10px 0; border-bottom: 1px solid var(--line); }
+header.top { display: flex; justify-content: space-between; align-items: flex-start; }
+h1 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 52px; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; }
+
+/* 스티커 메모 탭 */
+nav.bar { display: flex; align-items: flex-end; gap: 6px; border-bottom: 1px solid var(--line); padding-left: 10px; }
 nav.bar a {
-  position: relative; display: inline-flex; align-items: center; text-decoration: none; padding: 8px 20px 7px;
-  border-radius: 6px 6px 0 0; white-space: nowrap; color: var(--note-ink); font-weight: 700; font-size: 15px;
-  background: var(--note); border: 1px solid var(--note-edge); border-bottom: 0;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.08); transform-origin: 50% 100%; transform: rotate(var(--tilt, 0deg)) translateY(2px);
+  position: relative; display: inline-flex; align-items: center; padding: 8px 22px;
+  border-radius: 8px 8px 0 0; font-weight: 700; font-size: 15px;
+  background: var(--note); color: var(--note-ink); border: 1px solid var(--note-edge); border-bottom: 0;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.05); transform-origin: 50% 100%; transform: rotate(var(--tilt, 0deg)) translateY(2px);
 }
 nav.bar a::before {
-  content: ""; position: absolute; top: -5px; left: 50%; width: 26px; height: 9px; margin-left: -13px;
-  background: rgba(255, 255, 255, 0.55); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 1px; transform: rotate(-3deg);
+  content: ""; position: absolute; top: -5px; left: 50%; width: 26px; height: 8px; margin-left: -13px;
+  background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(0,0,0,0.08); border-radius: 2px; transform: rotate(-3deg);
 }
-nav.bar a[data-cat="record"] { --note: var(--pink-bg); --note-ink: var(--pink-ink); --note-edge: var(--pink); --tilt: -1.2deg; }
-nav.bar a[data-cat="scrim"] { --note: var(--yellow-bg); --note-ink: var(--yellow-ink); --note-edge: var(--yellow); --tilt: 0.9deg; }
+nav.bar a[data-cat="record"] { --note: var(--pink-bg); --note-ink: var(--pink-ink); --note-edge: var(--pink); --tilt: -1deg; }
+nav.bar a[data-cat="scrim"] { --note: var(--yellow-bg); --note-ink: var(--yellow-ink); --note-edge: var(--yellow); --tilt: 1deg; }
 nav.bar a[data-cat="mc"] { --note: var(--sky-bg); --note-ink: var(--sky-ink); --note-edge: var(--sky); --tilt: -0.8deg; }
 nav.bar a[data-cat="chong"] { --note: var(--violet-bg); --note-ink: var(--violet-ink); --note-edge: var(--violet); --tilt: 1.2deg; }
 nav.bar a[aria-current="page"] {
   z-index: 1; transform: none; padding-top: 11px; padding-bottom: 9px; margin-bottom: -1px;
-  border-color: var(--line); border-bottom: 1px solid var(--panel); background: var(--panel); color: var(--fg);
+  border-color: var(--line); border-bottom: 1px solid var(--panel); background: var(--panel); color: var(--page-fg);
 }
-.panel { background: var(--panel); color: var(--fg); border-radius: 0 0 12px 12px; padding: 22px 22px 26px; border: 1px solid var(--line); border-top: 0; }
-.subnav { display: flex; gap: 8px; flex-wrap: wrap; }
-.subnav a { text-decoration: none; padding: 6px 14px; border-radius: 999px; font-size: 14px; color: var(--fg); border: 1.5px solid var(--line); background: var(--surface); }
+
+.panel { background: var(--panel); border-radius: 0 0 12px 12px; padding: 24px; border: 1px solid var(--line); border-top: 0; }
+.block { display: flex; flex-direction: column; gap: 20px; }
+.subnav { display: flex; gap: 8px; }
+.subnav a { padding: 5px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); font-size: 13px; }
 .subnav a[aria-current="page"] { background: var(--soft); border-color: var(--accent); color: var(--soft-ink); font-weight: 700; }
-.subnav .n { font-family: var(--font-mono); font-size: 12px; opacity: 0.7; margin-left: 6px; }
-h2 { margin: 0; font-size: 21px; font-weight: 700; }
-.section-head { display: flex; flex-direction: column; gap: 4px; }
-.stats { display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: flex-end; }
-.stat { display: flex; flex-direction: column; gap: 2px; }
-.stat .k { font-size: 12px; color: var(--muted); }
-.stat .v { font-family: var(--font-mono); font-size: 24px; font-weight: 500; }
-.toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
-.filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.chip { font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 999px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); color: var(--fg); }
+.subnav .n { font-family: var(--font-mono); opacity: 0.7; margin-left: 4px; }
+
+h2 { margin: 0; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+
+.stats { display: flex; gap: 32px; align-items: flex-end; }
+.stat .k { font-size: 12px; color: var(--page-muted); display: block; }
+.stat .v { font-family: var(--font-mono); font-size: 22px; font-weight: 700; }
+.form-dots { display: flex; gap: 4px; }
+.form-dots i { width: 12px; height: 18px; border-radius: 2px; display: block; background: var(--neutral-bg); }
+.form-dots i.w { background: var(--win); }
+.form-dots i.l { background: var(--loss); }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.filters { display: flex; gap: 6px; align-items: center; }
+.chip { font: inherit; font-size: 13px; padding: 4px 14px; border-radius: 999px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); }
 .chip[aria-pressed="true"] { background: var(--soft); border-color: var(--accent); color: var(--soft-ink); font-weight: 700; }
-select, input { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); color: var(--fg); }
-.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-table { border-collapse: collapse; width: 100%; min-width: 600px; }
-th, td { padding: 9px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
-th { font-size: 12px; font-weight: 500; color: var(--muted); }
-.pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 9px; border-radius: 999px; }
+select { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); }
+
+/* 월별 아코디언 */
+.month { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); margin-bottom: 16px; }
+.month summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: #eef3fc; color: #1a365d; font-weight: bold; }
+.month summary::-webkit-details-marker { display: none; }
+.month .m-title { font-family: var(--font-mono); font-size: 16px; color: #2b6cb0; }
+.month .m-meta { font-size: 13px; opacity: 0.8; font-weight: normal; }
+.month .seg { margin-left: 10px; display: inline-flex; border: 1px solid #cbd5e0; border-radius: 999px; overflow: hidden; }
+.month .seg button { font: inherit; font-size: 11px; padding: 2px 10px; border: 0; background: transparent; cursor: pointer; }
+.month .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: bold; }
+.month .rate-box { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.month .bar { width: 100px; height: 8px; border-radius: 4px; background: var(--loss-bg); overflow: hidden; }
+.month .bar b { display: block; height: 100%; background: var(--win); }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 650px; }
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; color: var(--page-muted); font-weight: 500; }
+tbody tr:hover { background: rgba(0,0,0,0.02); }
+td.mono { font-family: var(--font-mono); }
+.pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
-.empty { border: 1.5px dashed var(--line); border-radius: 12px; padding: 32px 18px; text-align: center; color: var(--muted); }
-.month { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
-.month > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--surface-2); font-weight: bold; }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; }
-.card { display: flex; flex-direction: column; gap: 10px; min-height: 140px; padding: 14px 16px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; text-decoration: none; }
-.card .k { font-family: var(--font-display); font-weight: 800; font-size: 14px; opacity: 0.75; }
-.card .ttl { font-size: 18px; font-weight: 700; }
-/* 관리자 모드 스타일 */
-#admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #111; color: #fff; padding: 10px 20px; display: none; justify-content: space-between; align-items: center; z-index: 9999; font-weight: bold; }
-#admin-bar button { background: #ff4d4d; border: 0; color: #fff; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
-.admin-btns { margin-top: 15px; }
-.admin-btns button { background: var(--accent); color: #fff; border: 0; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.tag-sample { font-size: 11px; background: #eee; padding: 1px 6px; border-radius: 4px; margin-left: 6px; color: #666; }
+.nms { display: flex; flex-wrap: wrap; gap: 4px; }
+.nm { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--neutral-bg); }
+
+/* 모달 (상세보기 & 관리자) */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+.modal { background: var(--panel); border-radius: 12px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid var(--line); }
+.modal h3 { margin-top: 0; font-size: 20px; border-bottom: 1px solid var(--line); padding-bottom: 10px; display: flex; justify-content: space-between; }
+.modal .close-btn { cursor: pointer; border: 0; background: transparent; font-size: 20px; }
+.detail-sec { margin-bottom: 16px; }
+.detail-sec label { font-size: 12px; color: var(--page-muted); font-weight: bold; display: block; margin-bottom: 4px; }
+.detail-sec .val { font-size: 14px; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; font: inherit; padding: 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--page-fg); }
+
+/* 관리자 바 */
+#admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #18181b; color: #fff; padding: 10px 24px; display: none; justify-content: space-between; align-items: center; z-index: 999; font-weight: bold; }
+#admin-bar button { background: #ef4444; color: #fff; border: 0; padding: 6px 14px; border-radius: 6px; cursor: pointer; }
+.btn-btn { font: inherit; font-size: 12px; padding: 3px 8px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); }
+.btn-accent { background: var(--accent); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 </style>
+</head>
+<body>
 
 <div class="wrap">
   <header class="top">
-    <div class="brand"><h1>Dohyeon <em>Archive</em></h1></div>
+    <h1>DOHYEON <em>ARCHIVE</em></h1>
   </header>
+
   <div class="sheet">
-    <nav class="bar" id="mainNav"></nav>
-    <div class="panel" id="panel"><main id="view"></main></div>
+    <nav class="bar" id="mainNav">
+      <a href="#record" data-cat="record" aria-current="page">전적</a>
+      <a href="#scrim" data-cat="scrim">롤 멸망전</a>
+      <a href="#mc" data-cat="mc">마크서버</a>
+      <a href="#chong" data-cat="chong">총겜동</a>
+    </nav>
+    <div class="panel">
+      <main id="view"></main>
+    </div>
   </div>
 </div>
 
+<!-- 관리자 상태바 -->
 <div id="admin-bar">
-  <span>⚡ 관리자 모드 활성화됨 (데이터 추가/수정 가능)</span>
-  <button onclick="logoutAdmin()">관리자 모드 종료</button>
+  <span>⚡ 관리자 모드 활성화 (Alt+A)</span>
+  <button onclick="logoutAdmin()">관리자 종료</button>
+</div>
+
+<!-- 상세보기 모달 -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <h3><span id="mTitle">전적 상세 정보</span><button class="close-btn" onclick="closeModal('detailModal')">✕</button></h3>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- 추가/수정 모달 -->
+<div class="modal-overlay" id="formModal">
+  <div class="modal">
+    <h3><span id="formTitle">전적 추가</span><button class="close-btn" onclick="closeModal('formModal')">✕</button></h3>
+    <form id="recordForm" onsubmit="saveRecord(event)">
+      <input type="hidden" id="editIdx" value="-1">
+      <div class="form-group"><label>날짜 (YYYY-MM-DD)</label><input type="text" id="fDate" required placeholder="2026-05-23"></div>
+      <div class="form-group"><label>게임</label>
+        <select id="fGame"><option value="발로란트">발로란트</option><option value="롤">롤</option><option value="배그">배그</option></select>
+      </div>
+      <div class="form-group"><label>종류</label>
+        <select id="fMode"><option value="내전">내전</option><option value="랜드">랜드</option><option value="CK">CK</option></select>
+      </div>
+      <div class="form-group"><label>세트</label><input type="text" id="fSet" required placeholder="1세트"></div>
+      <div class="form-group"><label>결과</label>
+        <select id="fResult"><option value="W">승</option><option value="L">패</option></select>
+      </div>
+      <div class="form-group"><label>맵 / 챔피언 / 순수킬</label><input type="text" id="fDetail" placeholder="헤이븐 또는 아리 등"></div>
+      <div class="form-group"><label>요원 (발로란트 전용)</label><input type="text" id="fAgent" placeholder="소바"></div>
+      <div class="form-group"><label>도현 팀 주요 멤버 (쉼표 구분)</label><input type="text" id="fMembers" placeholder="예시A, 예시B, 예시C"></div>
+      <hr style="margin: 15px 0; border:0; border-top:1px solid var(--line);">
+      <div class="form-group"><label>[상세] 도현 팀 전체 멤버 (전체 라인업)</label><input type="text" id="fOurTeam" placeholder="탑:A, 정글:B, 미드:도현..."></div>
+      <div class="form-group"><label>[상세] 상대 팀 전체 멤버</label><input type="text" id="fTheirTeam" placeholder="상대1, 상대2, 상대3..."></div>
+      <div class="form-group"><label>[상세] 풀영상 VOD 링크</label><input type="url" id="fVod" placeholder="https://youtube.com/..."></div>
+      <div class="form-group"><label>[상세] 경기 메모 / 비고</label><textarea id="fNote" rows="2" placeholder="주요 하이라이트 및 경기 메모"></textarea></div>
+      <button type="submit" class="btn-accent" style="width:100%; margin-top:10px;">저장하기</button>
+    </form>
+  </div>
 </div>
 
 <script>
-// 기본 초기 데이터 (localStorage에 없으면 이 데이터를 사용)
-const DEFAULT_DATA = {
-  sets: [
-    { date: "2024-11-02", game: "발로란트", mode: "내전", set: "1세트", result: "W", map: "어센트", agent: "제트", members: ["예시A", "예시B"] },
-    { date: "2024-08-10", game: "롤", mode: "내전", set: "1세트", result: "W", champ: "아리", members: ["예시A", "예시C"] }
-  ],
-  scrims: [],
-  servers: [
-    { id: "korchang", name: "코창서버", days: [] },
-    { id: "mending", name: "맹든링서버", days: [{ title: "1일차", date: "2025-01-01", sections: [{ title: "광질", items: ["철 캐기", "다이아 발견"] }] }] }
-  ],
-  chong: { eps: [{ ep: 1, title: "첫 방송", date: "2025-05-01", game: "발로란트", summary: "첫 에피소드 요약", timeline: [["00:00", "오프닝"]], points: ["포인트1"] }] }
-};
+// 기본 샘플 데이터 (원본 이미지 데이터 완벽 반영)
+const DEFAULT_SETS = [
+  {
+    date: "2026-05-23", game: "발로란트", mode: "랜드", set: "1세트", result: "W", map: "헤이븐", agent: "소바",
+    members: ["예시A", "예시B", "예시G", "예시H", "예시I"], sample: true,
+    ourTeam: "도현(소바), 예시A(제트), 예시B(브리치), 예시G(킬조이), 예시H(오멘)",
+    theirTeam: "상대A, 상대B, 상대C, 상대D, 상대E", vod: "https://youtube.com", note: "랜드 첫 경기 깔끔한 승리"
+  },
+  {
+    date: "2024-11-02", game: "발로란트", mode: "내전", set: "1세트", result: "L", map: "어센트", agent: "제트",
+    members: ["예시A", "예시B", "예시C", "예시D", "예시E"], sample: true,
+    ourTeam: "도현(제트), 예시A, 예시B, 예시C, 예시D",
+    theirTeam: "상대팀 5명", vod: "", note: "아쉬운 패배"
+  },
+  {
+    date: "2024-11-02", game: "발로란트", mode: "내전", set: "2세트", result: "W", map: "바인드", agent: "제트",
+    members: ["예시A", "예시B", "예시C", "예시D", "예시F"], sample: true,
+    ourTeam: "도현(제트), 예시A, 예시B, 예시C, 예시F",
+    theirTeam: "상대팀 5명", vod: "", note: "2세트 승리 복수 성공"
+  }
+];
 
-// 로컬 스토리지에서 데이터 로드 또는 기본값 설정
-let DB = JSON.parse(localStorage.getItem("dohyeon_db")) || DEFAULT_DATA;
-function saveDB() { localStorage.setItem("dohyeon_db", JSON.stringify(DB)); }
+let setsData = JSON.parse(localStorage.getItem("dohyeon_sets")) || DEFAULT_SETS;
+function saveSets() { localStorage.setItem("dohyeon_sets", JSON.stringify(setsData)); }
 
 let isAdmin = false;
-const GAMES = ["발로란트", "롤", "배그"];
-let S = { game: "all", mode: "all", route: "record" };
+let S = { game: "발로란트", mode: "all", who: "", newest: true, monthOrder: {} };
 
-// 단축키 Alt + A 감지
+// 단축키 Alt + A (비밀번호: 1520711)
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
     e.preventDefault();
@@ -152,7 +236,7 @@ window.addEventListener("keydown", e => {
       alert("관리자 모드가 활성화되었습니다!");
       render();
     } else if (pw !== null) {
-      alert("비밀코드가 틀렸습니다.");
+      alert("비밀코드가 올바르지 않습니다.");
     }
   }
 });
@@ -160,129 +244,206 @@ window.addEventListener("keydown", e => {
 function logoutAdmin() {
   isAdmin = false;
   document.getElementById("admin-bar").style.display = "none";
-  alert("관리자 모드가 종료되었습니다.");
   render();
 }
 
-function currentRoute() {
-  const h = location.hash.slice(1);
-  if (["record", "scrim", "mc", "chong"].includes(h)) return h;
-  return "record";
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+function openDetail(idx) {
+  const r = setsData[idx];
+  document.getElementById("mTitle").textContent = `${r.date} ${r.game} (${r.set})`;
+  document.getElementById("modalContent").innerHTML = `
+    <div class="detail-sec"><label>경기 종류 / 결과</label><div class="val">${r.mode} · <span class="pill ${r.result==='W'?'w':'l'}">${r.result==='W'?'승리':'패배'}</span></div></div>
+    <div class="detail-sec"><label>맵 / 챔피언 / 요원</label><div class="val">${r.map || r.champ || r.kills || '-'} ${r.agent ? '('+r.agent+')' : ''}</div></div>
+    <div class="detail-sec"><label>🔵 도현 팀 전체 멤버</label><div class="val">${r.ourTeam || r.members.join(', ')}</div></div>
+    <div class="detail-sec"><label>🔴 상대 팀 멤버</label><div class="val">${r.theirTeam || '정보 없음'}</div></div>
+    ${r.note ? `<div class="detail-sec"><label>📝 경기 메모</label><div class="val">${r.note}</div></div>` : ''}
+    ${r.vod ? `<div class="detail-sec"><label>🎬 풀영상</label><div class="val"><a href="${r.vod}" target="_blank" style="color:var(--accent);font-weight:bold;">영상 보러가기 ↗</a></div></div>` : ''}
+  `;
+  document.getElementById("detailModal").style.display = "flex";
 }
 
-function renderNav() {
-  const route = currentRoute();
-  const items = [["record", "전적"], ["scrim", "롤 멸망전"], ["mc", "마크서버"], ["chong", "총겜동"]];
-  document.getElementById("mainNav").innerHTML = items.map(([h, t]) =>
-    `<a href="#${h}" ${route === h ? 'aria-current="page"' : ""}>${t}</a>`).join("");
+function openForm(idx = -1) {
+  document.getElementById("editIdx").value = idx;
+  if (idx === -1) {
+    document.getElementById("formTitle").textContent = "전적 추가";
+    document.getElementById("recordForm").reset();
+  } else {
+    document.getElementById("formTitle").textContent = "전적 수정";
+    const r = setsData[idx];
+    document.getElementById("fDate").value = r.date;
+    document.getElementById("fGame").value = r.game;
+    document.getElementById("fMode").value = r.mode;
+    document.getElementById("fSet").value = r.set;
+    document.getElementById("fResult").value = r.result;
+    document.getElementById("fDetail").value = r.map || r.champ || r.kills || "";
+    document.getElementById("fAgent").value = r.agent || "";
+    document.getElementById("fMembers").value = r.members ? r.members.join(", ") : "";
+    document.getElementById("fOurTeam").value = r.ourTeam || "";
+    document.getElementById("fTheirTeam").value = r.theirTeam || "";
+    document.getElementById("fVod").value = r.vod || "";
+    document.getElementById("fNote").value = r.note || "";
+  }
+  document.getElementById("formModal").style.display = "flex";
 }
 
-function renderRecords() {
-  const rows = DB.sets.filter(r => S.game === "all" || r.game === S.game);
-  const totalW = rows.filter(r => r.result === "W").length;
-  
-  let adminHtml = isAdmin ? `
-    <div class="admin-btns">
-      <button onclick="addRecordPrompt()">+ 새 전적 추가하기</button>
-    </div>` : "";
+function saveRecord(e) {
+  e.preventDefault();
+  const idx = parseInt(document.getElementById("editIdx").value);
+  const game = document.getElementById("fGame").value;
+  const detailVal = document.getElementById("fDetail").value;
 
-  return `
-    <div class="block">
-      <div class="subnav">
-        <a href="#record" aria-current="page">전체 전적<span class="n">${rows.length}</span></a>
-      </div>
-      <h2>전적 아카이브</h2>
-      <div class="stats">
-        <div class="stat"><span class="k">총 세트</span><span class="v">${rows.length}</span></div>
-        <div class="stat"><span class="k">승 / 패</span><span class="v">${totalW} / ${rows.length - totalW}</span></div>
-      </div>
-      <div class="toolbar">
-        <div class="filters">${GAMES.map(g => `<button class="chip" onclick="setGame('${g}')" aria-pressed="${S.game === g}">${g}</button>`).join("")}</div>
-      </div>
-      ${adminHtml}
-      <div class="table-wrap" style="margin-top:15px;">
-        <table>
-          <thead><tr><th>날짜</th><th>게임</th><th>종류</th><th>세트</th><th>결과</th><th>상세</th><th>멤버</th>${isAdmin ? "<th>관리</th>" : ""}</tr></thead>
-          <tbody>
-            ${rows.map((r, idx) => `
-              <tr>
-                <td>${r.date}</td><td>${r.game}</td><td>${r.mode}</td><td>${r.set}</td>
-                <td><span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
-                <td>${r.map || r.champ || r.kills || '-'}</td>
-                <td>${r.members ? r.members.join(", ") : ""}</td>
-                ${isAdmin ? `<td><button onclick="deleteRecord(${idx})" style="background:#ff4d4d;color:#fff;border:0;padding:3px 8px;border-radius:4px;cursor:pointer;">삭제</button></td>` : ""}
-              </tr>`).join("")}
-          </tbody>
-        </table>
-      </div>
-    </div>`;
-}
+  const item = {
+    date: document.getElementById("fDate").value,
+    game: game,
+    mode: document.getElementById("fMode").value,
+    set: document.getElementById("fSet").value,
+    result: document.getElementById("fResult").value,
+    map: game === "발로란트" ? detailVal : "",
+    champ: game === "롤" ? detailVal : "",
+    kills: game === "배그" ? detailVal : "",
+    agent: document.getElementById("fAgent").value,
+    members: document.getElementById("fMembers").value.split(",").map(s => s.trim()).filter(Boolean),
+    ourTeam: document.getElementById("fOurTeam").value,
+    theirTeam: document.getElementById("fTheirTeam").value,
+    vod: document.getElementById("fVod").value,
+    note: document.getElementById("fNote").value,
+  };
 
-function setGame(g) {
-  S.game = S.game === g ? "all" : g;
-  render();
-}
+  if (idx === -1) setsData.push(item);
+  else setsData[idx] = item;
 
-function addRecordPrompt() {
-  const date = prompt("날짜 (YYYY-MM-DD):", "2026-06-01");
-  if (!date) return;
-  const game = prompt("게임 (발로란트 / 롤 / 배그 중 택1):", "롤");
-  const mode = prompt("종류 (내전 / 랜드 / CK):", "내전");
-  const set = prompt("세트 (예: 1세트):", "1세트");
-  const result = prompt("결과 (승 / 패):", "승") === "승" ? "W" : "L";
-  const detail = prompt("추가 정보 (챔피언/맵/킬수):", "아리");
-  const members = prompt("멤버 (쉼표로 구분):", "도현, 예시A");
-
-  DB.sets.push({
-    date, game, mode, set, result,
-    champ: game === "롤" ? detail : "",
-    map: game === "발로란트" ? detail : "",
-    kills: game === "배그" ? detail : "",
-    members: members ? members.split(",").map(s => s.trim()) : []
-  });
-  saveDB();
+  saveSets();
+  closeModal("formModal");
   render();
 }
 
 function deleteRecord(idx) {
-  if (confirm("정말 이 전적 기록을 삭제하시겠습니까?")) {
-    DB.sets.splice(idx, 1);
-    saveDB();
+  if (confirm("정말 이 전적을 삭제하시겠습니까?")) {
+    setsData.splice(idx, 1);
+    saveSets();
     render();
   }
 }
 
-function renderMinecraft() {
+function renderRecords() {
+  const games = ["발로란트", "롤", "배그"];
+  let rows = setsData.filter(r => S.mode === "all" || r.mode === S.mode);
+  const allNames = [...new Set(setsData.filter(r => r.game === S.game).flatMap(r => r.members))].sort();
+
+  rows = rows.filter(r => r.game === S.game);
+  if (S.who) rows = rows.filter(r => r.members.includes(S.who));
+
+  const total = rows.length;
+  const winCount = rows.filter(r => r.result === "W").length;
+  const lossCount = total - winCount;
+  const winRate = total ? Math.round((winCount / total) * 100) : 0;
+
+  // 그룹화 (월별)
+  const groups = new Map();
+  rows.forEach(r => {
+    const k = r.date.slice(0, 7);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(r);
+  });
+
+  const monthsHtml = [...groups.entries()].map(([k, list]) => {
+    const desc = S.monthOrder[k] === "desc";
+    const sorted = [...list].sort((a, b) => desc ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date));
+    const mWin = sorted.filter(r => r.result === "W").length;
+    const mRate = Math.round((mWin / sorted.length) * 100);
+
+    const trs = sorted.map(r => {
+      const realIdx = setsData.indexOf(r);
+      return `
+        <tr>
+          <td class="mono">${r.date.slice(5).replace('-', '.')} ${getWd(r.date)}</td>
+          <td>${r.mode}</td>
+          <td><a href="javascript:void(0)" onclick="openDetail(${realIdx})" style="font-weight:bold;color:var(--accent);">${r.set}</a> ${r.sample ? '<span class="tag-sample">예시</span>' : ''}</td>
+          <td><span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
+          <td>${r.map || r.champ || r.kills || '-'}</td>
+          <td>${r.agent || '-'}</td>
+          <td><div class="nms">${r.members.map(m => `<span class="nm">${m}</span>`).join('')}</div></td>
+          <td>
+            <button class="btn-btn" onclick="openDetail(${realIdx})">상세</button>
+            ${isAdmin ? `<button class="btn-btn" onclick="openForm(${realIdx})">수정</button> <button class="btn-btn" style="color:red;" onclick="deleteRecord(${realIdx})">삭제</button>` : ''}
+          </td>
+        </tr>`;
+    }).join("");
+
+    return `
+      <details class="month" open>
+        <summary>
+          <span class="m-title">v ${k.replace('-', '.')}</span>
+          <span class="m-meta">${sorted.length}세트 · ${mWin}승 ${sorted.length - mWin}패</span>
+          <span class="seg">
+            <button type="button" onclick="setMonthOrd('${k}','desc')" aria-pressed="${desc}">최신순</button>
+            <button type="button" onclick="setMonthOrd('${k}','asc')" aria-pressed="${!desc}">오래된순</button>
+          </span>
+          <div class="rate-box">
+            <span class="mono">승률 <b>${mRate}%</b></span>
+            <div class="bar"><b style="width:${mRate}%"></b></div>
+          </div>
+        </summary>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>날짜</th><th>종류</th><th>세트</th><th>결과</th><th>맵</th><th>요원</th><th>멤버</th><th>상세보기</th></tr></thead>
+            <tbody>${trs}</tbody>
+          </table>
+        </div>
+      </details>`;
+  }).join("");
+
   return `
     <div class="block">
-      <h2>마크서버 기록</h2>
-      <div class="cards" style="margin-top:15px;">
-        ${DB.servers.map(s => `<div class="card"><span class="k">Server</span><span class="ttl">${s.name}</span><span class="meta">${s.days.length}일 기록</span></div>`).join("")}
+      <div class="subnav">
+        <a href="javascript:void(0)" onclick="setMode('all')" ${S.mode==='all'?'aria-current="page"':''}>전체 <span class="n">${setsData.length}</span></a>
+        <a href="javascript:void(0)" onclick="setMode('내전')" ${S.mode==='내전'?'aria-current="page"':''}>내전</a>
+        <a href="javascript:void(0)" onclick="setMode('랜드')" ${S.mode==='랜드'?'aria-current="page"':''}>랜드</a>
+        <a href="javascript:void(0)" onclick="setMode('CK')" ${S.mode==='CK'?'aria-current="page"':''}>CK</a>
       </div>
+
+      <h2>전체 전적</h2>
+
+      <div class="stats">
+        <div class="stat"><span class="k">세트</span><span class="v">${total}</span></div>
+        <div class="stat"><span class="k">승 / 패</span><span class="v">${winCount} / ${lossCount}</span></div>
+        <div class="stat"><span class="k">승률</span><span class="v">${winRate}%</span></div>
+        <div class="stat"><span class="k">최근 3세트</span>
+          <div class="form-dots">${rows.slice(0,3).map(r=>`<i class="${r.result==='W'?'w':'l'}"></i>`).join('')}</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="filters">
+          ${games.map(g=>`<button class="chip" onclick="setGame('${g}')" aria-pressed="${S.game===g}">${g}</button>`).join('')}
+          <select onchange="setWho(this.value)">
+            <option value="">전체 멤버</option>
+            ${allNames.map(n=>`<option value="${n}" ${S.who===n?'selected':''}>${n}</option>`).join('')}
+          </select>
+        </div>
+        ${isAdmin ? `<button class="btn-accent" onclick="openForm()">+ 새 전적 추가</button>` : ''}
+      </div>
+
+      ${monthsHtml || '<div style="padding:40px;text-align:center;color:#888;">기록이 없습니다.</div>'}
     </div>`;
 }
 
-function renderChong() {
-  return `
-    <div class="block">
-      <h2>총겜동 에피소드</h2>
-      <div class="cards" style="margin-top:15px;">
-        ${DB.chong.eps.map(e => `<div class="card"><span class="k">Ep.${e.ep}</span><span class="ttl">${e.title}</span><span class="meta">${e.date || ''}</span></div>`).join("")}
-      </div>
-    </div>`;
+function getWd(d) {
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
+  return days[new Date(d).getDay()];
 }
+
+function setGame(g) { S.game = g; render(); }
+function setMode(m) { S.mode = m; render(); }
+function setWho(w) { S.who = w; render(); }
+function setMonthOrd(k, ord) { S.monthOrder[k] = ord; render(); }
 
 function render() {
-  renderNav();
-  const route = currentRoute();
-  const v = document.getElementById("view");
-  if (route === "record") v.innerHTML = renderRecords();
-  else if (route === "mc") v.innerHTML = renderMinecraft();
-  else if (route === "chong") v.innerHTML = renderChong();
-  else v.innerHTML = `<div class="block"><h2>준비 중</h2></div>`;
+  document.getElementById("view").innerHTML = renderRecords();
 }
 
-window.addEventListener("hashchange", render);
 render();
 </script>
-</body></html>
+</body>
+</html>
