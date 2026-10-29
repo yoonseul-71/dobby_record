@@ -115,15 +115,26 @@ td.mono { font-family: var(--font-mono); }
 .card-more { align-self: flex-end; font-size: 12px; color: var(--page-muted); font-weight: 500; margin-top: auto; padding-top: 12px; }
 .card-admin-btns { position: absolute; top: 12px; right: 12px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 5:5 상세 테이블 스타일 */
+/* 롤 멸망전 상세 스타일 (요청하신 구조 및 폰트 0.5~1 키움 반영) */
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow: hidden; position: relative; }
-.scrim-box-header { padding: 12px 16px; font-weight: bold; font-size: 15px; background: #fafafa; border-bottom: 1px solid #dcdcdc; display: flex; justify-content: space-between; align-items: center; }
+.scrim-box-header { padding: 10px 16px; font-weight: bold; font-size: 15px; background: #fafafa; border-bottom: 1px solid #dcdcdc; display: flex; justify-content: space-between; align-items: center; }
+
+/* 메모지 탭 스타일 (진영 컬러 표시 및 세트 부제목 굵은 글씨) */
+.scrim-memo-tab { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; border: 1.5px solid rgba(0,0,0,0.15); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.scrim-memo-tab.blue { background: #e8f0fe; color: #1a73e8; border-color: #b0c4de; }
+.scrim-memo-tab.red { background: #fce8e6; color: #d93025; border-color: #f5c6cb; }
+.scrim-subtitle { font-size: 14px; font-weight: 800; color: #12161c; margin-left: 4px; }
+
 .lol-match-table { width: 100%; border-collapse: collapse; }
-.lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 12px; vertical-align: middle; }
-.lol-match-table .pos-col { width: 70px; text-align: center; background: #f9f9f9; font-weight: bold; color: #555; }
-.lol-match-table .player-row { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; font-size: 14px; }
-.lol-match-table .tier-badge { font-size: 12px; color: #555; font-family: var(--font-mono); }
-.lol-match-table .champ-row { font-size: 13px; color: var(--page-muted); margin-top: 2px; }
+.lol-match-table td { border: 1px solid #dcdcdc; padding: 7px 12px; vertical-align: middle; font-size: 14.5px; }
+.lol-match-table .pos-col { width: 80px; text-align: center; background: #f9f9f9; font-weight: bold; color: #555; font-size: 13.5px; }
+
+/* 새로운 좌우 대칭 구조 (스트리머명/티어/챔피언) */
+.player-cell-left { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; }
+.player-cell-right { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; flex-direction: row-reverse; }
+.champ-cell-left { font-size: 13.5px; color: var(--page-muted); margin-top: 2px; text-align: left; }
+.champ-cell-right { font-size: 13.5px; color: var(--page-muted); margin-top: 2px; text-align: right; }
+.tier-text { font-size: 12.5px; color: #555; font-family: var(--font-mono); font-weight: normal; }
 
 /* 배그 표 스타일 */
 .kill-summary-box { border-left: 4px solid #12161c; padding-left: 12px; margin-bottom: 16px; }
@@ -289,13 +300,13 @@ const DEFAULT_SCRIM = [
     id: "do2", no: "도이온2", badge: "2025 시즌2 멸망전", 
     matches: [
       {
-        matchType: "스크림", timeLabel: "19시", date: "2025-11-15", side: "레드", result: "패",
+        matchType: "스크림", timeLabel: "19시", subtitle: "결승전 세트", date: "2025-11-15", side: "레드", result: "패",
         positions: [
-          { pos: "탑", p1: "박사장", t1: "[E] 31.2", c1: "카밀", p2: "염보성", t2: "[P] 24.3", c2: "모데카이저" },
-          { pos: "정글", p1: "저라뎃", t1: "[C] 63", c1: "케인", p2: "클리드", t2: "[C] 68", c2: "사일러스" },
-          { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "멜", p2: "박이언", t2: "[S] 10", c2: "사이온" },
-          { pos: "원딜", p1: "맛종욱", t1: "[E] 22.1", c1: "바루스", p2: "바밤바", t2: "[C] 60.4", c2: "유나라" },
-          { pos: "서포터", p1: "한아밍", t1: "[E] 36", c1: "레오나", p2: "애교용", t2: "[G] 21", c2: "유미" }
+          { pos: "탑", p1: "선수1", t1: "[P] 30", c1: "챔피언1", p2: "상대1", t2: "[G] 20", c2: "상대챔1" },
+          { pos: "정글", p1: "선수2", t1: "[E] 10", c1: "챔피언2", p2: "상대2", t2: "[E] 10", c2: "상대챔2" },
+          { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "아리", p2: "상대3", t2: "[P] 20", c2: "상대챔3" },
+          { pos: "원딜", p1: "선수4", t1: "[C] 40", c1: "챔피언4", p2: "상대4", t2: "[C] 40", c2: "상대챔4" },
+          { pos: "서포터", p1: "선수5", t1: "[G] 15", c1: "챔피언5", p2: "상대5", t2: "[G] 15", c2: "상대챔5" }
         ]
       }
     ]
@@ -380,7 +391,6 @@ function openDetail(idx) {
   document.getElementById("detailModal").style.display = "flex";
 }
 
-/* 선택한 게임별 필터링 입력 필드 */
 function updateRecordFormFields(selectedGame, r = {}) {
   const fields = document.getElementById("recordGameFields");
   if (!fields) return;
@@ -561,21 +571,38 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "") {
       <label>내용 (엔터 줄바꿈 여백 유지)</label><textarea id="asTimelineText" rows="3"></textarea>
       <label>링크 주소 (선택)</label><input type="text" id="asTimelineUrl">
     `;
+  } else if (type === "mc-timeline-edit") {
+    const srv = MC_SERVERS.find(s => s.id === parentId);
+    const item = srv.days[0].sections[ex1].timelines[ex2];
+    document.getElementById("asTitle").textContent = "마크서버 타임라인 수정";
+    container.innerHTML = `
+      <label>내용</label><textarea id="asTimelineText" rows="3">${item.text}</textarea>
+      <label>링크 주소</label><input type="text" id="asTimelineUrl" value="${item.url||''}">
+    `;
   } else if (type === "chong-timeline-add") {
     document.getElementById("asTitle").textContent = "총겜동 타임라인 내용 추가";
     container.innerHTML = `
       <label>내용 (엔터 줄바꿈 여백 유지)</label><textarea id="asChongText" rows="3"></textarea>
       <label>링크 주소 (선택)</label><input type="text" id="asChongUrl">
     `;
+  } else if (type === "chong-timeline-edit") {
+    const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
+    const item = epObj.timeline[ex1];
+    document.getElementById("asTitle").textContent = "총겜동 타임라인 수정";
+    container.innerHTML = `
+      <label>내용</label><textarea id="asChongText" rows="3">${item.text}</textarea>
+      <label>링크 주소</label><input type="text" id="asChongUrl" value="${item.url||''}">
+    `;
   } else if (type === "scrim-match-add") {
-    document.getElementById("asTitle").textContent = "롤 멸망전 경기 추가 (기본 5포지션 템플릿)";
+    document.getElementById("asTitle").textContent = "롤 멸망전 경기 추가 (기본 템플릿)";
     container.innerHTML = `
       <label>구분</label><select id="asMatchType"><option value="스크림">스크림</option><option value="대회">대회</option></select>
-      <label>시간/라벨 (예: 19시 또는 결승전)</label><input type="text" id="asTimeLabel" value="19시">
+      <label>시간 (예: 19시)</label><input type="text" id="asTimeLabel" value="19시">
+      <label>세트/부제목 (굵은 글씨로 표시됨)</label><input type="text" id="asSubtitle" value="1세트 결승">
       <label>날짜</label><input type="text" id="asScrimDate" value="2025-11-15">
-      <label>진영</label><select id="asSide"><option value="레드">레드</option><option value="블루">블루</option></select>
+      <label>진영 (블루/레드 선택 시 상단 컬러 메모지 탭 반영)</label>
+      <select id="asSide"><option value="블루">블루</option><option value="레드">레드</option></select>
       <label>결과</label><select id="asScrimRes"><option value="승">승</option><option value="패">패</option></select>
-      <div style="margin-top:12px; font-weight:bold; font-size:13px; color:var(--accent);">* 5개 포지션(탑,정글,미드,원딜,서폿) 기본 템플릿이 자동으로 적용됩니다.</div>
     `;
   }
   document.getElementById("adminSubModal").style.display = "flex";
@@ -585,6 +612,8 @@ function handleSubFormSubmit(e) {
   e.preventDefault();
   const parentId = document.getElementById("asParentId").value;
   const type = document.getElementById("asType").value;
+  const ex1 = document.getElementById("asExtra1").value;
+  const ex2 = document.getElementById("asExtra2").value;
 
   if (type === "mc-day") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
@@ -610,6 +639,14 @@ function handleSubFormSubmit(e) {
       sec.timelines.push({ text, url });
       saveData();
     }
+  } else if (type === "mc-timeline-edit") {
+    const srv = MC_SERVERS.find(s => s.id === parentId);
+    if (srv && srv.days[0]) {
+      const item = srv.days[0].sections[ex1].timelines[ex2];
+      item.text = document.getElementById("asTimelineText").value;
+      item.url = document.getElementById("asTimelineUrl").value;
+      saveData();
+    }
   } else if (type === "chong-timeline-add") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     if (epObj) {
@@ -620,6 +657,13 @@ function handleSubFormSubmit(e) {
       });
       saveData();
     }
+  } else if (type === "chong-timeline-edit") {
+    const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
+    if (epObj && epObj.timeline) {
+      epObj.timeline[ex1].text = document.getElementById("asChongText").value;
+      epObj.timeline[ex1].url = document.getElementById("asChongUrl").value;
+      saveData();
+    }
   } else if (type === "scrim-match-add") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
     if (card) {
@@ -627,6 +671,7 @@ function handleSubFormSubmit(e) {
       card.matches.push({
         matchType: document.getElementById("asMatchType").value,
         timeLabel: document.getElementById("asTimeLabel").value,
+        subtitle: document.getElementById("asSubtitle").value,
         date: document.getElementById("asScrimDate").value,
         side: document.getElementById("asSide").value,
         result: document.getElementById("asScrimRes").value,
@@ -832,43 +877,48 @@ function renderScrims(subId) {
           <a onclick="setScrimTab('전체')" ${S.scrimTab === '전체' ? 'aria-current="page"' : ''}>전체</a>
           <a onclick="setScrimTab('스크림')" ${S.scrimTab === '스크림' ? 'aria-current="page"' : ''}>스크림</a>
           <a onclick="setScrimTab('대회')" ${S.scrimTab === '대회' ? 'aria-current="page"' : ''}>대회</a>
-          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-match-add')">+ 새 단판 경기 추가 (5포지션 템플릿)</button>` : ''}
+          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-match-add')">+ 새 단판 경기 추가 (템플릿)</button>` : ''}
         </div>
 
-        ${filteredMatches.map((m, mIdx) => `
-          <div class="scrim-detail-box">
-            <div class="scrim-box-header">
-              <span>#${m.timeLabel || ''} ${m.matchType || ''} 단판 (${m.side || ''}/${m.result || ''})</span>
-              <div>
-                <span style="font-size:12px; font-weight:normal; color:var(--page-muted); margin-right:10px;">${m.date || ''}</span>
-                ${isAdmin ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-match', '${card.id}', ${mIdx})">경기 삭제</button>` : ''}
+        ${filteredMatches.map((m, mIdx) => {
+          const sideClass = (m.side === "블루") ? "blue" : "red";
+          return `
+            <div class="scrim-detail-box">
+              <div class="scrim-box-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="scrim-memo-tab ${sideClass}">#${m.timeLabel || ''} ${m.matchType || ''} (${m.side || ''}/${m.result || ''})</span>
+                  <span class="scrim-subtitle">${m.subtitle || ''}</span>
+                </div>
+                <div>
+                  <span style="font-size:12px; font-weight:normal; color:var(--page-muted); margin-right:10px;">${m.date || ''}</span>
+                  ${isAdmin ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-match', '${card.id}', ${mIdx})">경기 삭제</button>` : ''}
+                </div>
               </div>
-            </div>
-            <table class="lol-match-table">
-              <tbody>
-                ${(m.positions || []).map(pos => `
-                  <tr>
-                    <td style="width: 45%;">
-                      <div class="player-row">
-                        <span><b>${pos.p1 || ''}</b></span>
-                        <span class="tier-badge">${pos.t1 || ''}</span>
-                      </div>
-                      <div class="champ-row">${pos.c1 || ''}</div>
-                    </td>
-                    <td class="pos-col">${pos.pos || ''}</td>
-                    <td style="width: 45%;">
-                      <div class="player-row">
-                        <span><b>${pos.p2 || ''}</b></span>
-                        <span class="tier-badge">${pos.t2 || ''}</span>
-                      </div>
-                      <div class="champ-row">${pos.c2 || ''}</div>
-                    </td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        `).join('')}
+              <table class="lol-match-table">
+                <tbody>
+                  ${(m.positions || []).map(pos => `
+                    <tr>
+                      <td style="width: 44%;">
+                        <div class="player-cell-left">
+                          <span><b>${pos.p1 || ''}</b></span>
+                          <span class="tier-text">${pos.t1 || ''}</span>
+                        </div>
+                        <div class="champ-cell-left">${pos.c1 || ''}</div>
+                      </td>
+                      <td class="pos-col">${pos.pos || ''}</td>
+                      <td style="width: 44%;">
+                        <div class="player-cell-right">
+                          <span><b>${pos.p2 || ''}</b></span>
+                          <span class="tier-text">${pos.t2 || ''}</span>
+                        </div>
+                        <div class="champ-cell-right">${pos.c2 || ''}</div>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>`;
+        }).join('')}
       </div>`;
   }
 
@@ -926,7 +976,12 @@ function renderMinecraft(subId, dayIndex = 0) {
                     <div>
                       ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
                     </div>
-                    ${isAdmin ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('mc-timeline', '${srv.id}', ${sIdx}, ${tIdx})">삭제</button>` : ''}
+                    <div>
+                      ${isAdmin ? `
+                        <button class="btn-btn" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-edit', ${sIdx}, ${tIdx})">수정</button>
+                        <button class="btn-btn" style="color:red;" onclick="deleteSubItem('mc-timeline', '${srv.id}', ${sIdx}, ${tIdx})">삭제</button>
+                      ` : ''}
+                    </div>
                   </li>
                 `).join('')}
               </ul>
@@ -959,15 +1014,12 @@ function renderMinecraft(subId, dayIndex = 0) {
     </div>`;
 }
 
-/* 총겜동 에피소드 네비게이션 인덱스 파싱 완벽 수정 */
 function renderChong(subEp) {
   if (subEp !== null && subEp !== undefined && subEp !== "") {
-    // decodeURIComponent로 URL 한글/공백 문자 깨짐 방지
     const decodedEp = decodeURIComponent(subEp);
     const curIdx = CHONG_EPS.findIndex(e => String(e.ep) === decodedEp);
     const epObj = curIdx !== -1 ? CHONG_EPS[curIdx] : CHONG_EPS[0];
     
-    // 이전 / 다음 에피소드 인덱스 매칭
     const prevEp = curIdx > 0 ? CHONG_EPS[curIdx - 1] : null;
     const nextEp = (curIdx !== -1 && curIdx < CHONG_EPS.length - 1) ? CHONG_EPS[curIdx + 1] : null;
 
@@ -991,7 +1043,12 @@ function renderChong(subEp) {
                   <div>
                     ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
                   </div>
-                  ${isAdmin ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('chong-timeline', '${epObj.ep}', ${tIdx})">삭제</button>` : ''}
+                  <div>
+                    ${isAdmin ? `
+                      <button class="btn-btn" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-edit', ${tIdx})">수정</button>
+                      <button class="btn-btn" style="color:red;" onclick="deleteSubItem('chong-timeline', '${epObj.ep}', ${tIdx})">삭제</button>
+                    ` : ''}
+                  </div>
                 </li>
               `).join('')}
             </ul>
