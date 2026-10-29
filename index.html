@@ -32,7 +32,7 @@ a { color: inherit; text-decoration: none; }
 header.top { display: flex; justify-content: space-between; align-items: flex-start; }
 h1 { margin: 0; font-family: var(--font-body); font-weight: 800; font-size: 48px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; font-style: normal; }
 
-/* 자유분방한 스티커 메모 탭 디자인 */
+/* 스티커 메모 탭 디자인 */
 nav.bar { display: flex; align-items: flex-end; gap: 6px; border-bottom: 1px solid var(--line); padding-left: 10px; }
 nav.bar a {
   position: relative; display: inline-flex; align-items: center; padding: 8px 22px;
@@ -145,7 +145,7 @@ td.mono { font-family: var(--font-mono); }
 .light-modal .btn-save { background: var(--accent); color: var(--accent-ink); border: 0; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 .light-modal .btn-cancel { background: var(--neutral-bg); color: var(--page-fg); border: 0; padding: 10px 16px; border-radius: 6px; cursor: pointer; }
 
-/* 줄바꿈 여백 유지 클래스 */
+/* 줄바꿈 여백 유지 */
 .text-pre { white-space: pre-wrap; word-break: break-all; }
 
 /* 타임라인 및 상세 박스 */
@@ -380,7 +380,7 @@ function openDetail(idx) {
   document.getElementById("detailModal").style.display = "flex";
 }
 
-/* 동적 전적 모달 필터링 */
+/* 선택한 게임별 필터링 입력 필드 */
 function updateRecordFormFields(selectedGame, r = {}) {
   const fields = document.getElementById("recordGameFields");
   if (!fields) return;
@@ -540,7 +540,6 @@ function handleAdminFormSubmit(e) {
   render();
 }
 
-/* 세부 항목 (상세페이지 내 요소들) 추가/수정 모달 */
 function openSubAdminModal(parentId, type, ex1 = "", ex2 = "") {
   document.getElementById("asParentId").value = parentId;
   document.getElementById("asType").value = type;
@@ -960,15 +959,17 @@ function renderMinecraft(subId, dayIndex = 0) {
     </div>`;
 }
 
-/* 총겜동 에피소드 네비게이션 인덱싱 및 연결 완벽 수정 */
+/* 총겜동 에피소드 네비게이션 인덱스 파싱 완벽 수정 */
 function renderChong(subEp) {
   if (subEp !== null && subEp !== undefined && subEp !== "") {
-    const curIdx = CHONG_EPS.findIndex(e => String(e.ep) === String(subEp));
+    // decodeURIComponent로 URL 한글/공백 문자 깨짐 방지
+    const decodedEp = decodeURIComponent(subEp);
+    const curIdx = CHONG_EPS.findIndex(e => String(e.ep) === decodedEp);
     const epObj = curIdx !== -1 ? CHONG_EPS[curIdx] : CHONG_EPS[0];
     
-    // 이전/다음 에피소드 자동 매칭
+    // 이전 / 다음 에피소드 인덱스 매칭
     const prevEp = curIdx > 0 ? CHONG_EPS[curIdx - 1] : null;
-    const nextEp = curIdx !== -1 && curIdx < CHONG_EPS.length - 1 ? CHONG_EPS[curIdx + 1] : null;
+    const nextEp = (curIdx !== -1 && curIdx < CHONG_EPS.length - 1) ? CHONG_EPS[curIdx + 1] : null;
 
     return `
       <div class="block">
@@ -998,10 +999,10 @@ function renderChong(subEp) {
         </div>
         <div class="ep-footer-nav">
           <div>
-            ${prevEp ? `<a class="ep-nav-box" href="#chong-ep${prevEp.ep}">← Ep.${prevEp.ep}</a>` : ''}
+            ${prevEp ? `<a class="ep-nav-box" href="#chong-ep${encodeURIComponent(prevEp.ep)}">← Ep.${prevEp.ep}</a>` : ''}
           </div>
           <div>
-            ${nextEp ? `<a class="ep-nav-box" href="#chong-ep${nextEp.ep}">Ep.${nextEp.ep} →</a>` : ''}
+            ${nextEp ? `<a class="ep-nav-box" href="#chong-ep${encodeURIComponent(nextEp.ep)}">Ep.${nextEp.ep} →</a>` : ''}
           </div>
         </div>
       </div>`;
@@ -1017,7 +1018,7 @@ function renderChong(subEp) {
         ${CHONG_EPS.map((e, idx) => `
           <div class="card card-chong">
             ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('chong', ${idx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('chong', ${idx})">삭제</button></div>` : ''}
-            <a href="#chong-ep${e.ep}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+            <a href="#chong-ep${encodeURIComponent(e.ep)}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
               <div>
                 <div class="ep-no">Ep.${e.ep}</div>
                 <div class="ep-title">${e.title}</div>
@@ -1043,7 +1044,7 @@ function setScrimTab(t) { S.scrimTab = t; render(); }
 function setMonthOrd(k, ord) { S.monthOrder[k] = ord; render(); }
 
 function render() {
-  const hash = location.hash.slice(1) || "record";
+  const hash = decodeURIComponent(location.hash.slice(1)) || "record";
   const cat = hash.split("-")[0];
 
   document.querySelectorAll("#mainNav a").forEach(a => {
