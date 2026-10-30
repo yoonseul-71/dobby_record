@@ -143,21 +143,21 @@ td.mono { font-family: var(--font-mono); }
 
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 세부 페이지 파스텔톤 노랑 스타일 적용 */
+/* 롤 멸망전 세부 스타일 (진한 노랑 포인트 적용) */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.scrim-top-date-btn { padding: 8px 18px; border-radius: 8px; border: 1.5px solid #fde047; background: #fef08a; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-.scrim-top-date-btn[aria-selected="true"] { background: #facc15; border-color: #ca8a04; }
+.scrim-top-date-btn { padding: 8px 18px; border-radius: 8px; border: 1.5px solid #eab308; background: #fef08a; font-weight: bold; cursor: pointer; font-size: 14px; color: #422006; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+.scrim-top-date-btn[aria-selected="true"] { background: #eab308; border-color: #ca8a04; color: #ffffff; }
 
 .scrim-time-btn, .scrim-set-btn { 
-  padding: 6px 16px; border-radius: 8px; border: 1.5px solid #fde047; background: #fefce8; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; 
+  padding: 6px 16px; border-radius: 8px; border: 1.5px solid #eab308; background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: #422006; 
 }
 .scrim-time-btn[aria-selected="true"], .scrim-set-btn[aria-selected="true"] { 
-  border-color: #ca8a04; background: #fef08a; color: #713f12; 
+  border-color: #ca8a04; background: #fef08a; color: #422006; 
 }
 .scrim-time-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-set-bar { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
 
-.today-scrim-bar { background: #fefce8; border: 1.5px solid #fef08a; border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: #713f12; }
+.today-scrim-bar { background: transparent; border: 1.5px solid #eab308; border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: #422006; }
 .vod-links-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .vod-link-item { font-size: 12.5px; color: #ca8a04; background: #fef9c3; padding: 3px 10px; border-radius: 6px; text-decoration: underline; }
 
@@ -1024,6 +1024,8 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
         });
       });
     }
+    const todayTotal = todayWins + todayLosses;
+    const todayWinRate = todayTotal ? Math.round((todayWins / todayTotal) * 100) : 0;
 
     const curSet = sets[sI] || sets[0];
     const isDhRed = curSet ? (curSet.side === "레드") : true;
@@ -1041,16 +1043,16 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
             <a onclick="setScrimFilter('스크림')" ${S.scrimFilter === '스크림' ? 'aria-current="page"' : ''}>스크림 <span class="n">${SCRIM_CARDS.filter(c=>(c.type||'스크림')==='스크림').length}</span></a>
             <a onclick="setScrimFilter('대회')" ${S.scrimFilter === '대회' ? 'aria-current="page"' : ''}>대회 <span class="n">${SCRIM_CARDS.filter(c=>c.type==='대회').length}</span></a>
           </div>
-          <div class="seg" style="display:inline-flex; border:1px solid #fef08a; border-radius:999px; overflow:hidden; background:#fefce8;">
-            <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#fef08a':'transparent'}; color:${S.scrimSort==='old'?'#713f12':'#713f12'}; font-weight:bold; cursor:pointer;">오래된순</button>
-            <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#fef08a':'transparent'}; color:${S.scrimSort==='latest'?'#713f12':'#713f12'}; font-weight:bold; cursor:pointer;">최신순</button>
+          <div class="seg" style="display:inline-flex; border:1px solid #eab308; border-radius:999px; overflow:hidden; background:#ffffff;">
+            <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#eab308':'transparent'}; color:${S.scrimSort==='old'?'#ffffff':'#422006'}; font-weight:bold; cursor:pointer;">오래된순</button>
+            <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#eab308':'transparent'}; color:${S.scrimSort==='latest'?'#ffffff':'#422006'}; font-weight:bold; cursor:pointer;">최신순</button>
           </div>
         </div>
 
         <div class="scrim-top-date-bar">
           ${groups.map((g, idx) => `
-            <div style="display:inline-flex; align-items:center; background:#fefce8; border-radius:8px; border:1.5px solid ${idx===gI?'#ca8a04':'#fef08a'};">
-              <button class="scrim-top-date-btn" style="border:0; background:transparent;" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0-s0'">${g.groupTitle}</button>
+            <div style="display:inline-flex; align-items:center; background:#ffffff; border-radius:8px; border:1.5px solid ${idx===gI?'#ca8a04':'#eab308'};">
+              <button class="scrim-top-date-btn" style="border:0; background:${idx===gI?'#eab308':'transparent'}; color:${idx===gI?'#ffffff':'#422006'};" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0-s0'">${g.groupTitle}</button>
               ${isAdmin ? `
                 <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${card.id}', 'scrim-group-edit', ${idx})">✏️</button>
                 <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('scrim-group', '${card.id}', ${idx})">✕</button>
@@ -1061,20 +1063,26 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
         </div>
 
         <div class="today-scrim-bar">
-          <div style="display:flex; align-items:center; gap:12px;">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <span>오늘의 전적: ${todayWins}승 ${todayLosses}패</span>
             <span style="display:flex; gap:4px;">${allSetPills.join('')}</span>
           </div>
-          <div class="vod-links-group">
-            ${(card.vodLinks || []).map(v => `<a class="vod-link-item" href="${v.url}" target="_blank">${v.name} ↗</a>`).join('')}
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="mono" style="font-size:13px;">승률 <b>${todayWinRate}%</b></span>
+              <div class="bar" style="width:80px; height:6px; border-radius:3px; background:var(--loss-bg); overflow:hidden;"><b style="display:block; height:100%; width:${todayWinRate}%; background:var(--win);"></b></div>
+            </div>
+            <div class="vod-links-group">
+              ${(card.vodLinks || []).map(v => `<a class="vod-link-item" href="${v.url}" target="_blank">${v.name} ↗</a>`).join('')}
+            </div>
           </div>
         </div>
 
         ${curGroup ? `
           <div class="scrim-time-bar">
             ${dates.map((d, idx) => `
-              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid ${idx===dI?'#ca8a04':'#fef08a'}; background:#fefce8;">
-                <button class="scrim-time-btn" style="border:0; background:transparent;" ${idx===dI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0-s0'">${d.dateStr}</button>
+              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid #eab308; background:#ffffff;">
+                <button class="scrim-time-btn" style="border:0; background:${idx===dI?'#eab308':'transparent'}; color:${idx===dI?'#ffffff':'#422006'};" ${idx===dI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0-s0'">${d.dateStr}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${card.id}', 'scrim-date-edit', ${gI}, ${idx})">✏️</button>
                   <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('scrim-date', '${card.id}', ${gI}, ${idx})">✕</button>
@@ -1088,8 +1096,8 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
         ${curDateObj ? `
           <div class="scrim-set-bar">
             ${times.map((t, idx) => `
-              <div style="display:inline-flex; align-items:center; border-radius:999px; border:1.5px solid ${idx===tI?'#ca8a04':'#fef08a'}; background:#fefce8; padding:0 8px;">
-                <button class="scrim-set-btn" style="border:0; background:transparent;" ${idx===tI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}-s0'">${t.timeLabel}</button>
+              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid #eab308; background:#ffffff; padding:0 4px;">
+                <button class="scrim-set-btn" style="border:0; background:${idx===tI?'#eab308':'transparent'}; color:${idx===tI?'#ffffff':'#422006'};" ${idx===tI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}-s0'">${t.timeLabel}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:2px;" onclick="openSubAdminModal('${card.id}', 'scrim-time-edit', ${gI}, ${dI}, ${idx})">✏️</button>
                   <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${idx})">✕</button>
@@ -1101,7 +1109,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
 
           <div style="display:flex; gap:6px; margin-bottom:16px; align-items:center; flex-wrap:wrap;">
             ${sets.map((s, idx) => `
-              <button class="game-tab-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${tI}-s${idx}'" aria-pressed="${idx === sI}">${s.setName}</button>
+              <button class="game-tab-btn" style="border:1.5px solid #eab308; background:${idx===sI?'#eab308':'#ffffff'}; color:${idx===sI?'#ffffff':'#422006'};" onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${tI}-s${idx}'" aria-pressed="${idx === sI}">${s.setName}</button>
             `).join('')}
             ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-set-add', ${gI}, ${dI}, ${tI})">+ 새 세트 추가</button>` : ''}
           </div>
@@ -1188,9 +1196,9 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
 
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
         <div></div>
-        <div class="seg" style="display:inline-flex; border:1px solid #fef08a; border-radius:999px; overflow:hidden; background:#fefce8;">
-          <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#fef08a':'transparent'}; color:${S.scrimSort==='old'?'#713f12':'#713f12'}; font-weight:bold; cursor:pointer;">오래된순</button>
-          <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#fef08a':'transparent'}; color:${S.scrimSort==='latest'?'#713f12':'#713f12'}; font-weight:bold; cursor:pointer;">최신순</button>
+        <div class="seg" style="display:inline-flex; border:1px solid #eab308; border-radius:999px; overflow:hidden; background:#ffffff;">
+          <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#eab308':'transparent'}; color:${S.scrimSort==='old'?'#ffffff':'#422006'}; font-weight:bold; cursor:pointer;">오래된순</button>
+          <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#eab308':'transparent'}; color:${S.scrimSort==='latest'?'#ffffff':'#422006'}; font-weight:bold; cursor:pointer;">최신순</button>
         </div>
       </div>
 
