@@ -12,7 +12,10 @@
   --page: #f1f3f6; --page-fg: #12161c; --page-muted: #566170;
   --panel: #ffffff; --surface: #ffffff; --line: #dde2ea;
   --accent: #2a56d6; --accent-ink: #ffffff; --soft: #e4ebfc; --soft-ink: #1f3fa6;
-  --win: #16794c; --win-bg: #dff2e6; --loss: #b3282d; --loss-bg: #fae3e3; --neutral-bg: #e6e9ee;
+  
+  /* 승리 색상: 파란색 계열 */
+  --win: #1d4ed8; --win-bg: #dbeafe; 
+  --loss: #b3282d; --loss-bg: #fae3e3; --neutral-bg: #e6e9ee;
   
   /* 주요 4개 탭 고유 원본 색상 고정 */
   --pink: #d946a0; --pink-bg: #f9d5ee; --pink-ink: #6d124b;
@@ -61,7 +64,7 @@ nav.bar a[aria-current="page"] {
 .panel { background: var(--panel); border-radius: 0 0 12px 12px; padding: 24px; border: 1px solid var(--line); border-top: 0; }
 .block { display: flex; flex-direction: column; gap: 20px; }
 
-.game-tabs { display: flex; gap: 8px; margin-bottom: 4px; }
+.game-tabs { display: flex; gap: 8px; margin-bottom: 2px; }
 .game-tab-btn { font: inherit; font-size: 14px; font-weight: bold; padding: 6px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; }
 .game-tab-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 
@@ -73,7 +76,7 @@ nav.bar a[aria-current="page"] {
 h2 { margin: 0; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
 
-.stats { display: flex; gap: 32px; align-items: flex-end; }
+.stats { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; }
 .stat .k { font-size: 12px; color: var(--page-muted); display: block; }
 .stat .v { font-family: var(--font-mono); font-size: 22px; font-weight: 700; }
 
@@ -910,6 +913,12 @@ function renderRecords() {
     return `<a onclick="setMode('${m}')" ${S.mode === m ? 'aria-current="page"' : ''}>${m} <span class="n">${count}</span></a>`;
   }).join("");
 
+  // 게임별 맞춤 안내 문구 설정
+  let noticeModeText = "CK나 랜드";
+  if (S.game === "배그") {
+    noticeModeText = "킬내기나 랜드";
+  }
+
   const groups = new Map();
   rows.forEach(r => {
     const k = r.date ? r.date.slice(0, 7) : '기타';
@@ -943,15 +952,33 @@ function renderRecords() {
       const vChamp = r.champion && r.champion.trim() !== "" ? r.champion : '-';
       const vPos = r.lolPos && r.lolPos.trim() !== "" ? r.lolPos : '-';
       const vPureKill = r.pureKill && r.pureKill.trim() !== "" ? r.pureKill : '-';
-      const vScore = r.score && r.score.trim() !== "" ? `<span style="font-family:var(--font-mono); font-weight:bold; margin-right:6px;">${r.score}</span>` : '';
+
+      // 스코어 자동 색상 적용 (숫자가 큰 쪽 파랑, 작은 쪽 빨강)
+      let formattedScore = '-';
+      if (r.score && r.score.includes(':')) {
+        const parts = r.score.split(':').map(p => parseInt(p.trim(), 10));
+        if (!isNaN(parts[0]) && !isNaN(parts[1])) {
+          if (parts[0] > parts[1]) {
+            formattedScore = `<span style="font-family:var(--font-mono); color:#1d4ed8; font-weight:bold;">${parts[0]}</span>:<span style="font-family:var(--font-mono); color:#b3282d;">${parts[1]}</span>`;
+          } else if (parts[0] < parts[1]) {
+            formattedScore = `<span style="font-family:var(--font-mono); color:#b3282d;">${parts[0]}</span>:<span style="font-family:var(--font-mono); color:#1d4ed8; font-weight:bold;">${parts[1]}</span>`;
+          } else {
+            formattedScore = `<span style="font-family:var(--font-mono);">${r.score}</span>`;
+          }
+        } else {
+          formattedScore = `<span style="font-family:var(--font-mono);">${r.score}</span>`;
+        }
+      } else if (r.score && r.score.trim() !== '') {
+        formattedScore = `<span style="font-family:var(--font-mono);">${r.score}</span>`;
+      }
 
       if (S.game === "발로란트") {
         mainRowContent = `
           <tr class="${rowClass}">
             <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${vDate}</td>
             <td>${vMode}</td><td>${vBal}</td><td>${vMap}</td><td>${vAgent}</td>
-            <td>${vAcs}</td><td>${vKda}</td>
-            <td>${vScore}<span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
+            <td>${vAcs}</td><td>${vKda}</td><td>${formattedScore}</td>
+            <td><span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
             ${isAdmin ? `<td><button class="btn-btn" onclick="openAdminModal('record', ${realIdx})">수정</button> <button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button></td>` : ''}
           </tr>`;
       } else if (S.game === "롤") {
@@ -967,22 +994,22 @@ function renderRecords() {
         mainRowContent = `
           <tr class="${rowClass}">
             <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${vDate}</td>
-            <td>${vMode}</td><td>${vBal}</td><td>${vPureKill}</td>
-            <td>${vScore}<span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
+            <td>${vMode}</td><td>${vBal}</td><td>${vPureKill}</td><td>${formattedScore}</td>
+            <td><span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
             ${isAdmin ? `<td><button class="btn-btn" onclick="openAdminModal('record', ${realIdx})">수정</button> <button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button></td>` : ''}
           </tr>`;
       }
 
       if (isOpen) {
-        const colSpanVal = S.game === "발로란트" ? (isAdmin?9:8) : S.game === "롤" ? (isAdmin?8:7) : (isAdmin?6:5);
+        const colSpanVal = S.game === "발로란트" ? (isAdmin?10:9) : S.game === "롤" ? (isAdmin?8:7) : (isAdmin?7:6);
         mainRowContent += `<tr class="detail-dropdown-row"><td colspan="${colSpanVal}">${detailHtml || '<div style="color:#888;">상세 정보 없음</div>'}</td></tr>`;
       }
       return mainRowContent;
     }).join("");
 
-    let theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>맵</th><th>요원</th><th>ACS</th><th>KDA</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
+    let theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>맵</th><th>요원</th><th>ACS</th><th>KDA</th><th>스코어</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
     if (S.game === "롤") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>포지션</th><th>챔피언</th><th>KDA</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
-    if (S.game === "배그") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>순수킬</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
+    if (S.game === "배그") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>순수킬</th><th>스코어</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
 
     return `
       <details class="month" open>
@@ -1009,14 +1036,28 @@ function renderRecords() {
 
   return `
     <div class="block">
-      <div class="game-tabs">${gameTabsHtml}</div>
-      <div style="border-top: 1px dashed var(--line); margin: 4px 0;"></div>
+      <div>
+        <div class="game-tabs">${gameTabsHtml}</div>
+        <div style="font-size:11.5px; color:var(--page-muted); margin-top:6px; line-height:1.4;">
+          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다<br>
+          하나의 ${noticeModeText}의 최종 승/패 결과에 따라 계산되지 않습니다
+        </div>
+      </div>
+      <div style="border-top: 1px dashed var(--line); margin: 2px 0;"></div>
       <div class="subnav">${yearTabsHtml}</div>
       <div class="subnav" style="margin-top:-6px;">${subnavHtml}</div>
       <div class="stats" style="margin-top:10px;">
         <div class="stat"><span class="k">경기</span><span class="v">${total}</span></div>
         <div class="stat"><span class="k">승 / 패</span><span class="v">${winCount} / ${lossCount}</span></div>
-        <div class="stat"><span class="k">승률</span><span class="v">${winRate}%</span></div>
+        <div class="stat">
+          <span class="k">승률</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="v">${winRate}%</span>
+            <div class="bar" style="width:110px; height:8px; border-radius:4px; background:var(--loss-bg); overflow:hidden;">
+              <b style="display:block; height:100%; width:${winRate}%; background:var(--win);"></b>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="toolbar">
         <div></div>
