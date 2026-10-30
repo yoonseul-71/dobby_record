@@ -301,6 +301,16 @@ const DEFAULT_SETS = [
   {
     date: "2026-05-23", game: "발로란트", mode: "", balance: "상대A", map: "헤이븐", agent: "제트", acs: "240", kda: "20/10/5", score: "2:1", result: "W",
     allMembersText: "도현 (제트)\n멤버1 (소바)\n멤버2 (케이오)"
+  },
+  {
+    date: "2026-05-22", game: "배그", mode: "공장", balance: "예시Z", targetKill: "[10]", pureKill: "30(40-10)", score: "1위", result: "W",
+    pubgRows: [
+      { leftName: "도현\n30(40-10)", rightName: "예시E\n16(30-14)" },
+      { leftName: "예시A\n16(28-12)", rightName: "예시F\n9(21-12)" },
+      { leftName: "예시B\n13(22-9)", rightName: "예시G\n9(19-10)" },
+      { leftName: "예시C\n2(17-15)", rightName: "예시H\n3(16-13)" },
+      { leftName: "예시D\n4(12-8)", rightName: "예시I\n0(9-9)" }
+    ]
   }
 ];
 
@@ -448,12 +458,48 @@ function updateRecordFormFields(selectedGame, r = {}) {
       <label>KDA</label><input type="text" id="afKda" value="${r.kda||''}">
     `;
   } else if (selectedGame === "배그") {
+    let pubgRows = r.pubgRows || [
+      { leftName: "도현\n30(40-10)", rightName: "예시E\n16(30-14)" },
+      { leftName: "예시A\n16(28-12)", rightName: "예시F\n9(21-12)" },
+      { leftName: "예시B\n13(22-9)", rightName: "예시G\n9(19-10)" },
+      { leftName: "예시C\n2(17-15)", rightName: "예시H\n3(16-13)" },
+      { leftName: "예시D\n4(12-8)", rightName: "예시I\n0(9-9)" }
+    ];
+
+    let rowsHtml = pubgRows.map((row, pIdx) => `
+      <div class="pubg-row-edit" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; border:1px solid var(--line); padding:8px; border-radius:6px;">
+        <div><label>왼쪽 멤버 및 순수킬 (줄바꿈 가능)</label><textarea id="pubg_l_${pIdx}" rows="2">${row.leftName||''}</textarea></div>
+        <div><label>오른쪽 멤버 및 순수킬 (줄바꿈 가능)</label><textarea id="pubg_r_${pIdx}" rows="2">${row.rightName||''}</textarea></div>
+      </div>
+    `).join('');
+
     fields.innerHTML = `
       <label>목표킬 (예: [10])</label><input type="text" id="afTargetKill" value="${r.targetKill||''}">
-      <label>도현 순수킬</label><input type="text" id="afPureKill" value="${r.pureKill||''}">
+      <label>도현 순수킬 요약 (예: 30(40-10))</label><input type="text" id="afPureKill" value="${r.pureKill||''}">
       <label>스코어 (예: 13:5 또는 1위)</label><input type="text" id="afScore" value="${r.score||''}">
+      
+      <div style="margin-top:14px; border-top:1px solid var(--line); padding-top:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <label style="margin:0;">배그 상세 멤버별 순수킬 표 입력 (자유롭게 행 추가/수정 가능)</label>
+          <button type="button" class="btn-btn" onclick="addPubgRowEdit()">+ 행 추가</button>
+        </div>
+        <div id="pubgRowsContainer">${rowsHtml}</div>
+      </div>
     `;
   }
+}
+
+function addPubgRowEdit() {
+  const container = document.getElementById("pubgRowsContainer");
+  const pIdx = container.children.length;
+  const div = document.createElement("div");
+  div.className = "pubg-row-edit";
+  div.style.cssText = "display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; border:1px solid var(--line); padding:8px; border-radius:6px;";
+  div.innerHTML = `
+    <div><label>왼쪽 멤버 및 순수킬</label><textarea id="pubg_l_${pIdx}" rows="2"></textarea></div>
+    <div><label>오른쪽 멤버 및 순수킬</label><textarea id="pubg_r_${pIdx}" rows="2"></textarea></div>
+  `;
+  container.appendChild(div);
 }
 
 function openAdminModal(target, idx = -1, copyIdx = -1) {
@@ -488,7 +534,7 @@ function openAdminModal(target, idx = -1, copyIdx = -1) {
         <option value="W" ${r.result==='W'?'selected':''}>승 (W)</option>
         <option value="L" ${r.result==='L'?'selected':''}>패 (L)</option>
       </select>
-      <label>참여 멤버</label><textarea id="afAllMembers" rows="3">${r.allMembersText||''}</textarea>
+      <label>참여 멤버 (발로란트용 텍스트)</label><textarea id="afAllMembers" rows="3">${r.allMembersText||''}</textarea>
     `;
     updateRecordFormFields(currentGame, r);
   } else if (target === "scrim") {
@@ -557,6 +603,17 @@ function handleAdminFormSubmit(e) {
       item.targetKill = document.getElementById("afTargetKill").value;
       item.pureKill = document.getElementById("afPureKill").value;
       item.score = document.getElementById("afScore").value;
+      
+      let pubgRows = [];
+      const rowElements = document.querySelectorAll(".pubg-row-edit");
+      rowElements.forEach((_, pIdx) => {
+        const lVal = document.getElementById(`pubg_l_${pIdx}`).value;
+        const rVal = document.getElementById(`pubg_r_${pIdx}`).value;
+        if (lVal.trim() || rVal.trim()) {
+          pubgRows.push({ leftName: lVal, rightName: rVal });
+        }
+      });
+      item.pubgRows = pubgRows;
     }
 
     if (idx >= 0) setsData[idx] = { ...setsData[idx], ...item };
@@ -1052,9 +1109,31 @@ function renderRecords() {
       const nextR = sorted[sIdx + 1];
       const rowClass = (!nextR || nextR.date !== r.date) ? "record-row-last-of-date" : "record-row";
 
-      let detailHtml = r.allMembersText ? `<div class="text-pre" style="color:var(--page-fg);">${r.allMembersText}</div>` : '';
+      let detailHtml = '';
+      if (S.game === "발로란트") {
+        detailHtml = r.allMembersText ? `<div class="text-pre" style="color:var(--page-fg);">${r.allMembersText}</div>` : '';
+      } else if (S.game === "배그") {
+        let pubgRows = r.pubgRows || [];
+        let rowsTrs = pubgRows.map(pr => `
+          <tr>
+            <td style="width:50%; background:#fff; padding:10px 14px; border:1px solid #dcdcdc; vertical-align:middle;" class="text-pre">${pr.leftName||''}</td>
+            <td style="width:50%; background:#fff; padding:10px 14px; border:1px solid #dcdcdc; vertical-align:middle;" class="text-pre">${pr.rightName||''}</td>
+          </tr>
+        `).join('');
+
+        detailHtml = `
+          <div style="font-weight:bold; font-size:14px; margin-bottom:8px; color:var(--page-fg);">멤버 순수킬 기록</div>
+          <div class="scrim-detail-box" style="margin-bottom:0;">
+            <table class="lol-match-table">
+              <tbody>
+                ${rowsTrs || '<tr><td colspan="2" style="text-align:center; padding:20px; color:#888;">상세 멤버 기록이 없습니다.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
       let mainRowContent = "";
-      
       const vDate = r.date ? (r.date.slice(5).replace('-', '.') + ' ' + getWd(r.date)) : '-';
       const vMode = r.mode && r.mode.trim() !== "" ? r.mode : '-';
       const vBal = r.balance && r.balance.trim() !== "" ? r.balance : '-';
@@ -1615,7 +1694,7 @@ function renderChong(subEp) {
         <div style="display:flex; gap:6px; align-items:center;">
           <div class="seg" style="display:inline-flex; border:1px solid var(--violet); border-radius:999px; overflow:hidden;">
             <button type="button" onclick="setChongSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='old'?'var(--violet)':'transparent'}; color:${S.chongSort==='old'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
-            <button type="button" onclick="setChongSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='latest'?'var(--violet)':'transparent'}; color:${S.chongSort==='latest'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+            <button type="button" onclick="setChongSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='latest'?'var(--violet)':'transparent'}; color:${S.scrimSort==='latest'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
           </div>
           ${isAdmin ? `<button class="btn-accent" onclick="openAdminModal('chong')" style="margin-left:8px;">+ 새 에피소드 추가</button>` : ''}
         </div>
