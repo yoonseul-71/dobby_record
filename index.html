@@ -102,7 +102,7 @@ td.mono { font-family: var(--font-mono); }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
 
-/* 카드 스타일 (마크서버 및 총겜동 통일) */
+/* 카드 스타일 (마크서버, 총겜동 통일: 제목/날짜 아래 밑줄 및 상세보기 위치) */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-top: 15px; }
 .card {
   background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
@@ -140,7 +140,7 @@ td.mono { font-family: var(--font-mono); }
 
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 상세 스타일 (스크린샷 1~4번 반영) */
+/* 롤 멸망전 사진 속 구조 완벽 반영 스타일 */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-top-date-btn { padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--line); background: #fef08a; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; }
 .scrim-top-date-btn[aria-selected="true"] { background: #fde047; border-color: #ca8a04; }
@@ -1003,7 +1003,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
         <a class="back-btn" onclick="location.hash='#scrim'">← 멸망전 목록으로</a>
         <h2>${card.no} 상세 전적</h2>
 
-        <!-- 1~4번 사진 참고 상단 날짜 탭 -->
+        <!-- [1단계] 날짜 탭 (예: 25.11.15 토) -->
         <div class="scrim-top-date-bar">
           ${groups.map((g, idx) => `
             <button class="scrim-top-date-btn" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0-s0'" ${idx === gI ? 'aria-selected="true"' : ''}>
@@ -1013,7 +1013,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
         </div>
 
-        <!-- 스크림 결과 요약 배지 바 -->
+        <!-- [2단계] 스크림 결과 요약 배지 바 -->
         <div class="scrim-summary-banner">
           <span>스크림 결과: 2승 2패</span>
           <span style="display:flex; gap:4px;">
@@ -1025,6 +1025,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           <a href="#" target="_blank" style="margin-left:auto; color:var(--accent); font-size:13px; text-decoration:underline;">풀영상 ↗</a>
         </div>
 
+        <!-- [3단계] 시간대(부제목) 탭 (예: 19시 스크림) -->
         ${curGroup ? `
           <div class="scrim-time-bar">
             ${dates.map((d, idx) => `
@@ -1037,10 +1038,14 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           </div>
         ` : ''}
 
+        <!-- 시간대별 결과 요약 및 [4단계] 상세 세트 탭 -->
         ${curDateObj ? `
+          <div style="font-size:13.5px; font-weight:bold; color:var(--page-fg); margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+            <span style="background:#e2e8f0; padding:2px 8px; border-radius:4px; font-size:12px;">스크림</span>
+            <span>${curDateObj.dateStr} 결과: 1승 1패</span>
+          </div>
           <div class="scrim-set-bar">
-            <span style="font-size:13px; font-weight:bold; color:var(--page-muted); margin-right:4px;">${curDateObj.dateStr} 결과: 1승 1패</span>
-            <div style="display:flex; gap:6px; margin-left:12px;">
+            <div style="display:flex; gap:6px;">
               ${times.map((t, idx) => `
                 <button class="scrim-set-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}-s0'" ${idx === tI ? 'aria-selected="true"' : ''}>
                   ${t.timeLabel}
