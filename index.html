@@ -13,18 +13,16 @@
   --panel: #ffffff; --surface: #ffffff; --line: #dde2ea;
   --accent: #2a56d6; --accent-ink: #ffffff; --soft: #e4ebfc; --soft-ink: #1f3fa6;
   
-  /* 승리 색상: 파란색 계열 */
   --win: #1d4ed8; --win-bg: #dbeafe; 
   --loss: #b3282d; --loss-bg: #fae3e3; --neutral-bg: #e6e9ee;
   
-  /* 주요 4개 탭 고유 원본 색상 고정 */
   --pink: #d946a0; --pink-bg: #f9d5ee; --pink-ink: #6d124b;
   --yellow: #e6b800; --yellow-bg: #fef0b3; --yellow-ink: #4d3d00;
   --sky: #3b82f6; --sky-bg: #dbeafe; --sky-ink: #1e3a8a;
   --violet: #8b5cf6; --violet-bg: #ede9fe; --violet-ink: #4c1d95;
   
-  --blue-team-bg: #2a75d3; --blue-team-ink: #000000;
-  --red-team-bg: #fbe3f0; --red-team-ink: #000000;
+  --blue-team-bg: #dbeafe; --blue-team-ink: #334155;
+  --red-team-bg: #fbe3f0; --red-team-ink: #334155;
   
   --font-body: "Noto Sans KR", system-ui, sans-serif;
   --font-title: "Gowun Dodum", sans-serif;
@@ -40,7 +38,6 @@ a { color: inherit; text-decoration: none; }
 header.top { display: flex; justify-content: space-between; align-items: flex-start; }
 h1 { margin: 0; font-family: var(--font-body); font-weight: 800; font-size: 48px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; }
 
-/* 주요 4개 스티커 메모 탭 디자인 */
 nav.bar { display: flex; align-items: flex-end; gap: 6px; border-bottom: 1px solid var(--line); padding-left: 10px; }
 nav.bar a {
   position: relative; display: inline-flex; align-items: center; padding: 8px 22px;
@@ -109,7 +106,6 @@ td.mono { font-family: var(--font-mono); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
 .pill.none { background: var(--neutral-bg); color: var(--page-muted); }
 
-/* 카드 디자인 */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-top: 15px; }
 .card {
   background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
@@ -120,7 +116,6 @@ td.mono { font-family: var(--font-mono); }
 }
 .card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
 
-/* 우측 상단 돌려내기 모서리 태그 스타일 */
 .card-corner-tag {
   position: absolute; top: 0; right: 0;
   font-size: 12px; font-weight: bold; padding: 5px 14px;
@@ -148,7 +143,6 @@ td.mono { font-family: var(--font-mono); }
 
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 세부 스타일 */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-top-date-btn { padding: 8px 18px; border-radius: 8px; border: 1.5px solid #ca8a04; background: #fef08a; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; }
 .scrim-top-date-btn[aria-selected="true"] { background: #eab308; border-color: #ca8a04; color: #ffffff; }
@@ -181,7 +175,6 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .player-tier { font-size: 12px; color: var(--page-muted); font-family: var(--font-mono); margin-top: 1px; }
 .champ-name { font-weight: 800; font-size: 14.5px; color: #12161c; }
 
-/* 모달 및 폼 */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
 .light-modal { background: var(--panel); color: var(--page-fg); border-radius: 12px; width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; padding: 24px; border: 2px solid #12161c; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
 .light-modal h3 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -194,7 +187,6 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 
 .text-pre { white-space: pre-wrap; word-break: break-all; }
 
-/* 총겜동 상세 스타일 */
 .chong-desc-box { font-size: 14.5px; color: var(--page-muted); margin: 4px 0 12px 0; line-height: 1.6; }
 .ep-detail-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
 .ep-box { border: 2px solid #12161c; border-radius: 12px; padding: 20px; background: var(--surface); position: relative; }
@@ -214,7 +206,6 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .ep-nav-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 2px solid #12161c; border-radius: 8px; font-weight: bold; font-size: 13px; background: #fff; cursor: pointer; text-decoration: none; color: var(--violet-ink); }
 .ep-nav-box:hover { background: var(--violet-bg); border-color: var(--violet); }
 
-/* 하단 푸터 */
 footer.bottom-footer {
   margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);
   display: flex; justify-content: space-between; align-items: flex-start;
@@ -321,7 +312,7 @@ const DEFAULT_MC = [
       { 
         dayTitle: "1일차", dateStr: "2026-05-20",
         sections: [
-          { title: "모험 및 탐색", timelines: [{text: "서버 첫 입장 및 스폰 확인", url: "https://youtube.com"}] }
+          { title: "모험 및 탐색", timelines: [{text: "서버 첫 입장 및 스폰 확인", url: "https://youtube.com", spacing: 0}] }
         ] 
       }
     ] 
@@ -329,7 +320,7 @@ const DEFAULT_MC = [
 ];
 
 const DEFAULT_CHONG = [
-  { ep: "0", title: "FPS 동아리: 총겜동", dateStr: "2025.04.06", desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피", timeline: [{text: "오프닝 방송 시작", url: "https://youtube.com"}] }
+  { ep: "0", title: "FPS 동아리: 총겜동", dateStr: "2025.04.06", desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피", timeline: [{text: "오프닝 방송 시작", url: "https://youtube.com", spacing: 0}] }
 ];
 
 const DEFAULT_SCRIM = [
@@ -477,7 +468,7 @@ function openAdminModal(target, idx = -1, copyIdx = -1) {
     if (copyIdx >= 0) {
       const source = setsData[copyIdx];
       r = { ...source };
-      document.getElementById("afIdx").value = "-1"; // 새 전적으로 추가
+      document.getElementById("afIdx").value = "-1";
     }
     const currentGame = r.game || S.game;
     document.getElementById("adminFormTitle").textContent = (copyIdx >= 0) ? "같은 날 전적 복사해서 추가" : (idx >= 0 ? "전적 수정" : "새 전적 추가");
@@ -605,7 +596,7 @@ function handleAdminFormSubmit(e) {
       serverName: document.getElementById("afMcServer").value,
       guildName: document.getElementById("afMcGuild").value,
       dateRange: document.getElementById("afMcDateRange").value,
-      days: [{ dayTitle: "1일차", dateStr: "2026-05-20", sections: [{ title: "기본 모험", timelines: [{text: "서버 접속", url: ""}] }] }]
+      days: [{ dayTitle: "1일차", dateStr: "2026-05-20", sections: [{ title: "기본 모험", timelines: [{text: "서버 접속", url: "", spacing: 0}] }] }]
     };
     if (idx >= 0) MC_SERVERS[idx] = { ...MC_SERVERS[idx], serverName: item.serverName, guildName: item.guildName, dateRange: item.dateRange };
     else MC_SERVERS.push(item);
@@ -693,7 +684,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
   } else if (type === "mc-timeline-add") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     document.getElementById("asTitle").textContent = `마크서버 [${srv.days[ex1].dayTitle}] 타임라인 추가`;
-    container.innerHTML = `<label>섹션 이름</label><input type="text" id="asSecTitle" value="모험 및 탐색"><label>내용 (엔터로 띄어쓰기 가능)</label><textarea id="asTimelineText" rows="3"></textarea><label>링크</label><input type="text" id="asTimelineUrl">`;
+    container.innerHTML = `<label>섹션 이름</label><input type="text" id="asSecTitle" value="모험 및 탐색"><label>내용</label><textarea id="asTimelineText" rows="3"></textarea><label>링크</label><input type="text" id="asTimelineUrl">`;
   } else if (type === "mc-timeline-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const item = srv.days[ex1].sections[ex2].timelines[ex3];
@@ -701,12 +692,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>내용</label><textarea id="asTimelineText" rows="3">${item.text}</textarea><label>링크</label><input type="text" id="asTimelineUrl" value="${item.url||''}">`;
   } else if (type === "chong-timeline-add") {
     document.getElementById("asTitle").textContent = "총겜동 타임라인 내용 추가";
-    container.innerHTML = `<label>내용 (엔터로 줄바꿈/띄어쓰기 가능)</label><textarea id="asChongText" rows="4"></textarea><label>링크</label><input type="text" id="asChongUrl">`;
+    container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3"></textarea><label>링크</label><input type="text" id="asChongUrl">`;
   } else if (type === "chong-timeline-edit") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const item = epObj.timeline[ex1];
     document.getElementById("asTitle").textContent = "총겜동 타임라인 수정";
-    container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="4">${item.text}</textarea><label>링크</label><input type="text" id="asChongUrl" value="${item.url||''}">`;
+    container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3">${item.text}</textarea><label>링크</label><input type="text" id="asChongUrl" value="${item.url||''}">`;
   }
   document.getElementById("adminSubModal").style.display = "flex";
 }
@@ -816,7 +807,7 @@ function handleSubFormSubmit(e) {
   } else if (type === "mc-day") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     if (srv) {
-      srv.days.push({ dayTitle: document.getElementById("asDayTitle").value, dateStr: document.getElementById("asDateStr").value, sections: [{ title: "기본 모험", timelines: [{text: "서버 접속", url: ""}] }] });
+      srv.days.push({ dayTitle: document.getElementById("asDayTitle").value, dateStr: document.getElementById("asDateStr").value, sections: [{ title: "기본 모험", timelines: [{text: "서버 접속", url: "", spacing: 0}] }] });
       saveData();
     }
   } else if (type === "mc-day-edit") {
@@ -835,7 +826,7 @@ function handleSubFormSubmit(e) {
       const url = document.getElementById("asTimelineUrl").value;
       let sec = srv.days[dayIdx].sections.find(s => s.title === secTitle);
       if (!sec) { sec = { title: secTitle, timelines: [] }; srv.days[dayIdx].sections.push(sec); }
-      sec.timelines.push({ text, url });
+      sec.timelines.push({ text, url, spacing: 0 });
       saveData();
     }
   } else if (type === "mc-timeline-edit") {
@@ -853,7 +844,7 @@ function handleSubFormSubmit(e) {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     if (epObj) {
       if (!epObj.timeline) epObj.timeline = [];
-      epObj.timeline.push({ text: document.getElementById("asChongText").value, url: document.getElementById("asChongUrl").value });
+      epObj.timeline.push({ text: document.getElementById("asChongText").value, url: document.getElementById("asChongUrl").value, spacing: 0 });
       saveData();
     }
   } else if (type === "chong-timeline-edit") {
@@ -865,6 +856,25 @@ function handleSubFormSubmit(e) {
   }
   closeModal("adminSubModal");
   render();
+}
+
+function adjustSpacing(targetType, parentId, idx1, idx2, idx3, delta) {
+  if (targetType === "chong") {
+    const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
+    if (epObj && epObj.timeline[idx1]) {
+      epObj.timeline[idx1].spacing = Math.max(0, (epObj.timeline[idx1].spacing || 0) + delta);
+      saveData();
+      render();
+    }
+  } else if (targetType === "mc") {
+    const srv = MC_SERVERS.find(s => s.id === parentId);
+    if (srv && srv.days[idx1] && srv.days[idx1].sections[idx2] && srv.days[idx1].sections[idx2].timelines[idx3]) {
+      const item = srv.days[idx1].sections[idx2].timelines[idx3];
+      item.spacing = Math.max(0, (item.spacing || 0) + delta);
+      saveData();
+      render();
+    }
+  }
 }
 
 function deleteSubItem(target, id, idx1, idx2, idx3, idx4) {
@@ -959,7 +969,6 @@ function renderRecords() {
     groups.get(k).push(r);
   });
 
-  // 최초 접속 시에만 모든 달 열림, 이후 사용자가 접거나 누른 기록 유지
   if (!initializedMonths) {
     groups.forEach((_, k) => { S.monthOrder[k] = { open: true, sort: 'asc' }; });
     initializedMonths = true;
@@ -985,7 +994,6 @@ function renderRecords() {
       const nextR = sorted[sIdx + 1];
       const rowClass = (!nextR || nextR.date !== r.date) ? "record-row-last-of-date" : "record-row";
 
-      // 참여멤버 숨김 요청 반영: 상세 드롭다운 내용에서 참여멤버 텍스트 제거하고 아래 적는 내용만 보이게 함
       let detailHtml = r.allMembersText ? `<div class="text-pre" style="color:var(--page-fg);">${r.allMembersText}</div>` : '';
       let mainRowContent = "";
       
@@ -1030,13 +1038,13 @@ function renderRecords() {
             <td>${vMode}</td><td>${vBal}</td><td>${vMap}</td><td>${vAgent}</td>
             <td>${vAcs}</td><td>${vKda}</td><td>${formattedScore}</td>
             <td>${resPill}</td>
-            <td>
-              ${isAdmin ? `
+            ${isAdmin ? `
+              <td>
                 <button class="btn-btn" onclick="openAdminModal('record', ${realIdx})">수정</button>
                 <button class="btn-btn" onclick="openAdminModal('record', -1, ${realIdx})" title="이 전적을 복사하여 수정합니다">복사</button>
                 <button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button>
-              ` : ''}
-            </td>
+              </td>
+            ` : ''}
           </tr>`;
       } else if (S.game === "롤") {
         mainRowContent = `
@@ -1045,41 +1053,40 @@ function renderRecords() {
             <td>${vMode}</td><td>${vBal}</td><td><span style="font-weight:bold; color:var(--violet-ink);">${vPos}</span></td>
             <td>${vChamp}</td><td>${vKda}</td>
             <td>${resPill}</td>
-            <td>
-              ${isAdmin ? `
+            ${isAdmin ? `
+              <td>
                 <button class="btn-btn" onclick="openAdminModal('record', ${realIdx})">수정</button>
                 <button class="btn-btn" onclick="openAdminModal('record', -1, ${realIdx})" title="이 전적을 복사하여 수정합니다">복사</button>
                 <button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button>
-              ` : ''}
-            </td>
+              </td>
+            ` : ''}
           </tr>`;
       } else {
-        // 배그 전적 표: 날짜 종류 밸런스 목표킬 도현순수킬 스코어 결과 (볼드X, 글씨크기 동일)
         mainRowContent = `
           <tr class="${rowClass}">
             <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${vDate}</td>
             <td>${vMode}</td><td>${vBal}</td><td>${vTargetKill}</td><td>${vPureKill}</td><td>${formattedScore}</td>
             <td>${resPill}</td>
-            <td>
-              ${isAdmin ? `
+            ${isAdmin ? `
+              <td>
                 <button class="btn-btn" onclick="openAdminModal('record', ${realIdx})">수정</button>
                 <button class="btn-btn" onclick="openAdminModal('record', -1, ${realIdx})" title="이 전적을 복사하여 수정합니다">복사</button>
                 <button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button>
-              ` : ''}
-            </td>
+              </td>
+            ` : ''}
           </tr>`;
       }
 
       if (isRowOpen) {
-        const colSpanVal = S.game === "발로란트" ? 10 : S.game === "롤" ? 8 : 8;
+        const colSpanVal = S.game === "발로란트" ? (isAdmin?10:9) : S.game === "롤" ? (isAdmin?8:7) : (isAdmin?8:7);
         mainRowContent += `<tr class="detail-dropdown-row"><td colspan="${colSpanVal}">${detailHtml || '<div style="color:#888;">상세 정보 없음</div>'}</td></tr>`;
       }
       return mainRowContent;
     }).join("");
 
-    let theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>맵</th><th>요원</th><th>ACS</th><th>KDA</th><th>스코어</th><th>결과</th><th>관리</th>`;
-    if (S.game === "롤") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>포지션</th><th>챔피언</th><th>KDA</th><th>결과</th><th>관리</th>`;
-    if (S.game === "배그") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>목표킬</th><th>도현 순수킬</th><th>스코어</th><th>결과</th><th>관리</th>`;
+    let theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>맵</th><th>요원</th><th>ACS</th><th>KDA</th><th>스코어</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
+    if (S.game === "롤") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>포지션</th><th>챔피언</th><th>KDA</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
+    if (S.game === "배그") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>목표킬</th><th>도현 순수킬</th><th>스코어</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
 
     return `
       <details class="month" ${isOpen ? 'open' : ''} ontoggle="handleMonthToggle('${k}', this.open)">
@@ -1154,7 +1161,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
     const curTimeObj = times[tI] || times[0];
     const sets = curTimeObj ? (curTimeObj.sets || []) : [];
     
-    // 오늘의 전적: 선택된 날짜 그룹(curGroup) 하위의 모든 시간/세트 전적을 합쳐서 계산 및 표시
     let todayWins = 0, todayLosses = 0;
     let allSetPills = [];
     if (curGroup && curGroup.dates) {
@@ -1174,7 +1180,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
     const curSet = sets[sI] || sets[0];
     const isDhRed = curSet ? (curSet.side === "레드") : true;
     
-    // 레드/블루 진영 선택 시 표 팀명 배경색 동적 변경 (도현팀 색 선택 시 반대편이 상대팀 색으로 자동 매칭, 글씨 검정)
     const leftHeaderClass = isDhRed ? "header-red" : "header-blue";
     const rightHeaderClass = isDhRed ? "header-blue" : "header-red";
 
@@ -1276,29 +1281,32 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
               <thead>
                 <tr>
                   <th class="${leftHeaderClass}" style="width: 44%;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; color:#000000;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; color:var(--red-team-ink);">
                       <span>${curSet.leftTeamName || '도현 팀'}</span>
-                      <span style="font-size:11px; background:rgba(0,0,0,0.1); padding:2px 6px; border-radius:4px;">${curSet.side}</span>
-                      <span style="font-size:11px; background:rgba(0,0,0,0.1); padding:2px 6px; border-radius:4px;">${curSet.result}</span>
+                      <span style="font-size:13px; font-weight:bold;">${curSet.side}</span>
                     </div>
                   </th>
                   <th class="pos-col">포지션</th>
                   <th class="${rightHeaderClass}" style="width: 44%;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; color:#000000;">
-                      <span style="font-size:11px; background:rgba(0,0,0,0.1); padding:2px 6px; border-radius:4px;">${curSet.result === '승' ? '패' : '승'}</span>
-                      <span style="font-size:11px; background:rgba(0,0,0,0.1); padding:2px 6px; border-radius:4px;">${curSet.side === '레드' ? '블루' : '레드'}</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; color:var(--blue-team-ink);">
+                      <span style="font-size:13px; font-weight:bold;">${curSet.side === '레드' ? '블루' : '레드'}</span>
                       <span>${curSet.rightTeamName || '상대 팀'}</span>
                     </div>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                ${(curSet.positions || []).map(pos => `
+                ${(curSet.positions || []).map(pos => {
+                  const formatName = (name) => {
+                    if (!name) return '';
+                    return name.replace(/도현/g, '<span style="color:#d97706; font-weight:900;">도현</span>');
+                  };
+                  return `
                   <tr>
                     <td style="width: 44%;">
                       <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div class="player-info-left">
-                          <div class="player-name">${pos.p1 || ''}</div>
+                          <div class="player-name">${formatName(pos.p1)}</div>
                           <div class="player-tier">${pos.t1 || ''}</div>
                         </div>
                         <div class="champ-name">${pos.c1 || ''}</div>
@@ -1309,13 +1317,13 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
                       <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div class="champ-name">${pos.c2 || ''}</div>
                         <div class="player-info-right">
-                          <div class="player-name">${pos.p2 || ''}</div>
+                          <div class="player-name">${formatName(pos.p2)}</div>
                           <div class="player-tier">${pos.t2 || ''}</div>
                         </div>
                       </div>
                     </td>
                   </tr>
-                `).join('')}
+                `;}).join('')}
               </tbody>
             </table>
           </div>
@@ -1393,7 +1401,6 @@ function renderMinecraft(subId, dayIndex = 0) {
 
         <div class="toolbar">
           <div></div>
-          <!-- 해결 완료: 선택한 해당 일자에 타임라인이 정확히 추가되도록 dayIndex 전달 -->
           ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-add', ${dayIndex})">+ [${curDay.dayTitle}] 타임라인 내용 추가</button>` : ''}
         </div>
 
@@ -1402,19 +1409,27 @@ function renderMinecraft(subId, dayIndex = 0) {
             <div class="ep-box">
               <div class="ep-box-title">${sec.title}</div>
               <ul class="timeline-clean">
-                ${(sec.timelines || []).map((item, tIdx) => `
-                  <li>
-                    <div>
-                      ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
+                ${(sec.timelines || []).map((item, tIdx) => {
+                  const spacingVal = item.spacing || 0;
+                  const spacingStyles = Array(spacingVal).fill('<div style="height:12px;"></div>').join('');
+                  return `
+                  <li style="flex-direction:column; align-items:stretch;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <div>
+                        ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
+                      </div>
+                      <div style="display:flex; align-items:center; gap:4px;">
+                        ${isAdmin ? `
+                          <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx}, 1)" title="줄간격 늘리기">+</button>
+                          <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx}, -1)" title="줄간격 줄이기">-</button>
+                          <button class="btn-btn" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-edit', ${dayIndex}, ${sIdx}, ${tIdx})">수정</button>
+                          <button class="btn-btn" style="color:red;" onclick="deleteSubItem('mc-timeline', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx})">삭제</button>
+                        ` : ''}
+                      </div>
                     </div>
-                    <div>
-                      ${isAdmin ? `
-                        <button class="btn-btn" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-edit', ${dayIndex}, ${sIdx}, ${tIdx})">수정</button>
-                        <button class="btn-btn" style="color:red;" onclick="deleteSubItem('mc-timeline', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx})">삭제</button>
-                      ` : ''}
-                    </div>
+                    ${spacingStyles}
                   </li>
-                `).join('')}
+                `;}).join('')}
               </ul>
             </div>
           `).join('')}
@@ -1479,25 +1494,33 @@ function renderChong(subEp) {
         </div>
         <div class="toolbar" style="margin-top:2px;">
           <div></div>
-          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add')">+ 타임라인 내용 추가 (줄바꿈/띄어쓰기 가능)</button>` : ''}
+          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add')">+ 타임라인 내용 추가</button>` : ''}
         </div>
         <div class="ep-detail-wrap">
           <div class="ep-box">
             <div class="ep-box-title">방송 타임라인</div>
             <ul class="timeline-clean">
-              ${(epObj.timeline || []).map((item, tIdx) => `
-                <li>
-                  <div>
-                    ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
+              ${(epObj.timeline || []).map((item, tIdx) => {
+                const spacingVal = item.spacing || 0;
+                const spacingStyles = Array(spacingVal).fill('<div style="height:12px;"></div>').join('');
+                return `
+                <li style="flex-direction:column; align-items:stretch;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                      ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
+                    </div>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                      ${isAdmin ? `
+                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tIdx}, 0, 0, 1)" title="간격 늘리기">+</button>
+                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tIdx}, 0, 0, -1)" title="간격 줄이기">-</button>
+                        <button class="btn-btn" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-edit', ${tIdx})">수정</button>
+                        <button class="btn-btn" style="color:red;" onclick="deleteSubItem('chong-timeline', '${epObj.ep}', ${tIdx})">삭제</button>
+                      ` : ''}
+                    </div>
                   </div>
-                  <div>
-                    ${isAdmin ? `
-                      <button class="btn-btn" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-edit', ${tIdx})">수정</button>
-                      <button class="btn-btn" style="color:red;" onclick="deleteSubItem('chong-timeline', '${epObj.ep}', ${tIdx})">삭제</button>
-                    ` : ''}
-                  </div>
+                  ${spacingStyles}
                 </li>
-              `).join('')}
+              `;}).join('')}
             </ul>
           </div>
         </div>
