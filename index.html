@@ -147,14 +147,13 @@ td.mono { font-family: var(--font-mono); }
 .scrim-top-date-btn { padding: 8px 18px; border-radius: 8px; border: 1.5px solid #ca8a04; background: #fef08a; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; }
 .scrim-top-date-btn[aria-selected="true"] { background: #eab308; border-color: #ca8a04; color: #ffffff; }
 
-.scrim-time-btn, .scrim-set-btn { 
+.scrim-time-btn { 
   padding: 6px 16px; border-radius: 8px; border: 1.5px solid #eab308; background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; white-space: nowrap;
 }
-.scrim-time-btn[aria-selected="true"], .scrim-set-btn[aria-selected="true"] { 
+.scrim-time-btn[aria-selected="true"] { 
   border-color: #ca8a04; background: #fef08a; color: #713f12; 
 }
 .scrim-time-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.scrim-set-bar { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
 
 .today-scrim-bar { background: transparent; border: 1.5px solid #eab308; border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: #713f12; }
 .vod-links-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -633,21 +632,16 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>시간대 이름</label><input type="text" id="asDateStr" value="${card.groups[ex1].dates[ex2].dateStr}">`;
   } else if (type === "scrim-time-add") {
     document.getElementById("asTitle").textContent = "세트 추가 (예: 1세트)";
-    container.innerHTML = `<label>세트 표기</label><input type="text" id="asTimeLabel" value="세트">`;
+    container.innerHTML = `<label>세트 표기</label><input type="text" id="asTimeLabel" value="1세트">`;
   } else if (type === "scrim-time-edit") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
     document.getElementById("asTitle").textContent = "세트 탭 수정";
     container.innerHTML = `<label>세트 표기</label><input type="text" id="asTimeLabel" value="${card.groups[ex1].dates[ex2].times[ex3].timeLabel}">`;
-  } else if (type === "scrim-set-add") {
-    const card = SCRIM_CARDS.find(c => c.id === parentId);
-    document.getElementById("asTitle").textContent = "새 세트 추가";
-    container.innerHTML = `<label>세트 이름</label><input type="text" id="asSetName" value="세트">`;
   } else if (type === "scrim-set-edit") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
-    const setObj = card.groups[ex1].dates[ex2].times[ex3].sets[ex4] || {};
+    const setObj = card.groups[ex1].dates[ex2].times[ex3].sets[0] || {};
     document.getElementById("asTitle").textContent = "세트 기본 정보 수정";
     container.innerHTML = `
-      <label>세트 이름</label><input type="text" id="asSetName" value="${setObj.setName||''}">
       <label>도현팀 진영</label><select id="asSide"><option value="레드" ${setObj.side==='레드'?'selected':''}>레드</option><option value="블루" ${setObj.side==='블루'?'selected':''}>블루</option></select>
       <label>결과</label><select id="asScrimRes"><option value="승" ${setObj.result==='승'?'selected':''}>승</option><option value="패" ${setObj.result==='패'?'selected':''}>패</option></select>
       <label>도현팀 명칭</label><input type="text" id="asLeftTeam" value="${setObj.leftTeamName||'도현 팀'}">
@@ -655,7 +649,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     `;
   } else if (type === "scrim-player-edit") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
-    const setObj = card.groups[ex1].dates[ex2].times[ex3].sets[ex4];
+    const setObj = card.groups[ex1].dates[ex2].times[ex3].sets[0];
     document.getElementById("asTitle").textContent = "표 5개 포지션 선수 및 챔피언 상세 수정";
     let pHtml = "";
     (setObj.positions || []).forEach((p, pIdx) => {
@@ -744,7 +738,7 @@ function handleSubFormSubmit(e) {
       card.groups[ex1].dates[ex2].times.push({
         timeLabel: document.getElementById("asTimeLabel").value,
         sets: [{
-          setName: "세트", side: "레드", result: "패", leftTeamName: "도현 팀", rightTeamName: "상대 팀",
+          side: "레드", result: "패", leftTeamName: "도현 팀", rightTeamName: "상대 팀",
           positions: [
             { pos: "탑", p1: "선수1", t1: "E 30", c1: "카밀", p2: "상대1", t2: "P 20", c2: "모데카이저" },
             { pos: "정글", p1: "선수2", t1: "C 30", c1: "케인", p2: "상대2", t2: "C 30", c2: "사일러스" },
@@ -762,28 +756,10 @@ function handleSubFormSubmit(e) {
       card.groups[ex1].dates[ex2].times[ex3].timeLabel = document.getElementById("asTimeLabel").value;
       saveData();
     }
-  } else if (type === "scrim-set-add") {
-    const card = SCRIM_CARDS.find(c => c.id === parentId);
-    if (card && card.groups[ex1] && card.groups[ex1].dates[ex2] && card.groups[ex1].dates[ex2].times[ex3]) {
-      if (!card.groups[ex1].dates[ex2].times[ex3].sets) card.groups[ex1].dates[ex2].times[ex3].sets = [];
-      const newSetName = document.getElementById("asSetName").value || "세트";
-      card.groups[ex1].dates[ex2].times[ex3].sets.push({
-        setName: newSetName, side: "레드", result: "패", leftTeamName: "도현 팀", rightTeamName: "상대 팀",
-        positions: [
-          { pos: "탑", p1: "선수1", t1: "E 30", c1: "카밀", p2: "상대1", t2: "P 20", c2: "모데카이저" },
-          { pos: "정글", p1: "선수2", t1: "C 30", c1: "케인", p2: "상대2", t2: "C 30", c2: "사일러스" },
-          { pos: "미드", p1: "도현", t1: "P 31.5", c1: "멜", p2: "상대3", t2: "S 10", c2: "사이온" },
-          { pos: "원딜", p1: "선수4", t1: "E 22", c1: "바루스", p2: "상대4", t2: "C 60", c2: "유나라" },
-          { pos: "서포터", p1: "선수5", t1: "E 36", c1: "레오나", p2: "상대5", t2: "G 21", c2: "유미" }
-        ]
-      });
-      saveData();
-    }
   } else if (type === "scrim-set-edit") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
-    if (card && card.groups[ex1] && card.groups[ex1].dates[ex2] && card.groups[ex1].dates[ex2].times[ex3] && card.groups[ex1].dates[ex2].times[ex3].sets[ex4]) {
-      const targetSet = card.groups[ex1].dates[ex2].times[ex3].sets[ex4];
-      targetSet.setName = document.getElementById("asSetName").value;
+    if (card && card.groups[ex1] && card.groups[ex1].dates[ex2] && card.groups[ex1].dates[ex2].times[ex3]) {
+      const targetSet = card.groups[ex1].dates[ex2].times[ex3].sets[0];
       targetSet.side = document.getElementById("asSide").value;
       targetSet.result = document.getElementById("asScrimRes").value;
       targetSet.leftTeamName = document.getElementById("asLeftTeam").value;
@@ -792,7 +768,7 @@ function handleSubFormSubmit(e) {
     }
   } else if (type === "scrim-player-edit") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
-    const targetSet = card.groups[ex1].dates[ex2].times[ex3].sets[ex4];
+    const targetSet = card.groups[ex1].dates[ex2].times[ex3].sets[0];
     if (targetSet && targetSet.positions) {
       targetSet.positions.forEach((p, pIdx) => {
         p.p1 = document.getElementById(`p1_${pIdx}`).value;
@@ -889,11 +865,6 @@ function deleteSubItem(target, id, idx1, idx2, idx3, idx4) {
     const card = SCRIM_CARDS.find(c => c.id === id);
     if (card && card.groups && card.groups[idx1] && card.groups[idx1].dates[idx2]) {
       card.groups[idx1].dates[idx2].times.splice(idx3, 1);
-    }
-  } else if (target === "scrim-set") {
-    const card = SCRIM_CARDS.find(c => c.id === id);
-    if (card && card.groups && card.groups[idx1] && card.groups[idx1].dates[idx2] && card.groups[idx1].dates[idx2].times[idx3]) {
-      card.groups[idx1].dates[idx2].times[idx3].sets.splice(idx4, 1);
     }
   } else if (target === "chong-timeline") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(id));
@@ -1150,7 +1121,7 @@ function handleMonthToggle(k, isOpen) {
   }
 }
 
-function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
+function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
     const groups = card.groups || [];
@@ -1177,8 +1148,8 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
     const todayTotal = todayWins + todayLosses;
     const todayWinRate = todayTotal ? Math.round((todayWins / todayTotal) * 100) : 0;
 
-    const curSet = sets[sI] || sets[0];
-    const isDhRed = curSet ? (curSet.side === "레드") : true;
+    const curSet = sets[0] || {};
+    const isDhRed = curSet.side === "레드";
     
     const leftHeaderClass = isDhRed ? "header-red" : "header-blue";
     const rightHeaderClass = isDhRed ? "header-blue" : "header-red";
@@ -1200,7 +1171,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
         <div class="scrim-top-date-bar">
           ${groups.map((g, idx) => `
             <div style="display:inline-flex; align-items:center; background:#ffffff; border-radius:8px; border:1.5px solid ${idx===gI?'#ca8a04':'#eab308'};">
-              <button class="scrim-top-date-btn" style="border:0; background:${idx===gI?'#fef08a':'transparent'}; color:#713f12;" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0-s0'">${g.groupTitle}</button>
+              <button class="scrim-top-date-btn" style="border:0; background:${idx===gI?'#fef08a':'transparent'}; color:#713f12;" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">${g.groupTitle}</button>
               ${isAdmin ? `
                 <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${card.id}', 'scrim-group-edit', ${idx})">✏️</button>
                 <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('scrim-group', '${card.id}', ${idx})">✕</button>
@@ -1232,7 +1203,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           <div class="scrim-time-bar">
             ${dates.map((d, idx) => `
               <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid #eab308; background:#ffffff;">
-                <button class="scrim-time-btn" style="border:0; background:${idx===dI?'#fef08a':'transparent'}; color:#713f12;" ${idx===dI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0-s0'">${d.dateStr}</button>
+                <button class="scrim-time-btn" style="border:0; background:${idx===dI?'#fef08a':'transparent'}; color:#713f12;" ${idx===dI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0'">${d.dateStr}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${card.id}', 'scrim-date-edit', ${gI}, ${idx})">✏️</button>
                   <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('scrim-date', '${card.id}', ${gI}, ${idx})">✕</button>
@@ -1244,35 +1215,28 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
         ` : ''}
 
         ${curDateObj ? `
-          <div class="scrim-set-bar">
+          <div class="scrim-time-bar" style="margin-bottom:16px;">
             ${times.map((t, idx) => `
               <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid #eab308; background:#ffffff; padding:0 4px;">
-                <button class="scrim-set-btn" style="border:0; background:${idx===tI?'#fef08a':'transparent'}; color:#713f12;" ${idx===tI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}-s0'">${t.timeLabel}</button>
+                <button class="scrim-time-btn" style="border:0; background:${idx===tI?'#fef08a':'transparent'}; color:#713f12;" ${idx===tI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}'">${t.timeLabel}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:2px;" onclick="openSubAdminModal('${card.id}', 'scrim-time-edit', ${gI}, ${dI}, ${idx})">✏️</button>
                   <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${idx})">✕</button>
                 ` : ''}
               </div>
             `).join('')}
-            ${isAdmin ? `<button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-time-add', ${gI}, ${dI})">+ 시간대별 세트 추가</button>` : ''}
-          </div>
-
-          <div style="display:flex; gap:6px; margin-bottom:16px; align-items:center; flex-wrap:wrap;">
-            ${sets.map((s, idx) => `
-              <button class="game-tab-btn" style="border:1.5px solid #eab308; background:${idx===sI?'#fef08a':'#ffffff'}; color:#713f12;" onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${tI}-s${idx}'" aria-pressed="${idx === sI}">${s.setName}</button>
-            `).join('')}
-            ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-set-add', ${gI}, ${dI}, ${tI})">+ 새 세트 추가</button>` : ''}
+            ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-time-add', ${gI}, ${dI})">+ 새 세트 추가</button>` : ''}
           </div>
         ` : ''}
 
-        ${curSet ? `
+        ${curTimeObj ? `
           <div style="font-size:14px; font-weight:bold; margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span>${curDateObj.dateStr} · ${curSet.setName}</span>
+            <span>${curDateObj.dateStr} · ${curTimeObj.timeLabel}</span>
             <span class="pill ${curSet.result === '승' ? 'w' : 'l'}">${curSet.result}</span>
             ${isAdmin ? `
-              <button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-set-edit', ${gI}, ${dI}, ${tI}, ${sI})">세트 설정 수정</button>
-              <button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-player-edit', ${gI}, ${dI}, ${tI}, ${sI})">표 내용 수정 (5줄)</button>
-              <button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-set', '${card.id}', ${gI}, ${dI}, ${tI}, ${sI})">세트 삭제</button>
+              <button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-set-edit', ${gI}, ${dI}, ${tI})">세트 설정 수정</button>
+              <button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-player-edit', ${gI}, ${dI}, ${tI})">표 내용 수정 (5줄)</button>
+              <button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${tI})">세트 삭제</button>
             ` : ''}
           </div>
 
@@ -1352,7 +1316,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
             <div class="card" style="border-top: 4px solid var(--yellow);">
               <div class="card-corner-tag" style="--tag-bg: var(--yellow-bg); --tag-ink: var(--yellow-ink); --tag-border: var(--yellow);">${c.badge || '멸망전'}</div>
               ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('scrim', ${originalIdx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('scrim', ${originalIdx})">삭제</button></div>` : ''}
-              <a href="#scrim-${c.id}-g0-d0-t0-s0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+              <a href="#scrim-${c.id}-g0-d0-t0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                 <div>
                   <div class="card-content-area">
                     <div class="card-title" style="color: var(--yellow-ink);">${c.no}</div>
@@ -1621,12 +1585,12 @@ function render() {
   const view = document.getElementById("view");
   if (cat === "record") view.innerHTML = renderRecords();
   else if (cat === "scrim") {
-    const match = hash.match(/^scrim-(.+)-g(\d+)-d(\d+)-t(\d+)-s(\d+)$/);
+    const match = hash.match(/^scrim-(.+)-g(\d+)-d(\d+)-t(\d+)$/);
     if (match) {
-      view.innerHTML = renderScrims(match[1], parseInt(match[2]), parseInt(match[3]), parseInt(match[4]), parseInt(match[5]));
+      view.innerHTML = renderScrims(match[1], parseInt(match[2]), parseInt(match[3]), parseInt(match[4]));
     } else {
       const simpleMatch = hash.match(/^scrim-(.+)$/);
-      view.innerHTML = renderScrims(simpleMatch ? simpleMatch[1] : null, 0, 0, 0, 0);
+      view.innerHTML = renderScrims(simpleMatch ? simpleMatch[1] : null, 0, 0, 0);
     }
   } else if (cat === "mc") {
     const match = hash.match(/^mc-([a-z0-9-]+)-d(\d+)$/);
