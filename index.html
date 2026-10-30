@@ -11,26 +11,6 @@
 :root {
   --page: #f1f3f6; --page-fg: #12161c; --page-muted: #566170;
   --panel: #ffffff; --surface: #ffffff; --line: #dde2ea;
-  --accent: #2a56d6; --accent-ink: #ffffff; --soft: #e4ebfc; --soft-ink: #이미지에서 버튼 선택 시 배경색이 안쪽으로 둥글게 쪼그라들어 가장자리가 하얗게 비어 보이는 현상은 `.scrim-time-btn` 스타일의 **`border`** 및 **`border-radius`** 처리 시 내부 패딩 및 배경 위치 영향 때문에 발생합니다.
-
-선택 시 버튼 테두리 안쪽 네모칸 전체에 색상이 꽉 차도록 스타일을 수정했습니다.
-
-수정 및 반영된 **전체 풀코드**입니다.
-
-```html
-<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-<title>DOHYEON ARCHIVE</title>
-<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-<link rel="stylesheet" href="[https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800&display=swap](https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800&display=swap)">
-<style>
-:root {
-  --page: #f1f3f6; --page-fg: #12161c; --page-muted: #566170;
-  --panel: #ffffff; --surface: #ffffff; --line: #dde2ea;
   --accent: #2a56d6; --accent-ink: #ffffff; --soft: #e4ebfc; --soft-ink: #1f3fa6;
   
   --win: #1d4ed8; --win-bg: #dbeafe; 
@@ -331,7 +311,7 @@ const DEFAULT_MC = [
       { 
         dayTitle: "1일차", dateStr: "2026-05-20",
         sections: [
-          { title: "모험 및 탐색", timelines: [{text: "서버 첫 입장 및 스폰 확인", url: "[https://youtube.com](https://youtube.com)", spacing: 0}] }
+          { title: "모험 및 탐색", timelines: [{text: "서버 첫 입장 및 스폰 확인", url: "https://youtube.com", spacing: 0}] }
         ] 
       }
     ] 
@@ -339,13 +319,13 @@ const DEFAULT_MC = [
 ];
 
 const DEFAULT_CHONG = [
-  { ep: "0", title: "FPS 동아리: 총겜동", dateStr: "2025.04.06", desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피", timeline: [{text: "오프닝 방송 시작", url: "[https://youtube.com](https://youtube.com)", spacing: 0}] }
+  { ep: "0", title: "FPS 동아리: 총겜동", dateStr: "2025.04.06", desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피", timeline: [{text: "오프닝 방송 시작", url: "https://youtube.com", spacing: 0}] }
 ];
 
 const DEFAULT_SCRIM = [
   { 
     id: "do2", no: "도이온2", badge: "2025 시즌2 멸망전", dateRange: "2025.11.01 ~ 11.20", type: "스크림",
-    vodLinks: [{name: "풀영상 1", url: "[https://youtube.com](https://youtube.com)"}, {name: "풀영상 2", url: "[https://youtube.com](https://youtube.com)"}],
+    vodLinks: [{name: "풀영상 1", url: "https://youtube.com"}, {name: "풀영상 2", url: "https://youtube.com"}],
     groups: [
       {
         groupTitle: "25.11.15 토",
@@ -524,7 +504,7 @@ function openAdminModal(target, idx = -1, copyIdx = -1) {
       <label>우측 상단 시즌 설명</label><input type="text" id="afScrimBadge" value="${s.badge||''}">
       <label>기간 날짜</label><input type="text" id="afScrimDateRange" value="${s.dateRange||''}">
       <label>풀영상 링크 목록 (형식: 이름|주소, 줄바꿈으로 여러 개)</label>
-      <textarea id="afVodLinks" rows="2" placeholder="풀영상 1|[https://youtube.com](https://youtube.com)&#10;풀영상 2|[https://youtube.com](https://youtube.com)">${(s.vodLinks||[]).map(v=>`${v.name}|${v.url}`).join('\n')}</textarea>
+      <textarea id="afVodLinks" rows="2" placeholder="풀영상 1|https://youtube.com&#10;풀영상 2|https://youtube.com">${(s.vodLinks||[]).map(v=>`${v.name}|${v.url}`).join('\n')}</textarea>
     `;
   } else if (target === "chong") {
     const e = idx >= 0 ? CHONG_EPS[idx] : {};
