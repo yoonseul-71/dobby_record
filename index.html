@@ -305,7 +305,7 @@ const GAME_MODES = {
 
 const DEFAULT_SETS = [
   {
-    date: "2026-05-23", game: "발로란트", mode: "내전", balance: "상대A", map: "헤이븐", agent: "제트", acs: "240", kda: "20/10/5", result: "W",
+    date: "2026-05-23", game: "발로란트", mode: "내전", balance: "상대A", map: "헤이븐", agent: "제트", acs: "240", kda: "20/10/5", score: "2:1", result: "W",
     allMembersText: "도현 (제트)\n멤버1 (소바)\n멤버2 (케이오)"
   }
 ];
@@ -384,7 +384,7 @@ function saveData() {
 }
 
 let isAdmin = false;
-let S = { game: "발로란트", year: "전체년", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", monthOrder: {}, openRows: {} };
+let S = { game: "발로란트", year: "전체", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", monthOrder: {}, openRows: {} };
 
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
@@ -437,6 +437,7 @@ function updateRecordFormFields(selectedGame, r = {}) {
       <label>요원</label><input type="text" id="afAgent" value="${r.agent||''}">
       <label>ACS</label><input type="text" id="afAcs" value="${r.acs||''}">
       <label>KDA</label><input type="text" id="afKda" value="${r.kda||''}">
+      <label>스코어 (예: 2:1)</label><input type="text" id="afScore" value="${r.score||''}">
     `;
   } else if (selectedGame === "롤") {
     fields.innerHTML = `
@@ -454,6 +455,7 @@ function updateRecordFormFields(selectedGame, r = {}) {
   } else if (selectedGame === "배그") {
     fields.innerHTML = `
       <label>순수킬</label><input type="text" id="afPureKill" value="${r.pureKill||''}">
+      <label>스코어 (예: 13:5 또는 1위)</label><input type="text" id="afScore" value="${r.score||''}">
     `;
   }
 }
@@ -540,12 +542,14 @@ function handleAdminFormSubmit(e) {
       item.agent = document.getElementById("afAgent").value;
       item.acs = document.getElementById("afAcs").value;
       item.kda = document.getElementById("afKda").value;
+      item.score = document.getElementById("afScore").value;
     } else if (game === "롤") {
       item.lolPos = document.getElementById("afLolPos").value;
       item.champion = document.getElementById("afChampion").value;
       item.kda = document.getElementById("afKda").value;
     } else if (game === "배그") {
       item.pureKill = document.getElementById("afPureKill").value;
+      item.score = document.getElementById("afScore").value;
     }
 
     if (idx >= 0) setsData[idx] = { ...setsData[idx], ...item };
@@ -872,13 +876,20 @@ function deleteItem(target, idx) {
 
 function renderRecords() {
   const games = ["발로란트", "롤", "배그"];
-  const yearsSet = new Set(["전체년", "2024년", "2025년", "2026년"]);
+  const yearsSet = new Set(["전체", "2024년", "2025년", "2026년"]);
   setsData.forEach(r => { if (r.date && r.date.length >= 4) yearsSet.add(r.date.slice(0, 4) + "년"); });
-  const years = Array.from(yearsSet).sort((a, b) => a === "전체년" ? -1 : a.localeCompare(b));
+  
+  // '전체'를 맨 앞으로 오게 정렬
+  const years = Array.from(yearsSet).sort((a, b) => {
+    if (a === "전체") return -1;
+    if (b === "전체") return 1;
+    return a.localeCompare(b);
+  });
+
   const currentModes = GAME_MODES[S.game] || ["전체"];
 
   let rows = setsData.filter(r => r.game === S.game);
-  if (S.year !== "전체년") rows = rows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
+  if (S.year !== "전체") rows = rows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
   if (S.mode !== "전체") rows = rows.filter(r => r.mode === S.mode);
 
   const total = rows.length;
@@ -887,11 +898,11 @@ function renderRecords() {
   const winRate = total ? Math.round((winCount / total) * 100) : 0;
   
   const gameFilteredRows = setsData.filter(r => r.game === S.game);
-  const yearFilteredRows = S.year === "전체년" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
 
   const gameTabsHtml = games.map(g => `<button class="game-tab-btn" onclick="setGame('${g}')" aria-pressed="${S.game === g}">${g}</button>`).join("");
   const yearTabsHtml = years.map(y => {
-    const count = y === "전체년" ? gameFilteredRows.length : gameFilteredRows.filter(r => r.date && r.date.startsWith(y.replace("년", ""))).length;
+    const count = y === "전체" ? gameFilteredRows.length : gameFilteredRows.filter(r => r.date && r.date.startsWith(y.replace("년", ""))).length;
     return `<a onclick="setYear('${y}')" ${S.year === y ? 'aria-current="page"' : ''}>${y} <span class="n">${count}</span></a>`;
   }).join("");
 
@@ -922,30 +933,43 @@ function renderRecords() {
 
       let detailHtml = r.allMembersText ? `<div style="font-weight:bold; margin-bottom:4px;">참여 멤버</div><div class="text-pre" style="color:var(--page-muted);">${r.allMembersText}</div>` : '';
       let mainRowContent = "";
+      
+      const vDate = r.date ? (r.date.slice(5).replace('-', '.') + ' ' + getWd(r.date)) : '-';
+      const vMode = r.mode && r.mode.trim() !== "" ? r.mode : '-';
+      const vBal = r.balance && r.balance.trim() !== "" ? r.balance : '-';
+      const vMap = r.map && r.map.trim() !== "" ? r.map : '-';
+      const vAgent = r.agent && r.agent.trim() !== "" ? r.agent : '-';
+      const vAcs = r.acs && r.acs.trim() !== "" ? r.acs : '-';
+      const vKda = r.kda && r.kda.trim() !== "" ? r.kda : '-';
+      const vChamp = r.champion && r.champion.trim() !== "" ? r.champion : '-';
+      const vPos = r.lolPos && r.lolPos.trim() !== "" ? r.lolPos : '탑';
+      const vPureKill = r.pureKill && r.pureKill.trim() !== "" ? r.pureKill : '-';
+      const vScore = r.score && r.score.trim() !== "" ? `<span style="font-family:var(--font-mono); font-weight:bold; margin-right:6px;">${r.score}</span>` : '';
+
       if (S.game === "발로란트") {
         mainRowContent = `
           <tr class="${rowClass}">
-            <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${r.date ? r.date.slice(5).replace('-', '.') + ' ' + getWd(r.date) : '-'}</td>
-            <td>${r.mode || '-'}</td><td>${r.balance || '-'}</td><td>${r.map || '-'}</td><td>${r.agent || '-'}</td>
-            <td>${r.acs || ''}</td><td>${r.kda || '-'}</td>
-            <td><span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
+            <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${vDate}</td>
+            <td>${vMode}</td><td>${vBal}</td><td>${vMap}</td><td>${vAgent}</td>
+            <td>${vAcs}</td><td>${vKda}</td>
+            <td>${vScore}<span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
             ${isAdmin ? `<td><button class="btn-btn" onclick="openAdminModal('record', ${realIdx})">수정</button> <button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button></td>` : ''}
           </tr>`;
       } else if (S.game === "롤") {
         mainRowContent = `
           <tr class="${rowClass}">
-            <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${r.date ? r.date.slice(5).replace('-', '.') + ' ' + getWd(r.date) : '-'}</td>
-            <td>${r.mode || '-'}</td><td>${r.balance || '-'} <span style="font-size:11px; color:var(--violet-ink); font-weight:bold;">[${r.lolPos||'탑'}]</span></td>
-            <td>${r.champion || '-'}</td><td>${r.kda || '-'}</td>
+            <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${vDate}</td>
+            <td>${vMode}</td><td>${vBal} <span style="font-size:11px; color:var(--violet-ink); font-weight:bold;">[${vPos}]</span></td>
+            <td>${vChamp}</td><td>${vKda}</td>
             <td><span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
             ${isAdmin ? `<td><button class="btn-btn" onclick="openAdminModal('record', ${realIdx})">수정</button> <button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button></td>` : ''}
           </tr>`;
       } else {
         mainRowContent = `
           <tr class="${rowClass}">
-            <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${r.date ? r.date.slice(5).replace('-', '.') + ' ' + getWd(r.date) : '-'}</td>
-            <td>${r.mode || '-'}</td><td>${r.balance || '-'}</td><td>${r.pureKill || '-'}</td>
-            <td><span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
+            <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${vDate}</td>
+            <td>${vMode}</td><td>${vBal}</td><td>${vPureKill}</td>
+            <td>${vScore}<span class="pill ${r.result === 'W' ? 'w' : 'l'}">${r.result === 'W' ? '승' : '패'}</span></td>
             ${isAdmin ? `<td><button class="btn-btn" onclick="openAdminModal('record', ${realIdx})">수정</button> <button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button></td>` : ''}
           </tr>`;
       }
@@ -957,7 +981,7 @@ function renderRecords() {
       return mainRowContent;
     }).join("");
 
-    let theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>맵</th><th>요원</th>` + (sorted.some(r=>r.acs)?`<th>ACS</th>`:'') + `<th>KDA</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
+    let theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>맵</th><th>요원</th><th>ACS</th><th>KDA</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
     if (S.game === "롤") theaders = `<th>날짜</th><th>종류</th><th>밸런스 [포지션]</th><th>챔피언</th><th>KDA</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
     if (S.game === "배그") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>순수킬</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
 
@@ -967,8 +991,8 @@ function renderRecords() {
           <span class="m-title">v ${k.replace('-', '.')}</span>
           <span class="m-meta">${sorted.length}경기 · ${mWin}승 ${sorted.length - mWin}패</span>
           <span class="seg">
-            <button type="button" onclick="setMonthOrd('${k}','desc')" aria-pressed="${desc}">최신순</button>
             <button type="button" onclick="setMonthOrd('${k}','asc')" aria-pressed="${!desc}">오래된순</button>
+            <button type="button" onclick="setMonthOrd('${k}','desc')" aria-pressed="${desc}">최신순</button>
           </span>
           <div class="rate-box">
             <span class="mono">승률 <b>${mRate}%</b></span>
@@ -1038,9 +1062,9 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
     return `
       <div class="block">
         <a class="back-btn" onclick="location.hash='#scrim'">← 멸망전 목록으로</a>
-        <h2>${card.no} 상세 전적</h2>
-
-        <div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom:-6px;">
+        
+        <div class="toolbar" style="align-items:center; margin-bottom:-10px;">
+          <h2>${card.no} 상세 전적</h2>
           <div class="seg" style="display:inline-flex; border:1px solid #eab308; border-radius:999px; overflow:hidden; background:#ffffff;">
             <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#eab308':'transparent'}; color:${S.scrimSort==='old'?'#ffffff':'#713f12'}; font-weight:bold; cursor:pointer;">오래된순</button>
             <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#eab308':'transparent'}; color:${S.scrimSort==='latest'?'#ffffff':'#713f12'}; font-weight:bold; cursor:pointer;">최신순</button>
@@ -1186,10 +1210,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
     <div class="block">
       <div class="toolbar" style="align-items:center;">
         <h2>롤 멸망전</h2>
-        ${isAdmin ? `<button class="btn-accent" onclick="openAdminModal('scrim')">+ 새 멸망전 팀 카드 추가</button>` : ''}
-      </div>
-
-      <div style="display:flex; justify-content:flex-end; align-items:center;">
         <div class="seg" style="display:inline-flex; border:1px solid #eab308; border-radius:999px; overflow:hidden; background:#ffffff;">
           <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#eab308':'transparent'}; color:${S.scrimSort==='old'?'#ffffff':'#713f12'}; font-weight:bold; cursor:pointer;">오래된순</button>
           <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#eab308':'transparent'}; color:${S.scrimSort==='latest'?'#ffffff':'#713f12'}; font-weight:bold; cursor:pointer;">최신순</button>
