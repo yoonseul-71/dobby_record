@@ -667,6 +667,26 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
         </div>`;
     });
     container.innerHTML = pHtml;
+  } else if (type === "scrim-set-copy-target") {
+    const card = SCRIM_CARDS.find(c => c.id === parentId);
+    document.getElementById("asTitle").textContent = "다른 날짜/시간대로 세트 복사하기";
+    
+    let optionsHtml = "";
+    card.groups.forEach((g, gIdx) => {
+      (g.dates || []).forEach((d, dIdx) => {
+        (d.times || []).forEach((t, tIdx) => {
+          const label = `${g.groupTitle} > ${d.dateStr} > ${t.timeLabel}`;
+          const isCurrent = (gIdx == ex1 && dIdx == ex2 && tIdx == ex3);
+          optionsHtml += `<option value="${gIdx}_${dIdx}_${tIdx}" ${isCurrent?'selected':''}>${label} ${isCurrent?'(현재)':''}</option>`;
+        });
+      });
+    });
+
+    container.innerHTML = `
+      <label>이동/복사할 대상 날짜 및 시간대 선택</label>
+      <select id="asCopyTargetCoord" style="padding:10px; font-size:14px;">${optionsHtml}</select>
+      <div style="font-size:12px; color:var(--page-muted); margin-top:8px;">선택한 날짜 및 시간대의 마지막 세트 뒤에 복사된 세트가 추가됩니다.</div>
+    `;
   } else if (type === "mc-day") {
     document.getElementById("asTitle").textContent = "마크서버 일차 추가";
     container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="2일차"><label>날짜</label><input type="text" id="asDateStr" value="2026-05-21">`;
@@ -815,6 +835,23 @@ function handleSubFormSubmit(e) {
       });
       saveData();
     }
+  } else if (type === "scrim-set-copy-target") {
+    const card = SCRIM_CARDS.find(c => c.id === parentId);
+    const sourceSet = card.groups[ex1].dates[ex2].times[ex3].sets[0];
+    if (sourceSet) {
+      const val = document.getElementById("asCopyTargetCoord").value;
+      const [destGI, destDI, destTI] = val.split('_').map(Number);
+      const destTimesArr = card.groups[destGI].dates[destDI].times;
+      
+      const duplicatedSet = JSON.parse(JSON.stringify(sourceSet));
+      const newTimeLabel = (destTimesArr.length + 1) + "세트";
+      destTimesArr.push({
+        timeLabel: newTimeLabel,
+        sets: [duplicatedSet]
+      });
+      saveData();
+      location.hash = `#scrim-${card.id}-g${destGI}-d${destDI}-t${destTimesArr.length - 1}`;
+    }
   } else if (type === "mc-day") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     if (srv) {
@@ -876,23 +913,7 @@ function handleSubFormSubmit(e) {
 }
 
 function duplicateScrimSet(cardId, gI, dI, tI) {
-  const card = SCRIM_CARDS.find(c => c.id === cardId);
-  if (!card) return;
-  const timesArr = card.groups[gI].dates[dI].times;
-  const targetTimeObj = timesArr[tI];
-  if (!targetTimeObj || !targetTimeObj.sets || !targetTimeObj.sets[0]) return;
-
-  const sourceSet = targetTimeObj.sets[0];
-  const duplicatedSet = JSON.parse(JSON.stringify(sourceSet));
-  
-  const newTimeLabel = (timesArr.length + 1) + "세트";
-  timesArr.push({
-    timeLabel: newTimeLabel,
-    sets: [duplicatedSet]
-  });
-  saveData();
-  location.hash = `#scrim-${card.id}-g${gI}-d${dI}-t${timesArr.length - 1}`;
-  render();
+  openSubAdminModal(cardId, 'scrim-set-copy-target', gI, dI, tI);
 }
 
 function adjustSpacing(targetType, parentId, idx1, idx2, idx3, delta) {
@@ -1594,7 +1615,7 @@ function renderChong(subEp) {
         <div style="display:flex; gap:6px; align-items:center;">
           <div class="seg" style="display:inline-flex; border:1px solid var(--violet); border-radius:999px; overflow:hidden;">
             <button type="button" onclick="setChongSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='old'?'var(--violet)':'transparent'}; color:${S.chongSort==='old'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
-            <button type="button" onclick="setChongSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='latest'?'var(--violet)':'transparent'}; color:${S.chongSort==='latest'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+            <button type="button" onclick="setChongSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='latest'?'var(--violet)':'transparent'}; color:${S.scrimSort==='latest'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
           </div>
           ${isAdmin ? `<button class="btn-accent" onclick="openAdminModal('chong')" style="margin-left:8px;">+ 새 에피소드 추가</button>` : ''}
         </div>
