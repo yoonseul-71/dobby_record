@@ -102,7 +102,7 @@ td.mono { font-family: var(--font-mono); }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
 
-/* 카드 디자인 스타일 */
+/* 카드 스타일 (마크서버 및 총겜동 통일) */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-top: 15px; }
 .card {
   background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
@@ -120,15 +120,19 @@ td.mono { font-family: var(--font-mono); }
   background: var(--tag-bg, #f5f5f5); color: var(--tag-ink, #333); border-top: 0; border-right: 0;
 }
 
-.card-mc-style .main-title { font-size: 20px; font-weight: 800; color: #12161c; margin-top: 18px; margin-bottom: 4px; }
-.card-mc-style .sub-meta { font-size: 13px; color: var(--page-muted); font-family: var(--font-mono); margin-bottom: 12px; }
+.card-content-area {
+  margin-top: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.card-title { font-size: 20px; font-weight: 800; color: #12161c; margin-bottom: 4px; }
+.card-sub { font-size: 13px; color: var(--page-muted); font-family: var(--font-mono); }
 
 .card-footer-link { 
   display: flex; 
   justify-content: flex-end; 
   align-items: center; 
   gap: 6px; 
-  border-top: 1px solid var(--line); 
   padding-top: 12px; 
   font-size: 13px; 
   font-weight: bold; 
@@ -136,26 +140,25 @@ td.mono { font-family: var(--font-mono); }
 
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 3단 탭 및 상세 스타일 */
-.scrim-cat-bar { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; border-bottom: 2px solid var(--line); padding-bottom: 8px; }
-.scrim-cat-btn { padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--line); background: #f8f9fa; font-weight: bold; cursor: pointer; font-size: 14px; }
-.scrim-cat-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
+/* 롤 멸망전 상세 스타일 (스크린샷 1~4번 반영) */
+.scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.scrim-top-date-btn { padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--line); background: #fef08a; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; }
+.scrim-top-date-btn[aria-selected="true"] { background: #fde047; border-color: #ca8a04; }
 
-.scrim-date-bar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-.scrim-date-btn { padding: 5px 14px; border-radius: 8px; border: 1.5px solid var(--line); background: #fff; font-weight: bold; cursor: pointer; font-size: 13.5px; }
-.scrim-date-btn[aria-selected="true"] { background: #e2e8f0; border-color: #cbd5e0; color: #1a202c; }
+.scrim-summary-banner { background: #e8f0fe; border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; color: #1a365d; }
+.scrim-summary-banner .res-pill { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.scrim-summary-banner .res-pill.w { background: var(--win-bg); color: var(--win); }
+.scrim-summary-banner .res-pill.l { background: var(--loss-bg); color: var(--loss); }
 
-.match-tabs-bar { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
-.match-tab-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-weight: bold; cursor: pointer; font-size: 13px; }
-.match-tab-btn[aria-selected="true"] { background: #12161c; border-color: #12161c; color: #fff; }
+.scrim-time-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+.scrim-time-btn { padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--line); background: #f8f9fa; font-weight: bold; cursor: pointer; font-size: 14px; }
+.scrim-time-btn[aria-selected="true"] { background: #fef08a; border-color: #d9a200; color: #5a4400; }
+
+.scrim-set-bar { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; }
+.scrim-set-btn { padding: 5px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; font-weight: bold; cursor: pointer; font-size: 13px; }
+.scrim-set-btn[aria-selected="true"] { background: #fef08a; border-color: #d9a200; color: #5a4400; }
 
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow: hidden; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-.scrim-box-header { padding: 12px 18px; font-weight: bold; font-size: 15px; background: #fafafa; border-bottom: 1px solid #dcdcdc; display: flex; justify-content: space-between; align-items: center; }
-
-.scrim-memo-tab { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; border: 1.5px solid rgba(0,0,0,0.15); }
-.scrim-memo-tab.blue { background: #e8f0fe; color: #1a73e8; border-color: #b0c4de; }
-.scrim-memo-tab.red { background: #fce8e6; color: #d93025; border-color: #f5c6cb; }
-
 .lol-match-table { width: 100%; border-collapse: collapse; }
 .lol-match-table th { padding: 10px 14px; border: 1px solid #dcdcdc; font-size: 15px; font-weight: 800; text-align: center; }
 .lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 14px; vertical-align: middle; font-size: 14.5px; background: #ffffff !important; }
@@ -335,23 +338,23 @@ const DEFAULT_SCRIM = [
     id: "do2", no: "도이온2", badge: "2025 시즌2 멸망전", dateRange: "2025.11.01 ~ 11.20",
     groups: [
       {
-        groupTitle: "스크림",
+        groupTitle: "25.11.15 토",
         dates: [
           {
-            dateStr: "2025-11-15",
+            dateStr: "19시 스크림",
             times: [
               {
-                timeLabel: "19시 스크림",
+                timeLabel: "1세트",
                 sets: [
                   {
                     setName: "1세트", date: "2025-11-15", side: "레드", result: "패",
-                    leftTeamName: "도현팀", rightTeamName: "상대팀",
+                    leftTeamName: "도현 팀", rightTeamName: "염보성",
                     positions: [
-                      { pos: "탑", p1: "선수1", t1: "[P] 30", c1: "챔피언1", p2: "상대1", t2: "[G] 20", c2: "상대챔1" },
-                      { pos: "정글", p1: "선수2", t1: "[E] 10", c1: "챔피언2", p2: "상대2", t2: "[E] 10", c2: "상대챔2" },
-                      { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "아리", p2: "상대3", t2: "[P] 20", c2: "상대챔3" },
-                      { pos: "원딜", p1: "선수4", t1: "[C] 40", c1: "챔피언4", p2: "상대4", t2: "[C] 40", c2: "상대챔4" },
-                      { pos: "서포터", p1: "선수5", t1: "[G] 15", c1: "챔피언5", p2: "상대5", t2: "[G] 15", c2: "상대챔5" }
+                      { pos: "탑", p1: "박사장", t1: "E 31.2", c1: "카밀", p2: "염보성", t2: "P 24.3", c2: "모데카이저" },
+                      { pos: "정글", p1: "저라뎃", t1: "C 63", c1: "케인", p2: "클리드", t2: "C 68", c2: "사일러스" },
+                      { pos: "미드", p1: "도현", t1: "P 31.5", c1: "멜", p2: "박이언", t2: "S 10", c2: "사이온" },
+                      { pos: "원딜", p1: "맛종욱", t1: "E 22.1", c1: "바루스", p2: "바밤바", t2: "C 60.4", c2: "유나라" },
+                      { pos: "서포터", p1: "한아밍", t1: "E 36", c1: "레오나", p2: "애교용", t2: "G 21", c2: "유미" }
                     ]
                   }
                 ]
@@ -614,24 +617,24 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "") {
   container.innerHTML = "";
 
   if (type === "scrim-group-add") {
-    document.getElementById("asTitle").textContent = "스크림/대회 대분류 탭 추가";
-    container.innerHTML = `<label>분류 이름 (예: 스크림, 대회)</label><input type="text" id="asGroupTitle" value="스크림">`;
+    document.getElementById("asTitle").textContent = "날짜 탭 추가 (예: 25.11.15 토)";
+    container.innerHTML = `<label>날짜 이름</label><input type="text" id="asGroupTitle" value="25.11.15 토">`;
   } else if (type === "scrim-date-add") {
-    document.getElementById("asTitle").textContent = "상세 날짜 탭 추가";
-    container.innerHTML = `<label>날짜 (예: 2025-11-15)</label><input type="text" id="asDateStr" value="2025-11-15">`;
+    document.getElementById("asTitle").textContent = "시간대 탭 추가 (예: 19시 스크림)";
+    container.innerHTML = `<label>시간대 이름</label><input type="text" id="asDateStr" value="19시 스크림">`;
   } else if (type === "scrim-time-add") {
-    document.getElementById("asTitle").textContent = "시간 탭 추가 (예: 19시 스크림)";
-    container.innerHTML = `<label>시간 탭 이름 (예: 19시 스크림)</label><input type="text" id="asTimeLabel" value="19시 스크림">`;
+    document.getElementById("asTitle").textContent = "세트 추가 (예: 1세트)";
+    container.innerHTML = `<label>세트 이름</label><input type="text" id="asTimeLabel" value="1세트">`;
   } else if (type === "scrim-set-add") {
-    document.getElementById("asTitle").textContent = "세트 단판 전적 추가";
+    document.getElementById("asTitle").textContent = "세트 상세 전적 추가";
     container.innerHTML = `
-      <label>세트 이름 (예: 1세트, 2세트)</label><input type="text" id="asSetName" value="1세트">
+      <label>세트 이름</label><input type="text" id="asSetName" value="1세트">
       <label>날짜</label><input type="text" id="asScrimDate" value="2025-11-15">
       <label>도현팀 진영</label>
       <select id="asSide"><option value="레드">레드</option><option value="블루">블루</option></select>
       <label>결과</label><select id="asScrimRes"><option value="승">승</option><option value="패">패</option></select>
-      <label>왼쪽 팀 이름 (도현팀)</label><input type="text" id="asLeftTeam" value="도현팀">
-      <label>오른쪽 팀 이름 (상대팀)</label><input type="text" id="asRightTeam" value="상대팀">
+      <label>왼쪽 팀 이름 (도현팀)</label><input type="text" id="asLeftTeam" value="도현 팀">
+      <label>오른쪽 팀 이름 (상대팀)</label><input type="text" id="asRightTeam" value="상대 팀">
     `;
   } else if (type === "mc-day") {
     document.getElementById("asTitle").textContent = "마크서버 일차 추가";
@@ -693,14 +696,14 @@ function handleSubFormSubmit(e) {
         date: document.getElementById("asScrimDate").value,
         side: document.getElementById("asSide").value,
         result: document.getElementById("asScrimRes").value,
-        leftTeamName: document.getElementById("asLeftTeam").value || "도현팀",
-        rightTeamName: document.getElementById("asRightTeam").value || "상대팀",
+        leftTeamName: document.getElementById("asLeftTeam").value || "도현 팀",
+        rightTeamName: document.getElementById("asRightTeam").value || "상대 팀",
         positions: [
-          { pos: "탑", p1: "선수1", t1: "[P] 30", c1: "챔피언1", p2: "상대1", t2: "[G] 20", c2: "상대챔1" },
-          { pos: "정글", p1: "선수2", t1: "[E] 10", c1: "챔피언2", p2: "상대2", t2: "[E] 10", c2: "상대챔2" },
-          { pos: "미드", p1: "도현", t1: "[P] 31.5", c1: "아리", p2: "상대3", t2: "[P] 20", c2: "상대챔3" },
-          { pos: "원딜", p1: "선수4", t1: "[C] 40", c1: "챔피언4", p2: "상대4", t2: "[C] 40", c2: "상대챔4" },
-          { pos: "서포터", p1: "선수5", t1: "[G] 15", c1: "챔피언5", p2: "상대5", t2: "[G] 15", c2: "상대챔5" }
+          { pos: "탑", p1: "선수1", t1: "E 30", c1: "카밀", p2: "상대1", t2: "P 20", c2: "모데카이저" },
+          { pos: "정글", p1: "선수2", t1: "C 30", c1: "케인", p2: "상대2", t2: "C 30", c2: "사일러스" },
+          { pos: "미드", p1: "도현", t1: "P 31.5", c1: "멜", p2: "상대3", t2: "S 10", c2: "사이온" },
+          { pos: "원딜", p1: "선수4", t1: "E 22", c1: "바루스", p2: "상대4", t2: "C 60", c2: "유나라" },
+          { pos: "서포터", p1: "선수5", t1: "E 36", c1: "레오나", p2: "상대5", t2: "G 21", c2: "유미" }
         ]
       });
       saveData();
@@ -994,75 +997,87 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
     const isDhRed = curSet ? (curSet.side === "레드") : true;
     const leftHeaderClass = isDhRed ? "header-red" : "header-blue";
     const rightHeaderClass = isDhRed ? "header-blue" : "header-red";
-    const sideClass = isDhRed ? "red" : "blue";
 
     return `
       <div class="block">
         <a class="back-btn" onclick="location.hash='#scrim'">← 멸망전 목록으로</a>
         <h2>${card.no} 상세 전적</h2>
 
-        <div class="scrim-cat-bar">
+        <!-- 1~4번 사진 참고 상단 날짜 탭 -->
+        <div class="scrim-top-date-bar">
           ${groups.map((g, idx) => `
-            <button class="scrim-cat-btn" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0-s0'" ${idx === gI ? 'aria-selected="true"' : ''}>
+            <button class="scrim-top-date-btn" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0-s0'" ${idx === gI ? 'aria-selected="true"' : ''}>
               ${g.groupTitle}
             </button>
           `).join('')}
-          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 새 경기 탭 추가</button>` : ''}
+          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
+        </div>
+
+        <!-- 스크림 결과 요약 배지 바 -->
+        <div class="scrim-summary-banner">
+          <span>스크림 결과: 2승 2패</span>
+          <span style="display:flex; gap:4px;">
+            <span class="res-pill l">패</span>
+            <span class="res-pill w">승</span>
+            <span class="res-pill w">승</span>
+            <span class="res-pill l">패</span>
+          </span>
+          <a href="#" target="_blank" style="margin-left:auto; color:var(--accent); font-size:13px; text-decoration:underline;">풀영상 ↗</a>
         </div>
 
         ${curGroup ? `
-          <div class="scrim-date-bar">
+          <div class="scrim-time-bar">
             ${dates.map((d, idx) => `
-              <button class="scrim-date-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0-s0'" ${idx === dI ? 'aria-selected="true"' : ''}>
+              <button class="scrim-time-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0-s0'" ${idx === dI ? 'aria-selected="true"' : ''}>
                 ${d.dateStr}
               </button>
             `).join('')}
-            ${isAdmin ? `<button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-date-add', ${gI})">+ 날짜 추가</button>` : ''}
-            ${isAdmin && dates.length > 0 ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-date', '${card.id}', ${gI}, ${dI})">날짜 삭제</button>` : ''}
+            ${isAdmin ? `<button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-date-add', ${gI})">+ 시간대 추가</button>` : ''}
+            ${isAdmin && dates.length > 0 ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-date', '${card.id}', ${gI}, ${dI})">시간대 삭제</button>` : ''}
           </div>
         ` : ''}
 
         ${curDateObj ? `
-          <div class="match-tabs-bar" style="background:#f1f3f6; padding:8px; border-radius:8px;">
-            ${times.map((t, idx) => `
-              <button class="match-tab-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}-s0'" ${idx === tI ? 'aria-selected="true"' : ''} style="${idx===tI?'background:var(--yellow-bg); color:var(--yellow-ink); border-color:var(--yellow);':''}">
-                ${t.timeLabel}
-              </button>
-            `).join('')}
-            ${isAdmin ? `<button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-time-add', ${gI}, ${dI})">+ 시간 탭 추가</button>` : ''}
-            ${isAdmin && times.length > 0 ? `<button class="btn-btn" style="color:red; margin-left:auto;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${tI})">시간 탭 삭제</button>` : ''}
-          </div>
-        ` : ''}
-
-        ${curTimeObj ? `
-          <div style="display:flex; gap:6px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
-            ${sets.map((s, idx) => `
-              <button class="match-tab-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${tI}-s${idx}'" ${idx === sI ? 'aria-selected="true"' : ''}>
-                ${s.setName} (${s.result})
-              </button>
-            `).join('')}
-            ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-set-add', ${gI}, ${dI}, ${tI})">+ 새 세트 전적 추가</button>` : ''}
+          <div class="scrim-set-bar">
+            <span style="font-size:13px; font-weight:bold; color:var(--page-muted); margin-right:4px;">${curDateObj.dateStr} 결과: 1승 1패</span>
+            <div style="display:flex; gap:6px; margin-left:12px;">
+              ${times.map((t, idx) => `
+                <button class="scrim-set-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}-s0'" ${idx === tI ? 'aria-selected="true"' : ''}>
+                  ${t.timeLabel}
+                </button>
+              `).join('')}
+              ${isAdmin ? `<button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-time-add', ${gI}, ${dI})">+ 세트 추가</button>` : ''}
+              ${isAdmin && times.length > 0 ? `<button class="btn-btn" style="color:red; margin-left:auto;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${tI})">세트 삭제</button>` : ''}
+            </div>
           </div>
         ` : ''}
 
         ${curSet ? `
+          <div style="font-size:14px; font-weight:bold; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+            <span>${curDateObj.dateStr} · ${curSet.setName}</span>
+            <span class="pill ${curSet.result === '승' ? 'w' : 'l'}">${curSet.result}</span>
+            <span style="font-size:12px; font-weight:normal; background:#e2e8f0; padding:1px 6px; border-radius:4px;">예시</span>
+          </div>
+
           <div class="scrim-detail-box">
-            <div class="scrim-box-header">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span class="scrim-memo-tab ${sideClass}">${curTimeObj.timeLabel} (${curSet.side}/${curSet.result})</span>
-                <span style="font-weight: 800; font-size: 14px; margin-left: 4px;">${curSet.setName}</span>
-              </div>
-              <div>
-                <span style="font-size:12px; font-weight:normal; color:var(--page-muted); margin-right:10px;">${curSet.date}</span>
-                ${isAdmin ? `<button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-set', '${card.id}', ${gI}, ${dI}, ${tI}, ${sI})">세트 삭제</button>` : ''}
-              </div>
-            </div>
             <table class="lol-match-table">
               <thead>
                 <tr>
-                  <th class="${leftHeaderClass}" style="width: 44%;">${curSet.leftTeamName || '도현팀'}</th>
+                  <th class="${leftHeaderClass}" style="width: 44%;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span>${curSet.leftTeamName || '도현 팀'}</span>
+                      <span style="font-size:11px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px;">${curSet.side}</span>
+                      <span style="font-size:11px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px;">${curSet.result}</span>
+                    </div>
+                  </th>
                   <th class="pos-col">포지션</th>
-                  <th class="${rightHeaderClass}" style="width: 44%;">${curSet.rightTeamName || '상대팀'}</th>
+                  <th class="${rightHeaderClass}" style="width: 44%;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span style="font-size:11px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px;">${curSet.result === '승' ? '패' : '승'}</span>
+                      <span style="font-size:11px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px;">${curSet.side === '레드' ? '블루' : '레드'}</span>
+                      <span>${curSet.rightTeamName || '상대 팀'}</span>
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -1092,7 +1107,8 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
               </tbody>
             </table>
           </div>
-        ` : '<div style="padding:30px;text-align:center;color:#888;">등록된 세트 정보가 없습니다. 관리자 모드에서 추가해 보세요!</div>'}
+          <div style="font-size:13px; font-weight:bold; color:var(--accent); margin-top:10px;">링크</div>
+        ` : '<div style="padding:30px;text-align:center;color:#888;">등록된 세트 정보가 없습니다.</div>'}
       </div>`;
   }
 
@@ -1109,8 +1125,10 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
             ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('scrim', ${idx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('scrim', ${idx})">삭제</button></div>` : ''}
             <a href="#scrim-${c.id}-g0-d0-t0-s0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
               <div>
-                <div class="main-title" style="color: var(--yellow-ink);">${c.no}</div>
-                <div class="sub-meta">${c.dateRange || ''}</div>
+                <div class="card-content-area">
+                  <div class="card-title" style="color: var(--yellow-ink);">${c.no}</div>
+                  <div class="card-sub">${c.dateRange || ''}</div>
+                </div>
               </div>
               <div class="card-footer-link" style="color: var(--yellow-ink);">
                 <span>상세보기</span>
@@ -1198,8 +1216,10 @@ function renderMinecraft(subId, dayIndex = 0) {
               ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('mc', ${originalIdx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('mc', ${originalIdx})">삭제</button></div>` : ''}
               <a href="#mc-${s.id}-d0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                 <div>
-                  <div class="main-title">${s.guildName}</div>
-                  <div class="sub-meta">${s.dateRange || ''}</div>
+                  <div class="card-content-area">
+                    <div class="card-title">${s.guildName}</div>
+                    <div class="card-sub">${s.dateRange || ''}</div>
+                  </div>
                 </div>
                 <div class="card-footer-link" style="color: var(--sky);">
                   <span>상세보기</span>
@@ -1295,8 +1315,10 @@ function renderChong(subEp) {
               ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('chong', ${originalIdx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('chong', ${originalIdx})">삭제</button></div>` : ''}
               <a href="#chong-ep${encodeURIComponent(e.ep)}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                 <div>
-                  <div class="main-title" style="margin-top:14px; font-size:20px; font-weight:800;">${e.title}</div>
-                  <div class="sub-meta" style="margin-top:2px;">${e.dateStr || ''}</div>
+                  <div class="card-content-area">
+                    <div class="card-title">${e.title}</div>
+                    <div class="card-sub">${e.dateStr || ''}</div>
+                  </div>
                 </div>
                 <div class="card-footer-link" style="color: var(--violet-ink);">
                   <span>상세보기</span>
