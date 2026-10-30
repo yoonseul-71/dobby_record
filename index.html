@@ -35,7 +35,7 @@ a { color: inherit; text-decoration: none; }
 header.top { display: flex; justify-content: space-between; align-items: flex-start; }
 h1 { margin: 0; font-family: var(--font-body); font-weight: 800; font-size: 48px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; }
 
-/* 스티커 메모 탭 디자인 */
+/* 스티커 메모 상단 탭 디자인 (롤 멸망전 탭을 보내주신 연노랑 색상으로 정확히 맞춤) */
 nav.bar { display: flex; align-items: flex-end; gap: 6px; border-bottom: 1px solid var(--line); padding-left: 10px; }
 nav.bar a {
   position: relative; display: inline-flex; align-items: center; padding: 8px 22px;
@@ -1033,7 +1033,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
         <a class="back-btn" onclick="location.hash='#scrim'">← 멸망전 목록으로</a>
         <h2>${card.no} 상세 전적</h2>
 
-        <!-- [상단 모아보기 서브탭 추가] 날짜 탭 바로 윗라인 -->
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:-6px;">
           <div class="subnav">
             <a onclick="setScrimFilter('전체')" ${S.scrimFilter === '전체' ? 'aria-current="page"' : ''}>전체 <span class="n">${SCRIM_CARDS.length}</span></a>
@@ -1046,7 +1045,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           </div>
         </div>
 
-        <!-- [1단계] 날짜 탭 -->
         <div class="scrim-top-date-bar">
           ${groups.map((g, idx) => `
             <div style="display:inline-flex; align-items:center; background:#FFF8E7; border-radius:8px; border:1.5px solid ${idx===gI?'#ca8a04':'#d9a200'};">
@@ -1060,7 +1058,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
         </div>
 
-        <!-- [2단계] 오늘의 스크림 전적 + 가로 풀영상 링크 바 -->
         <div class="today-scrim-bar">
           <div style="display:flex; align-items:center; gap:12px;">
             <span>오늘의 전적: ${todayWins}승 ${todayLosses}패</span>
@@ -1071,7 +1068,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           </div>
         </div>
 
-        <!-- [3단계] 시간대 (-시 스크림) 버튼 -->
         ${curGroup ? `
           <div class="scrim-time-bar">
             ${dates.map((d, idx) => `
@@ -1087,7 +1083,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           </div>
         ` : ''}
 
-        <!-- [4단계] 세트 탭 버튼 및 통합 세트 추가 버튼 -->
         ${curDateObj ? `
           <div class="scrim-set-bar">
             ${times.map((t, idx) => `
@@ -1173,7 +1168,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
       </div>`;
   }
 
-  // 목록 화면: [전체/스크림/대회] 모아보기 서브탭 및 오래된순/최신순 정렬
   const filteredCards = SCRIM_CARDS.filter(c => {
     if (S.scrimFilter === "전체") return true;
     return (c.type || "스크림") === S.scrimFilter;
