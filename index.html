@@ -18,7 +18,6 @@
   --sky: #2a75d3; --sky-bg: #e6f0fd; --sky-ink: #0f4a86;
   --violet: #7b4bf2; --violet-bg: #f3effe; --violet-ink: #5218d3;
   
-  /* 팀 진영 색상 매핑 (블루는 마크서버 하늘색, 레드는 두 번째 사진 핑크 계열) */
   --blue-team-bg: #2a75d3; --blue-team-ink: #ffffff;
   --red-team-bg: #fbe3f0; --red-team-ink: #7d1f55;
   
@@ -142,12 +141,11 @@ td.mono { font-family: var(--font-mono); }
 
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 스타일 (연노랑 사진 색상 적용 및 버튼 스타일 변경) */
+/* 롤 멸망전 스타일 */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-top-date-btn { padding: 8px 18px; border-radius: 8px; border: 1.5px solid #d9a200; background: #FFF8E7; font-weight: bold; cursor: pointer; font-size: 14px; color: #5a4400; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
 .scrim-top-date-btn[aria-selected="true"] { background: #fef08a; border-color: #ca8a04; }
 
-/* -시 스크림 및 세트 버튼: 검은색 테두리, 흰 배경, 검은 글씨 / 클릭(선택) 시 노란색 테두리 */
 .scrim-time-btn, .scrim-set-btn { 
   padding: 6px 16px; border-radius: 8px; border: 1.5px solid #12161c; background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: #12161c; 
 }
@@ -383,7 +381,7 @@ function saveData() {
 }
 
 let isAdmin = false;
-let S = { game: "발로란트", year: "전체년", mode: "전체", chongSort: "old", mcSort: "old", monthOrder: {}, openRows: {} };
+let S = { game: "발로란트", year: "전체년", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", monthOrder: {}, openRows: {} };
 
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
@@ -1033,9 +1031,22 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
     return `
       <div class="block">
         <a class="back-btn" onclick="location.hash='#scrim'">← 멸망전 목록으로</a>
-        <h2>${card.no} 상세 전적 <span style="font-size:13px; font-weight:normal; color:var(--page-muted); margin-left:8px;">[${card.type || '스크림'}]</span></h2>
+        <h2>${card.no} 상세 전적</h2>
 
-        <!-- [1단계] 날짜 탭 (연노랑 사진 색상 적용) -->
+        <!-- [상단 모아보기 서브탭 추가] 날짜 탭 바로 윗라인 -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:-6px;">
+          <div class="subnav">
+            <a onclick="setScrimFilter('전체')" ${S.scrimFilter === '전체' ? 'aria-current="page"' : ''}>전체 <span class="n">${SCRIM_CARDS.length}</span></a>
+            <a onclick="setScrimFilter('스크림')" ${S.scrimFilter === '스크림' ? 'aria-current="page"' : ''}>스크림 <span class="n">${SCRIM_CARDS.filter(c=>(c.type||'스크림')==='스크림').length}</span></a>
+            <a onclick="setScrimFilter('대회')" ${S.scrimFilter === '대회' ? 'aria-current="page"' : ''}>대회 <span class="n">${SCRIM_CARDS.filter(c=>c.type==='대회').length}</span></a>
+          </div>
+          <div class="seg" style="display:inline-flex; border:1px solid #d9a200; border-radius:999px; overflow:hidden; background:#FFF8E7;">
+            <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#d9a200':'transparent'}; color:${S.scrimSort==='old'?'#fff':'#5a4400'}; font-weight:bold; cursor:pointer;">오래된순</button>
+            <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#d9a200':'transparent'}; color:${S.scrimSort==='latest'?'#fff':'#5a4400'}; font-weight:bold; cursor:pointer;">최신순</button>
+          </div>
+        </div>
+
+        <!-- [1단계] 날짜 탭 -->
         <div class="scrim-top-date-bar">
           ${groups.map((g, idx) => `
             <div style="display:inline-flex; align-items:center; background:#FFF8E7; border-radius:8px; border:1.5px solid ${idx===gI?'#ca8a04':'#d9a200'};">
@@ -1060,7 +1071,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           </div>
         </div>
 
-        <!-- [3단계] 시간대 (-시 스크림) 버튼 (검은 테두리, 흰배경, 선택시 노란 테두리) -->
+        <!-- [3단계] 시간대 (-시 스크림) 버튼 -->
         ${curGroup ? `
           <div class="scrim-time-bar">
             ${dates.map((d, idx) => `
@@ -1076,7 +1087,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
           </div>
         ` : ''}
 
-        <!-- [4단계] 세트 탭 버튼 (검은 테두리, 흰배경, 선택시 노란 테두리) 및 통합 세트 추가 버튼 -->
+        <!-- [4단계] 세트 탭 버튼 및 통합 세트 추가 버튼 -->
         ${curDateObj ? `
           <div class="scrim-set-bar">
             ${times.map((t, idx) => `
@@ -1162,14 +1173,37 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
       </div>`;
   }
 
+  // 목록 화면: [전체/스크림/대회] 모아보기 서브탭 및 오래된순/최신순 정렬
+  const filteredCards = SCRIM_CARDS.filter(c => {
+    if (S.scrimFilter === "전체") return true;
+    return (c.type || "스크림") === S.scrimFilter;
+  });
+
+  const sortedCards = [...filteredCards].sort((a, b) => {
+    return S.scrimSort === "latest" ? (b.dateRange || "").localeCompare(a.dateRange || "") : (a.dateRange || "").localeCompare(b.dateRange || "");
+  });
+
   return `
     <div class="block">
       <div class="toolbar" style="align-items:center;">
         <h2>롤 멸망전</h2>
         ${isAdmin ? `<button class="btn-accent" onclick="openAdminModal('scrim')">+ 새 멸망전 팀 카드 추가</button>` : ''}
       </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div class="subnav">
+          <a onclick="setScrimFilter('전체')" ${S.scrimFilter === '전체' ? 'aria-current="page"' : ''}>전체 <span class="n">${SCRIM_CARDS.length}</span></a>
+          <a onclick="setScrimFilter('스크림')" ${S.scrimFilter === '스크림' ? 'aria-current="page"' : ''}>스크림 <span class="n">${SCRIM_CARDS.filter(c=>(c.type||'스크림')==='스크림').length}</span></a>
+          <a onclick="setScrimFilter('대회')" ${S.scrimFilter === '대회' ? 'aria-current="page"' : ''}>대회 <span class="n">${SCRIM_CARDS.filter(c=>c.type==='대회').length}</span></a>
+        </div>
+        <div class="seg" style="display:inline-flex; border:1px solid #d9a200; border-radius:999px; overflow:hidden; background:#FFF8E7;">
+          <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#d9a200':'transparent'}; color:${S.scrimSort==='old'?'#fff':'#5a4400'}; font-weight:bold; cursor:pointer;">오래된순</button>
+          <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#d9a200':'transparent'}; color:${S.scrimSort==='latest'?'#fff':'#5a4400'}; font-weight:bold; cursor:pointer;">최신순</button>
+        </div>
+      </div>
+
       <div class="cards">
-        ${SCRIM_CARDS.map((c) => {
+        ${sortedCards.map((c) => {
           const originalIdx = SCRIM_CARDS.indexOf(c);
           return `
             <div class="card" style="border-top: 4px solid var(--yellow);">
@@ -1178,7 +1212,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0, sI = 0) {
               <a href="#scrim-${c.id}-g0-d0-t0-s0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                 <div>
                   <div class="card-content-area">
-                    <div style="font-size:11px; font-weight:bold; color:var(--accent); margin-bottom:2px;">[${c.type || '스크림'}]</div>
                     <div class="card-title" style="color: var(--yellow-ink);">${c.no}</div>
                     <div class="card-sub">${c.dateRange || ''}</div>
                   </div>
@@ -1397,6 +1430,8 @@ function setYear(y) { S.year = y; S.mode = "전체"; render(); }
 function setMode(m) { S.mode = m; render(); }
 function setChongSort(sortType) { S.chongSort = sortType; render(); }
 function setMcSort(sortType) { S.mcSort = sortType; render(); }
+function setScrimFilter(f) { S.scrimFilter = f; render(); }
+function setScrimSort(sortType) { S.scrimSort = sortType; render(); }
 function setMonthOrd(k, ord) { S.monthOrder[k] = ord; render(); }
 
 function render() {
