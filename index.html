@@ -17,8 +17,8 @@
   --yellow: #d9a200; --yellow-bg: #fdf0b8; --yellow-ink: #5a4400;
   --sky: #2a75d3; --sky-bg: #e6f0fd; --sky-ink: #0f4a86;
   --violet: #7b4bf2; --violet-bg: #f3effe; --violet-ink: #5218d3;
-  --blue-team-bg: #e8f0fe; --blue-team-ink: #1a73e8;
-  --red-team-bg: #fce8e6; --red-team-ink: #d93025;
+  --blue-team-bg: #3b82f6; --blue-team-ink: #ffffff;
+  --red-team-bg: #991b1b; --red-team-ink: #ffffff;
   
   --font-body: "Noto Sans KR", system-ui, sans-serif;
   --font-title: "Gowun Dodum", sans-serif;
@@ -92,9 +92,8 @@ table { border-collapse: collapse; width: 100%; min-width: 700px; }
 th, td { padding: 10px 14px; text-align: left; font-style: normal; }
 th { font-size: 12px; color: var(--page-muted); font-weight: 500; border-bottom: 1px solid var(--line); }
 
-/* 전적 테이블 행 구분선 스타일 */
-.record-row { border-bottom: 1px dashed #e2e8f0; } /* 같은 날짜끼리는 연한 회색 점선 */
-.record-row-last-of-date { border-bottom: 2px solid #cbd5e0; } /* 다른 날짜로 넘어갈 때는 진한 회색 직선 */
+.record-row { border-bottom: 1px dashed #e2e8f0; }
+.record-row-last-of-date { border-bottom: 2px solid #cbd5e0; }
 tbody tr.detail-dropdown-row td { background: #f8fafc; border-bottom: 2px solid #cbd5e0; padding: 16px; }
 
 tbody tr:hover:not(.detail-dropdown-row) { background: rgba(0,0,0,0.02); }
@@ -137,7 +136,7 @@ td.mono { font-family: var(--font-mono); }
 
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 3단 탭 스타일 */
+/* 롤 멸망전 3단 탭 및 상세 스타일 */
 .scrim-cat-bar { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; border-bottom: 2px solid var(--line); padding-bottom: 8px; }
 .scrim-cat-btn { padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--line); background: #f8f9fa; font-weight: bold; cursor: pointer; font-size: 14px; }
 .scrim-cat-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
@@ -159,8 +158,8 @@ td.mono { font-family: var(--font-mono); }
 
 .lol-match-table { width: 100%; border-collapse: collapse; }
 .lol-match-table th { padding: 10px 14px; border: 1px solid #dcdcdc; font-size: 15px; font-weight: 800; text-align: center; }
-.lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 14px; vertical-align: middle; font-size: 14.5px; background: #fff; }
-.lol-match-table .pos-col { width: 80px; text-align: center; background: #f9f9f9 !important; font-weight: bold; color: #555; font-size: 13.5px; }
+.lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 14px; vertical-align: middle; font-size: 14.5px; background: #ffffff !important; }
+.lol-match-table .pos-col { width: 80px; text-align: center; background: #ffffff !important; font-weight: bold; color: #555; font-size: 13.5px; }
 
 th.header-blue { background-color: var(--blue-team-bg) !important; color: var(--blue-team-ink) !important; }
 th.header-red { background-color: var(--red-team-bg) !important; color: var(--red-team-ink) !important; }
@@ -170,15 +169,6 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .player-name { font-weight: 800; font-size: 15px; color: #12161c; }
 .player-tier { font-size: 12px; color: var(--page-muted); font-family: var(--font-mono); margin-top: 1px; }
 .champ-name { font-weight: 800; font-size: 14.5px; color: #12161c; }
-
-/* 배그 상세 표 스타일 */
-.kill-summary-box { border-left: 4px solid #12161c; padding-left: 12px; margin-bottom: 16px; }
-.kill-summary-box .target-kill { font-size: 15px; font-weight: bold; color: var(--page-fg); }
-.kill-summary-box .score-line { font-size: 20px; font-weight: 800; margin-top: 2px; }
-.pubg-card-table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 10px; }
-.pubg-card-table th { background: #f2f0eb; font-weight: bold; padding: 10px; border: 1px solid #e0ddd7; color: #333; }
-.pubg-card-table td { padding: 10px; border: 1px solid #e0ddd7; text-align: center; font-size: 13px; background: #fff; }
-.pubg-card-table tr.team-row-2 th { background: #e8f0fe; color: #1a73e8; }
 
 /* 모달 스타일 */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
@@ -395,7 +385,7 @@ function saveData() {
 }
 
 let isAdmin = false;
-let S = { game: "발로란트", year: "전체년", mode: "전체", chongSort: "old", monthOrder: {}, openRows: {} };
+let S = { game: "발로란트", year: "전체년", mode: "전체", chongSort: "old", mcSort: "old", monthOrder: {}, openRows: {} };
 
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
@@ -866,7 +856,6 @@ function renderRecords() {
       const isOpen = !!S.openRows[realIdx];
       const arrowIcon = isOpen ? "∧" : "∨";
       
-      // 같은 날짜 내의 기록인지, 다음 행과 날짜가 다르면 진한 직선 적용
       const nextR = sorted[sIdx + 1];
       const isLastOfDate = !nextR || nextR.date !== r.date;
       const rowClass = isLastOfDate ? "record-row-last-of-date" : "record-row";
@@ -1180,29 +1169,46 @@ function renderMinecraft(subId, dayIndex = 0) {
       </div>`;
   }
 
+  const sortedMcServers = [...MC_SERVERS].sort((a, b) => {
+    if (S.mcSort === "latest") {
+      return (b.dateRange || "").localeCompare(a.dateRange || "");
+    } else {
+      return (a.dateRange || "").localeCompare(b.dateRange || "");
+    }
+  });
+
   return `
     <div class="block">
-      <div class="toolbar">
+      <div class="toolbar" style="align-items:flex-end;">
         <h2>마크서버</h2>
-        ${isAdmin ? `<button class="btn-accent" onclick="openAdminModal('mc')">+ 새 마크서버 추가</button>` : ''}
+        <div style="display:flex; gap:6px; align-items:center;">
+          <div class="seg" style="display:inline-flex; border:1px solid var(--sky); border-radius:999px; overflow:hidden;">
+            <button type="button" onclick="setMcSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.mcSort==='old'?'var(--sky)':'transparent'}; color:${S.mcSort==='old'?'#fff':'var(--sky-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+            <button type="button" onclick="setMcSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.mcSort==='latest'?'var(--sky)':'transparent'}; color:${S.mcSort==='latest'?'#fff':'var(--sky-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+          </div>
+          ${isAdmin ? `<button class="btn-accent" onclick="openAdminModal('mc')" style="margin-left:8px;">+ 새 마크서버 추가</button>` : ''}
+        </div>
       </div>
       <div class="cards">
-        ${MC_SERVERS.map((s, idx) => `
-          <div class="card card-mc-style" style="border-top: 4px solid var(--sky);">
-            <div class="card-corner-tag" style="--tag-bg: var(--sky-bg); --tag-ink: var(--sky-ink); --tag-border: var(--sky);">${s.serverName}</div>
-            ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('mc', ${idx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('mc', ${idx})">삭제</button></div>` : ''}
-            <a href="#mc-${s.id}-d0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
-              <div>
-                <div class="main-title">${s.guildName}</div>
-                <div class="sub-meta">${s.dateRange || ''}</div>
-              </div>
-              <div class="card-footer-link" style="color: var(--sky);">
-                <span>상세보기</span>
-                <span>→</span>
-              </div>
-            </a>
-          </div>
-        `).join('')}
+        ${sortedMcServers.map((s) => {
+          const originalIdx = MC_SERVERS.indexOf(s);
+          return `
+            <div class="card card-mc-style" style="border-top: 4px solid var(--sky);">
+              <div class="card-corner-tag" style="--tag-bg: var(--sky-bg); --tag-ink: var(--sky-ink); --tag-border: var(--sky);">${s.serverName}</div>
+              ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('mc', ${originalIdx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('mc', ${originalIdx})">삭제</button></div>` : ''}
+              <a href="#mc-${s.id}-d0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+                <div>
+                  <div class="main-title">${s.guildName}</div>
+                  <div class="sub-meta">${s.dateRange || ''}</div>
+                </div>
+                <div class="card-footer-link" style="color: var(--sky);">
+                  <span>상세보기</span>
+                  <span>→</span>
+                </div>
+              </a>
+            </div>
+          `;
+        }).join('')}
       </div>
     </div>`;
 }
@@ -1258,7 +1264,6 @@ function renderChong(subEp) {
       </div>`;
   }
 
-  // 총겜동 기본 세팅: 오래된순
   const sortedChongEps = [...CHONG_EPS].sort((a, b) => {
     const numA = parseFloat(a.ep) || 0;
     const numB = parseFloat(b.ep) || 0;
@@ -1274,7 +1279,6 @@ function renderChong(subEp) {
       <div class="toolbar" style="align-items:flex-end;">
         <h2>총겜동</h2>
         <div style="display:flex; gap:6px; align-items:center;">
-          <span style="font-size:12px; font-weight:700; color:var(--violet-ink);">정렬:</span>
           <div class="seg" style="display:inline-flex; border:1px solid var(--violet); border-radius:999px; overflow:hidden;">
             <button type="button" onclick="setChongSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='old'?'var(--violet)':'transparent'}; color:${S.chongSort==='old'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
             <button type="button" onclick="setChongSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='latest'?'var(--violet)':'transparent'}; color:${S.chongSort==='latest'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
@@ -1291,10 +1295,10 @@ function renderChong(subEp) {
               ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('chong', ${originalIdx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('chong', ${originalIdx})">삭제</button></div>` : ''}
               <a href="#chong-ep${encodeURIComponent(e.ep)}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                 <div>
-                  <div class="chong-title" style="margin-top:14px;">${e.title}</div>
-                  <div class="chong-date" style="margin-top:2px;">${e.dateStr || ''}</div>
+                  <div class="main-title" style="margin-top:14px; font-size:20px; font-weight:800;">${e.title}</div>
+                  <div class="sub-meta" style="margin-top:2px;">${e.dateStr || ''}</div>
                 </div>
-                <div class="chong-footer">
+                <div class="card-footer-link" style="color: var(--violet-ink);">
                   <span>상세보기</span>
                   <span>→</span>
                 </div>
@@ -1316,6 +1320,7 @@ function setGame(g) { S.game = g; S.mode = "전체"; render(); }
 function setYear(y) { S.year = y; S.mode = "전체"; render(); }
 function setMode(m) { S.mode = m; render(); }
 function setChongSort(sortType) { S.chongSort = sortType; render(); }
+function setMcSort(sortType) { S.mcSort = sortType; render(); }
 function setMonthOrd(k, ord) { S.monthOrder[k] = ord; render(); }
 
 function render() {
