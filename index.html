@@ -1,55 +1,49 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-<title>DOHYEON ARCHIVE</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap">
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyB69_xyTaUSnzL30WnrLos3ZVPsvB61eCE",
-    authDomain: "dohyeon-archive.firebaseapp.com",
-    databaseURL: "https://dohyeon-archive-default-rtdb.firebaseio.com",
-    projectId: "dohyeon-archive",
-    storageBucket: "dohyeon-archive.firebasestorage.app",
-    messagingSenderId: "431411434964",
-    appId: "1:431411434964:web:b6fc9e3a169c593c72f241"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  window.dbRef = db;
-  window.firebaseRef = ref;
-  window.firebaseSet = set;
-  window.firebaseOnValue = onValue;
-
-  if (window.initAppAfterFirebase) {
-    window.initAppAfterFirebase();
-  }
-</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도현 아카이브</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --page: #f1f3f6; --page-fg: #12161c; --page-muted: #566170;
-  --panel: #ffffff; --surface: #ffffff; --line: #dde2ea;
-  --accent: #2a56d6; --accent-ink: #ffffff; --soft: #e4ebfc; --soft-ink: #1f3fa6;
+  --page: #f8fafc;
+  --page-fg: #1e293b;
+  --page-muted: #64748b;
+  --surface: #ffffff;
+  --panel: #ffffff;
+  --line: #e2e8f0;
+  --accent: #3b82f6;
+  --accent-ink: #ffffff;
+  --neutral-bg: #f1f5f9;
   
-  --win: #1d4ed8; --win-bg: #dbeafe; 
-  --loss: #b3282d; --loss-bg: #fae3e3; --neutral-bg: #e6e9ee;
-  
-  --pink: #d946a0; --pink-bg: #f9d5ee; --pink-ink: #6d124b;
-  --yellow: #e6b800; --yellow-bg: #fef0b3; --yellow-ink: #4d3d00;
-  --sky: #3b82f6; --sky-bg: #dbeafe; --sky-ink: #1e3a8a;
-  
-  --violet: #8b5cf6; --violet-bg: #f5f3ff; --violet-ink: #5b21b6; --violet-line: #ddd6fe;
-  
-  --blue-team-bg: #dbeafe; --blue-team-ink: #334155;
-  --red-team-bg: #fbe3f0; --red-team-ink: #334155;
+  --win: #2563eb;
+  --win-bg: #eff6ff;
+  --loss: #dc2626;
+  --loss-bg: #fef2f2;
+
+  --pink-bg: #fdf2f8;
+  --pink-ink: #831843;
+  --pink: #f472b6;
+
+  --yellow-bg: #fefce8;
+  --yellow-ink: #713f12;
+  --yellow: #eab308;
+
+  --sky-bg: #f0fdf4;
+  --sky-ink: #14532d;
+  --sky: #22c55e;
+
+  /* 총겜동 진한 보라색 테마 고정 변수 */
+  --violet-bg: #4c1d95;
+  --violet-ink: #ffffff;
+  --violet-line: #3b0764;
+  --violet: #5b21b6;
+
+  --blue-team-bg: #eff6ff;
+  --blue-team-ink: #1d4ed8;
+  --red-team-bg: #fef2f2;
+  --red-team-ink: #b3282d;
   
   --font-body: "Noto Sans KR", system-ui, sans-serif;
   --font-title: "Gowun Dodum", sans-serif;
@@ -80,10 +74,26 @@ nav.bar a::before {
 nav.bar a[data-cat="record"] { --note: var(--pink-bg); --note-ink: var(--pink-ink); --note-edge: var(--pink); --tilt: -1deg; }
 nav.bar a[data-cat="scrim"] { --note: var(--yellow-bg); --note-ink: var(--yellow-ink); --note-edge: var(--yellow); --tilt: 1deg; }
 nav.bar a[data-cat="mc"] { --note: var(--sky-bg); --note-ink: var(--sky-ink); --note-edge: var(--sky); --tilt: -0.8deg; }
-nav.bar a[data-cat="chong"] { --note: var(--violet-bg); --note-ink: var(--violet-ink); --note-edge: var(--violet-line); --tilt: 1.2deg; }
+
+/* 총겜동 탭 자체를 2번 사진의 진한 보라색으로 상시 고정 */
+nav.bar a[data-cat="chong"] { 
+  background: var(--violet-bg) !important; 
+  color: var(--violet-ink) !important; 
+  border-color: var(--violet-line) !important; 
+  --tilt: 1.2deg; 
+}
+
 nav.bar a[aria-current="page"] {
   z-index: 1; transform: none; padding-top: 11px; padding-bottom: 9px; margin-bottom: -1px;
   border-color: var(--line); border-bottom: 1px solid var(--panel); background: var(--panel); color: var(--page-fg);
+}
+
+/* 총겜동 탭이 선택(current)되었을 때도 2번 사진의 진한 보라색 배경과 하얀 글씨가 유지되도록 고정 */
+nav.bar a[data-cat="chong"][aria-current="page"] {
+  border-color: var(--violet-line);
+  border-bottom: 1px solid var(--panel);
+  background: var(--violet-bg) !important;
+  color: var(--violet-ink) !important;
 }
 
 .panel { background: var(--panel); border-radius: 0 0 12px 12px; padding: 24px; border: 1px solid var(--line); border-top: 0; }
@@ -1500,7 +1510,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
         ${isAdmin ? `<button class="btn-accent" style="background:var(--violet); color:#fff;" onclick="openSubAdminModal('${epObj.ep}', 'chong-tab-add')">+ 서브 탭 추가 (벌칙/회식 등)</button>` : ''}
       </div>
 
-      <!-- 상세 설명 및 참여 멤버 (요청하신 [본편] 문구 유지 및 보라색 배경 테두리 스타일) -->
+      <!-- 상세 설명 및 참여 멤버 -->
       <div style="background:var(--violet-bg); border:1.5px solid var(--violet-line); border-radius:10px; padding:16px 20px; margin-top:2px; color:var(--violet-ink);">
         <div style="font-size:13px; font-weight:bold; margin-bottom:8px;">[${curTab.tabTitle}]</div>
         <div class="text-pre" style="font-size:14.5px; line-height:1.6; color:var(--page-fg);">${curTab.desc || '등록된 설명이 없습니다.'}</div>
