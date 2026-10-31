@@ -344,7 +344,7 @@ const DEFAULT_CHONG = [
       },
       {
         tabTitle: "벌칙",
-        customTitle: "패배팀 벌칙 술먹방",
+        customTitle: "술먹방",
         desc: "패배팀 벌칙 술먹방",
         sections: [
           { title: "", timelines: [{ text: "시작", url: "", spacing: 0 }] }
@@ -820,7 +820,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     document.getElementById("asTitle").textContent = "총겜동 서브 탭 추가 (예: 벌칙, 회식 등)";
     container.innerHTML = `
       <label>탭 이름 (예: 벌칙)</label><input type="text" id="asTabTitle" value="벌칙">
-      <label>탭 별도 제목 (1번 사진 상단 및 2번 카드에 표시될 제목)</label><input type="text" id="asTabCustomTitle" placeholder="예: 패배팀 벌칙 술먹방">
+      <label>탭 별도 제목 (상단 제목 및 카드에 표시될 제목)</label><input type="text" id="asTabCustomTitle" placeholder="예: 술먹방">
       <label>해당 탭 설명 및 멤버 소개</label><textarea id="asTabDesc" rows="3"></textarea>
     `;
   } else if (type === "chong-tab-edit") {
@@ -829,7 +829,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     document.getElementById("asTitle").textContent = `[${tabObj.tabTitle}] 탭 정보 수정`;
     container.innerHTML = `
       <label>탭 이름</label><input type="text" id="asTabTitle" value="${tabObj.tabTitle}">
-      <label>탭 별도 제목 (1번 사진 상단 및 2번 카드에 표시될 제목)</label><input type="text" id="asTabCustomTitle" value="${tabObj.customTitle||''}" placeholder="예: 패배팀 벌칙 술먹방">
+      <label>탭 별도 제목 (상단 제목 및 카드에 표시될 제목)</label><input type="text" id="asTabCustomTitle" value="${tabObj.customTitle||''}" placeholder="예: 술먹방">
       <label>해당 탭 설명 및 멤버 소개</label><textarea id="asTabDesc" rows="3">${tabObj.desc||''}</textarea>
     `;
   } else if (type === "chong-section-edit") {
@@ -1470,12 +1470,12 @@ function renderChongList() {
                   </div>
                 </div>
                 <div class="card-footer-link" style="color: var(--violet-ink); justify-content: space-between;">
-                  <!-- 2번 사진 위치: 서브 탭 태그 + 옆에 작은 글씨로 설정한 제목 출력 -->
+                  <!-- 태그 안의 글씨 색상을 진보라색(--violet-ink)으로 적용 -->
                   <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                     ${subTabs.map(st => `
                       <span style="font-size:11.5px; font-weight:bold; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:3px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:4px;">
                         <span>${st.tabTitle}</span>
-                        ${st.customTitle ? `<span style="font-size:10.5px; font-weight:normal; color:#5b21b6; opacity:0.9;">${st.customTitle}</span>` : ''}
+                        ${st.customTitle ? `<span style="font-size:10.5px; font-weight:bold; color:var(--violet-ink);">${st.customTitle}</span>` : ''}
                       </span>
                     `).join('')}
                   </div>
@@ -1497,8 +1497,6 @@ function renderChongDetail(epNo, tabIdx = 0) {
   if (!epObj.tabs) epObj.tabs = [{ tabTitle: "본편", customTitle: "", desc: epObj.desc || "", sections: epObj.sections || [{ title: "", timelines: epObj.timeline || [] }] }];
   
   const curTab = epObj.tabs[tabIdx] || epObj.tabs[0];
-
-  /* 1번 사진 요구사항: 해당 서브 탭에서 지정된 제목이 있으면 그 제목을, 없으면 기본 에피소드 제목 출력 */
   const headerTitle = curTab.customTitle ? curTab.customTitle : epObj.title;
 
   return `
@@ -1906,7 +1904,7 @@ function renderMinecraft(subId, dayIndex = 0) {
       </div>`;
   }
 
-  const sortedMc = [...MC_SERVERS].sort((a, b) => S.mcSort === "latest" ? (b.dateRange||"").localeCompare(a.dateRange||"") : (a.dateRange||"").localeCompare(b.dateRange||""));
+  const sortedMc = MC_SERVERS.sort((a, b) => S.mcSort === "latest" ? (b.dateRange||"").localeCompare(a.dateRange||"") : (a.dateRange||"").localeCompare(b.dateRange||""));
 
   return `
     <div class="block">
