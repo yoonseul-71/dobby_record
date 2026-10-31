@@ -330,6 +330,21 @@ const DEFAULT_SETS = [];
 const DEFAULT_MC = [];
 const DEFAULT_CHONG = [
   {
+    ep: "0",
+    title: "FPS 동아리: 총겜동",
+    dateStr: "2025.04.05",
+    tabs: [
+      {
+        tabTitle: "본편",
+        customTitle: "",
+        desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
+        sections: [
+          { title: "타임라인", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }
+        ]
+      }
+    ]
+  },
+  {
     ep: "1",
     title: "배그 서열정리 킬내기",
     dateStr: "2025.04.06",
@@ -601,7 +616,7 @@ function openAdminModal(target, idx = -1, copyIdx = -1) {
     const e = idx >= 0 ? CHONG_EPS[idx] : {};
     document.getElementById("adminFormTitle").textContent = idx >= 0 ? "총겜동 에피소드 수정" : "새 총겜동 에피소드 추가";
     container.innerHTML = `
-      <label>에피소드 표기 (예: 0, 1, 2 등)</label><input type="text" id="afEpNo" value="${e.ep??CHONG_EPS.length}">
+      <label>에피소드 번호 (예: 0, 1, 2 등)</label><input type="text" id="afEpNo" value="${e.ep??CHONG_EPS.length}">
       <label>에피소드 기본 제목</label><input type="text" id="afEpTitle" value="${e.title||''}">
       <label>날짜 (YYYY.MM.DD)</label><input type="text" id="afEpDate" value="${e.dateStr||'2025.04.06'}">
       <label>본편 상세 설명</label><textarea id="afEpDesc" rows="3">${e.tabs && e.tabs[0] ? e.tabs[0].desc : (e.desc||'')}</textarea>
@@ -1470,7 +1485,6 @@ function renderChongList() {
                   </div>
                 </div>
                 <div class="card-footer-link" style="color: var(--violet-ink); justify-content: space-between;">
-                  <!-- 태그 안의 글씨 색상을 진보라색(--violet-ink)으로 적용 -->
                   <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                     ${subTabs.map(st => `
                       <span style="font-size:11.5px; font-weight:bold; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:3px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:4px;">
@@ -1498,6 +1512,12 @@ function renderChongDetail(epNo, tabIdx = 0) {
   
   const curTab = epObj.tabs[tabIdx] || epObj.tabs[0];
   const headerTitle = curTab.customTitle ? curTab.customTitle : epObj.title;
+
+  // 이전 및 다음 에피소드 찾기 (순서 정렬 기준)
+  const sortedEps = [...CHONG_EPS].sort((a, b) => parseInt(a.ep) - parseInt(b.ep));
+  const currentIndex = sortedEps.findIndex(e => String(e.ep) === String(epNo));
+  const prevEp = currentIndex > 0 ? sortedEps[currentIndex - 1] : null;
+  const nextEp = currentIndex >= 0 && currentIndex < sortedEps.length - 1 ? sortedEps[currentIndex + 1] : null;
 
   return `
     <div class="block">
@@ -1580,6 +1600,26 @@ function renderChongDetail(epNo, tabIdx = 0) {
             </ul>
           </div>
         `).join('')}
+      </div>
+
+      <!-- 하단 이전/다음 에피소드 네모박스 네비게이션 -->
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 30px; flex-wrap: wrap;">
+        <div>
+          ${prevEp ? `
+            <a href="#chong-${prevEp.ep}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border: 1.5px solid var(--violet-line); background: var(--surface); color: var(--violet-ink); border-radius: 10px; font-weight: bold; text-decoration: none; transition: all 0.15s ease;" onmouseover="this.style.background='var(--violet-bg)'" onmouseout="this.style.background='var(--surface)'">
+              <span>←</span>
+              <span>Ep. ${prevEp.ep} 보기</span>
+            </a>
+          ` : ''}
+        </div>
+        <div>
+          ${nextEp ? `
+            <a href="#chong-${nextEp.ep}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border: 1.5px solid var(--violet-line); background: var(--surface); color: var(--violet-ink); border-radius: 10px; font-weight: bold; text-decoration: none; transition: all 0.15s ease;" onmouseover="this.style.background='var(--violet-bg)'" onmouseout="this.style.background='var(--surface)'">
+              <span>Ep. ${nextEp.ep} 보기</span>
+              <span>→</span>
+            </a>
+          ` : ''}
+        </div>
       </div>
     </div>`;
 }
