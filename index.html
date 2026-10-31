@@ -7,6 +7,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap">
+<!-- Firebase SDK CDN 추가 -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB69_xyTaUSnzL30WnrLos3ZVPsvB61eCE",
+    authDomain: "dohyeon-archive.firebaseapp.com",
+    databaseURL: "https://dohyeon-archive-default-rtdb.firebaseio.com",
+    projectId: "dohyeon-archive",
+    storageBucket: "dohyeon-archive.firebasestorage.app",
+    messagingSenderId: "431411434964",
+    appId: "1:431411434964:web:b6fc9e3a169c593c72f241"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.dbRef = db;
+  window.firebaseRef = ref;
+  window.firebaseSet = set;
+  window.firebaseOnValue = onValue;
+
+  // 앱 초기화 및 데이터 로드 시작 트리거
+  if (window.initAppAfterFirebase) {
+    window.initAppAfterFirebase();
+  }
+</script>
 <style>
 :root {
   --page: #f1f3f6; --page-fg: #12161c; --page-muted: #566170;
@@ -372,29 +400,44 @@ const DEFAULT_SCRIM = [
   }
 ];
 
-function loadFreshData() {
-  if (!localStorage.getItem("dohyeon_mc")) localStorage.setItem("dohyeon_mc", JSON.stringify(DEFAULT_MC));
-  if (!localStorage.getItem("dohyeon_chong")) localStorage.setItem("dohyeon_chong", JSON.stringify(DEFAULT_CHONG));
-  if (!localStorage.getItem("dohyeon_scrim")) localStorage.setItem("dohyeon_scrim", JSON.stringify(DEFAULT_SCRIM));
-  if (!localStorage.getItem("dohyeon_sets")) localStorage.setItem("dohyeon_sets", JSON.stringify(DEFAULT_SETS));
-}
-loadFreshData();
-
-let MC_SERVERS = JSON.parse(localStorage.getItem("dohyeon_mc"));
-let CHONG_EPS = JSON.parse(localStorage.getItem("dohyeon_chong"));
-let SCRIM_CARDS = JSON.parse(localStorage.getItem("dohyeon_scrim"));
-let setsData = JSON.parse(localStorage.getItem("dohyeon_sets"));
+let MC_SERVERS = JSON.parse(JSON.stringify(DEFAULT_MC));
+let CHONG_EPS = JSON.parse(JSON.stringify(DEFAULT_CHONG));
+let SCRIM_CARDS = JSON.parse(JSON.stringify(DEFAULT_SCRIM));
+let setsData = JSON.parse(JSON.stringify(DEFAULT_SETS));
 
 function saveData() {
-  localStorage.setItem("dohyeon_sets", JSON.stringify(setsData));
-  localStorage.setItem("dohyeon_mc", JSON.stringify(MC_SERVERS));
-  localStorage.setItem("dohyeon_chong", JSON.stringify(CHONG_EPS));
-  localStorage.setItem("dohyeon_scrim", JSON.stringify(SCRIM_CARDS));
+  if (window.dbRef && window.firebaseRef && window.firebaseSet) {
+    window.firebaseSet(window.firebaseRef(window.dbRef, 'archiveData'), {
+      setsData: setsData,
+      MC_SERVERS: MC_SERVERS,
+      CHONG_EPS: CHONG_EPS,
+      SCRIM_CARDS: SCRIM_CARDS
+    }).catch(err => console.error("Firebase 저장 실패:", err));
+  }
 }
 
 let isAdmin = false;
 let S = { game: "발로란트", year: "전체", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", globalMonthSort: "desc", monthOrder: {}, openRows: {} };
 let initializedMonths = false;
+
+window.initAppAfterFirebase = function() {
+  if (window.dbRef && window.firebaseRef && window.firebaseOnValue) {
+    window.firebaseOnValue(window.firebaseRef(window.dbRef, 'archiveData'), (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        if (data.setsData) setsData = data.setsData;
+        if (data.MC_SERVERS) MC_SERVERS = data.MC_SERVERS;
+        if (data.CHONG_EPS) CHONG_EPS = data.CHONG_EPS;
+        if (data.SCRIM_CARDS) SCRIM_CARDS = data.SCRIM_CARDS;
+      } else {
+        saveData(); // 데이터가 없으면 기본값 업로드
+      }
+      render();
+    });
+  } else {
+    render();
+  }
+};
 
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
@@ -404,13 +447,21 @@ window.addEventListener("keydown", e => {
 });
 
 let pressTimer = null;
-const sigBtn = document.getElementById("signatureBtn");
-if (sigBtn) {
-  sigBtn.addEventListener("touchstart", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
-  sigBtn.addEventListener("touchend", () => { clearTimeout(pressTimer); });
-  sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
-  sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
-}
+window.addEventListener("DOMContentLoaded", () => {
+  const sigBtn = document.getElementById("signatureBtn");
+  if (sigBtn) {
+    sigBtn.addEventListener("touchstart", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
+    sigBtn.addEventListener("touchend", () => { clearTimeout(pressTimer); });
+    sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
+    sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
+  }
+  // 파이어베이스 모듈 로드가 빨라서 이벤트 전파가 안될 경우 대비한 안전장치
+  setTimeout(() => {
+    if (!window.dbRef && typeof render === 'function') {
+      render();
+    }
+  }, 1000);
+});
 
 function promptAdminLogin() {
   const pw = prompt("관리자 비밀코드를 입력하세요:");
@@ -1837,6 +1888,7 @@ function render() {
   });
 
   const view = document.getElementById("view");
+  if (!view) return;
   if (cat === "record") view.innerHTML = renderRecords();
   else if (cat === "scrim") {
     const match = hash.match(/^scrim-(.+)-g(\d+)-d(\d+)-t(\d+)$/);
@@ -1857,7 +1909,6 @@ function render() {
 }
 
 window.addEventListener("hashchange", render);
-render();
 </script>
 </body>
 </html>
