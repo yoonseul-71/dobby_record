@@ -105,6 +105,7 @@ td.mono { font-weight: 500; }
 .pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
+.pill.d { background: #e2e8f0; color: #475569; }
 .pill.none { background: var(--neutral-bg); color: var(--page-muted); }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-top: 15px; }
@@ -719,7 +720,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     document.getElementById("asTitle").textContent = "세트 기본 정보 수정";
     container.innerHTML = `
       <label>도현팀 진영</label><select id="asSide"><option value="레드" ${setObj.side==='레드'?'selected':''}>레드</option><option value="블루" ${setObj.side==='블루'?'selected':''}>블루</option></select>
-      <label>결과</label><select id="asScrimRes"><option value="승" ${setObj.result==='승'?'selected':''}>승</option><option value="패" ${setObj.result==='패'?'selected':''}>패</option></select>
+      <label>결과</label>
+      <select id="asScrimRes">
+        <option value="승" ${setObj.result==='승'?'selected':''}>승</option>
+        <option value="패" ${setObj.result==='패'?'selected':''}>패</option>
+        <option value="무" ${setObj.result==='무'?'selected':''}>무 (무승부/무효)</option>
+      </select>
       <label>도현팀 명칭</label><input type="text" id="asLeftTeam" value="${setObj.leftTeamName||'도현 팀'}">
       <label>상대팀 명칭</label><input type="text" id="asRightTeam" value="${setObj.rightTeamName||'상대 팀'}">
     `;
@@ -1355,7 +1361,11 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
           (t.sets || []).forEach(s => {
             if (s.result === "승") todayWins++;
             else if (s.result === "패") todayLosses++;
-            allSetPills.push(`<span class="pill ${s.result === '승' ? 'w' : 'l'}">${s.result}</span>`);
+            
+            let pillClass = "l";
+            if (s.result === "승") pillClass = "w";
+            else if (s.result === "무") pillClass = "d";
+            allSetPills.push(`<span class="pill ${pillClass}">${s.result}</span>`);
           });
         });
       });
@@ -1370,6 +1380,10 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     const rightHeaderClass = isDhRed ? "header-blue" : "header-red";
 
     const isScrimCategory = (curGroup && (curGroup.category || "스크림") === "스크림");
+
+    let curSetPillClass = "l";
+    if (curSet.result === "승") curSetPillClass = "w";
+    else if (curSet.result === "무") curSetPillClass = "d";
 
     return `
       <div class="block">
@@ -1459,7 +1473,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
         ${curTimeObj ? `
           <div style="font-size:14px; font-weight:bold; margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span>${curDateObj.dateStr} · ${curTimeObj.timeLabel}</span>
-            <span class="pill ${curSet.result === '승' ? 'w' : 'l'}">${curSet.result}</span>
+            <span class="pill ${curSetPillClass}">${curSet.result}</span>
             ${isAdmin ? `
               <button class="btn-btn" onclick="duplicateScrimSet('${card.id}', ${gI}, ${dI}, ${tI})">세트 복사</button>
               <button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-set-edit', ${gI}, ${dI}, ${tI})">세트 설정 수정</button>
