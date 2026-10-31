@@ -1500,9 +1500,9 @@ function renderChongDetail(epNo, tabIdx = 0) {
         ${isAdmin ? `<button class="btn-accent" style="background:var(--violet); color:#fff;" onclick="openSubAdminModal('${epObj.ep}', 'chong-tab-add')">+ 서브 탭 추가 (벌칙/회식 등)</button>` : ''}
       </div>
 
-      <!-- 상세 설명 및 멤버 공간 (보라색 테두리 및 은은한 배경톤 적용) -->
+      <!-- 상세 설명 및 참여 멤버 (요청하신 [본편] 문구 유지 및 보라색 배경 테두리 스타일) -->
       <div style="background:var(--violet-bg); border:1.5px solid var(--violet-line); border-radius:10px; padding:16px 20px; margin-top:2px; color:var(--violet-ink);">
-        <div style="font-size:13px; font-weight:bold; margin-bottom:8px;">[${curTab.tabTitle}] 상세 설명 및 참여 멤버</div>
+        <div style="font-size:13px; font-weight:bold; margin-bottom:8px;">[${curTab.tabTitle}]</div>
         <div class="text-pre" style="font-size:14.5px; line-height:1.6; color:var(--page-fg);">${curTab.desc || '등록된 설명이 없습니다.'}</div>
       </div>
 
@@ -1555,7 +1555,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
               }).join('')}
             </ul>
           </div>
-        ` : '').join('')}
+        `).join('')}
       </div>
     </div>`;
 }
