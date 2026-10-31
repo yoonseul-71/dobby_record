@@ -34,11 +34,10 @@
   --sky-ink: #14532d;
   --sky: #22c55e;
 
-  /* 총겜동 진한 보라색 테마 고정 변수 */
-  --violet-bg: #4c1d95;
-  --violet-ink: #ffffff;
-  --violet-line: #3b0764;
-  --violet: #5b21b6;
+  --violet-bg: #f5f3ff;
+  --violet-ink: #4c1d95;
+  --violet-line: #8b5cf6;
+  --violet: #7c3aed;
 
   --blue-team-bg: #eff6ff;
   --blue-team-ink: #1d4ed8;
@@ -64,36 +63,22 @@ nav.bar { display: flex; align-items: flex-end; gap: 6px; padding-left: 10px; bo
 nav.bar a {
   position: relative; display: inline-flex; align-items: center; padding: 8px 22px;
   border-radius: 8px 8px 0 0; font-weight: 700; font-size: 15px;
-  background: var(--note); color: var(--note-ink); border: 1px solid var(--note-edge); border-bottom: 0;
+  background: var(--note); color: var(--note-ink); border: 1.5px solid var(--note-edge); border-bottom: 0;
   box-shadow: 0 -2px 5px rgba(0,0,0,0.05); transform-origin: 50% 100%; transform: rotate(var(--tilt, 0deg)) translateY(2px);
 }
 nav.bar a::before {
   content: ""; position: absolute; top: -5px; left: 50%; width: 26px; height: 8px; margin-left: -13px;
   background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(0,0,0,0.08); border-radius: 2px; transform: rotate(-3deg);
 }
+
 nav.bar a[data-cat="record"] { --note: var(--pink-bg); --note-ink: var(--pink-ink); --note-edge: var(--pink); --tilt: -1deg; }
 nav.bar a[data-cat="scrim"] { --note: var(--yellow-bg); --note-ink: var(--yellow-ink); --note-edge: var(--yellow); --tilt: 1deg; }
 nav.bar a[data-cat="mc"] { --note: var(--sky-bg); --note-ink: var(--sky-ink); --note-edge: var(--sky); --tilt: -0.8deg; }
-
-/* 총겜동 탭 자체를 2번 사진의 진한 보라색으로 상시 고정 */
-nav.bar a[data-cat="chong"] { 
-  background: var(--violet-bg) !important; 
-  color: var(--violet-ink) !important; 
-  border-color: var(--violet-line) !important; 
-  --tilt: 1.2deg; 
-}
+nav.bar a[data-cat="chong"] { --note: var(--violet-bg); --note-ink: var(--violet-ink); --note-edge: var(--violet-line); --tilt: 1.2deg; }
 
 nav.bar a[aria-current="page"] {
   z-index: 1; transform: none; padding-top: 11px; padding-bottom: 9px; margin-bottom: -1px;
   border-color: var(--line); border-bottom: 1px solid var(--panel); background: var(--panel); color: var(--page-fg);
-}
-
-/* 총겜동 탭이 선택(current)되었을 때도 2번 사진의 진한 보라색 배경과 하얀 글씨가 유지되도록 고정 */
-nav.bar a[data-cat="chong"][aria-current="page"] {
-  border-color: var(--violet-line);
-  border-bottom: 1px solid var(--panel);
-  background: var(--violet-bg) !important;
-  color: var(--violet-ink) !important;
 }
 
 .panel { background: var(--panel); border-radius: 0 0 12px 12px; padding: 24px; border: 1px solid var(--line); border-top: 0; }
