@@ -22,26 +22,29 @@
   --loss: #dc2626;
   --loss-bg: #fef2f2;
 
-  /* 전적 탭 */
+  /* 전적 탭 (원래 진한 색상 유지) */
   --pink-bg: #fbcfe8;
   --pink-ink: #831843;
   --pink: #db2777;
 
-  /* 롤 멸망전 탭 */
+  /* 롤 멸망전 탭 (원래 진한 색상 유지) */
   --yellow-bg: #fef08a;
   --yellow-ink: #713f12;
   --yellow: #ca8a04;
 
-  /* 마크서버 탭 */
+  /* 마크서버 탭 (원래 진한 색상 유지) */
   --sky-bg: #bfdbfe;
   --sky-ink: #1e3a8a;
   --sky: #2563eb;
 
-  /* 총겜동 탭 및 상세페이지 박스 배경 연보라 */
-  --violet-bg: #f3e8ff;
+  /* 총겜동 상단 탭 색상 (원래 진한 보라 유지) */
+  --violet-bg: #e9d5ff;
   --violet-ink: #4c1d95;
-  --violet-line: #c084fc;
+  --violet-line: #7c3aed;
   --violet: #7c3aed;
+
+  /* ★ 총겜동 상세페이지 박스 전용 파스텔 연보라 배경색 */
+  --box-pastel-violet: #f3e8ff;
 
   --blue-team-bg: #eff6ff;
   --blue-team-ink: #1d4ed8;
@@ -1499,8 +1502,8 @@ function renderChongDetail(epNo, tabIdx = 0) {
         ${isAdmin ? `<button class="btn-accent" style="background:var(--violet); color:#fff;" onclick="openSubAdminModal('${epObj.ep}', 'chong-tab-add')">+ 서브 탭 추가 (벌칙/회식 등)</button>` : ''}
       </div>
 
-      <!-- 상세 설명 및 참여 멤버 (파스텔 연보라색 배경 적용) -->
-      <div style="background:var(--violet-bg); border:1.5px solid var(--violet-line); border-radius:10px; padding:16px 20px; margin-top:2px; color:var(--violet-ink);">
+      <!-- 상세 설명 및 참여 멤버 (파스텔 연보라 배경 적용) -->
+      <div style="background:var(--box-pastel-violet); border:1.5px solid var(--violet-line); border-radius:10px; padding:16px 20px; margin-top:2px; color:var(--violet-ink);">
         <div style="font-size:13px; font-weight:bold; margin-bottom:8px;">[${curTab.tabTitle}]</div>
         <div class="text-pre" style="font-size:14.5px; line-height:1.6; color:var(--page-fg);">${curTab.desc || '등록된 설명이 없습니다.'}</div>
       </div>
