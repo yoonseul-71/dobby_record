@@ -46,7 +46,6 @@
   --yellow: #e6b800; --yellow-bg: #fef0b3; --yellow-ink: #4d3d00;
   --sky: #3b82f6; --sky-bg: #dbeafe; --sky-ink: #1e3a8a;
   
-  /* 총겜동 차분한 뮤트 라벤더 톤 */
   --violet: #8b5cf6; --violet-bg: #f5f3ff; --violet-ink: #5b21b6; --violet-line: #ddd6fe;
   
   --blue-team-bg: #dbeafe; --blue-team-ink: #334155;
@@ -163,7 +162,7 @@ td.mono { font-weight: 500; }
 
 .card-footer-link { 
   display: flex; 
-  justify-content: space-between; 
+  justify-content: flex-end; 
   align-items: center; 
   gap: 6px; 
   padding-top: 12px; 
@@ -303,20 +302,12 @@ const DEFAULT_CHONG = [
     ep: "0",
     title: "FPS 동아리: 총겜동",
     dateStr: "2025.04.06",
-    desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
     tabs: [
       {
         tabTitle: "본편",
         desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
         sections: [
           { title: "", timelines: [{ text: "오프닝 방송 시작", url: "", spacing: 0 }] }
-        ]
-      },
-      {
-        tabTitle: "벌칙",
-        desc: "총겜동 벌칙 수행 방송",
-        sections: [
-          { title: "", timelines: [{ text: "벌칙 시작", url: "", spacing: 0 }] }
         ]
       }
     ]
@@ -329,7 +320,7 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || JSON.pars
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || JSON.parse(JSON.stringify(DEFAULT_SCRIM));
 let setsData = JSON.parse(localStorage.getItem("local_setsData")) || JSON.parse(JSON.stringify(DEFAULT_SETS));
 
-// 구버전 chong 데이터 마이그레이션 안전장치 (tabs 구조가 없는 경우 자동 변환)
+// 구버전 chong 데이터 마이그레이션 안전장치
 CHONG_EPS.forEach(e => {
   if (!e.tabs || e.tabs.length === 0) {
     e.tabs = [{
@@ -801,28 +792,16 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
   } else if (type === "chong-section-edit") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const secObj = epObj.tabs[ex1].sections[ex2];
-    document.getElementById("asTitle").textContent = "총겜동 섹션 제목 수정";
-    container.innerHTML = `<label>섹션 제목 (비워두면 제목 없이 출력)</label><input type="text" id="asSecTitle" value="${secObj.title||''}">`;
+    document.getElementById("asTitle").textContent = "총겜동 타임라인 박스 제목 수정";
+    container.innerHTML = `<label>박스 제목 (비워두면 제목 없이 출력)</label><input type="text" id="asSecTitle" value="${secObj.title||''}">`;
   } else if (type === "chong-timeline-add") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const tabIdx = parseInt(ex1, 10);
-    const secIdx = ex2 !== "" ? parseInt(ex2, 10) : -1;
-    if (secIdx >= 0) {
-      const targetSec = epObj.tabs[tabIdx].sections[secIdx];
-      document.getElementById("asTitle").textContent = `[${targetSec.title || '기본'}] 섹션에 타임라인 추가`;
-      container.innerHTML = `
-        <input type="hidden" id="asFixedSecTitle" value="${targetSec.title}">
-        <label>내용</label><textarea id="asChongText" rows="3"></textarea>
-        <label>링크</label><input type="text" id="asChongUrl">
-      `;
-    } else {
-      document.getElementById("asTitle").textContent = "총겜동 타임라인 및 새 섹션 추가";
-      container.innerHTML = `
-        <label>섹션 이름 (선택사항, 비워두면 기존 섹션에 추가)</label><input type="text" id="asSecTitle" value="">
-        <label>내용</label><textarea id="asChongText" rows="3"></textarea>
-        <label>링크</label><input type="text" id="asChongUrl">
-      `;
-    }
+    document.getElementById("asTitle").textContent = "타임라인 내용 추가";
+    container.innerHTML = `
+      <label>내용</label><textarea id="asChongText" rows="3"></textarea>
+      <label>링크</label><input type="text" id="asChongUrl">
+    `;
   } else if (type === "chong-timeline-edit") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const item = epObj.tabs[ex1].sections[ex2].timelines[ex3];
@@ -1003,17 +982,14 @@ function handleSubFormSubmit(e) {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const tabIdx = parseInt(ex1, 10);
     if (epObj && epObj.tabs[tabIdx]) {
-      const fixedSecInput = document.getElementById("asFixedSecTitle");
-      const secTitle = fixedSecInput ? fixedSecInput.value : document.getElementById("asSecTitle").value;
       const text = document.getElementById("asChongText").value;
       const url = document.getElementById("asChongUrl").value;
       
-      let sec = epObj.tabs[tabIdx].sections.find(s => (s.title||"") === (secTitle||""));
-      if (!sec) {
-        sec = { title: secTitle, timelines: [] };
-        epObj.tabs[tabIdx].sections.push(sec);
+      // 첫 번째 섹션에 곧바로 추가
+      if (!epObj.tabs[tabIdx].sections || epObj.tabs[tabIdx].sections.length === 0) {
+        epObj.tabs[tabIdx].sections = [{ title: "", timelines: [] }];
       }
-      sec.timelines.push({ text, url, spacing: 0 });
+      epObj.tabs[tabIdx].sections[0].timelines.push({ text, url, spacing: 0 });
       saveData();
     }
   } else if (type === "chong-timeline-edit") {
@@ -1435,7 +1411,6 @@ function renderChongList() {
         ${sorted.map(e => {
           const originalIdx = CHONG_EPS.indexOf(e);
           const tabs = e.tabs || [{ tabTitle: "본편" }];
-          // 본편을 제외한 서브 탭들(벌칙, 회식 등)을 외부 카드 좌측 하단에 태그로 노출
           const subTabs = tabs.filter(t => t.tabTitle !== "본편");
 
           return `
@@ -1450,11 +1425,11 @@ function renderChongList() {
                     <div class="card-sub">${e.dateStr || ''}</div>
                   </div>
                 </div>
-                <div class="card-footer-link" style="color: var(--violet-ink);">
+                <div class="card-footer-link" style="color: var(--violet-ink); justify-content: space-between;">
                   <div style="display:flex; gap:4px; flex-wrap:wrap;">
                     ${subTabs.map(st => `<span style="font-size:11px; font-weight:bold; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:2px 8px; border-radius:999px;">${st.tabTitle}</span>`).join('')}
                   </div>
-                  <div style="margin-left:auto; display:flex; align-items:center; gap:4px;">
+                  <div style="display:flex; align-items:center; gap:4px; margin-left:auto;">
                     <span>상세보기</span>
                     <span>→</span>
                   </div>
@@ -1488,7 +1463,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
         ` : ''}
       </div>
 
-      <!-- 서브 탭 바 (본편, 벌칙, 회식 등 자유로운 추가/이동) -->
+      <!-- 서브 탭 바 -->
       <div class="day-tabs" style="margin-top:10px;">
         ${epObj.tabs.map((t, idx) => `
           <button class="day-tab-btn" style="border:1.5px solid ${idx===tabIdx?'var(--violet)':'var(--line)'}; background:${idx===tabIdx?'var(--violet-bg)':'transparent'}; color:${idx===tabIdx?'var(--violet-ink)':'inherit'};" onclick="location.hash='#chong-${epObj.ep}-t${idx}'" ${idx === tabIdx ? 'aria-selected="true"' : ''}>
@@ -1498,15 +1473,14 @@ function renderChongDetail(epNo, tabIdx = 0) {
         ${isAdmin ? `<button class="btn-accent" style="background:var(--violet); color:#fff;" onclick="openSubAdminModal('${epObj.ep}', 'chong-tab-add')">+ 서브 탭 추가 (벌칙/회식 등)</button>` : ''}
       </div>
 
-      <!-- 선택된 탭의 설명 및 참여 멤버 공간 -->
-      <div style="background:var(--violet-bg); border:1px solid var(--violet-line); border-radius:10px; padding:14px 18px; margin-top:2px;">
-        <div style="font-size:12px; font-weight:bold; color:var(--violet-ink); margin-bottom:4px;">[${curTab.tabTitle}] 상세 설명 및 참여 멤버</div>
-        <div class="text-pre" style="font-size:14px; color:var(--page-fg);">${curTab.desc || '등록된 설명이 없습니다.'}</div>
+      <!-- 상세 설명 및 멤버 공간 (보라색 테두리, 흰 배경, 검정 글씨, 내용과 하단 여백 추가) -->
+      <div style="background:#ffffff; border:1.5px solid var(--violet-line); border-radius:10px; padding:16px 20px; margin-top:2px; color:#12161c;">
+        <div class="text-pre" style="font-size:14.5px; line-height:1.6; margin-bottom:12px;">${curTab.desc || '등록된 설명이 없습니다.'}</div>
       </div>
 
       <div class="toolbar" style="margin-top:10px;">
         <div></div>
-        ${isAdmin ? `<button class="btn-accent" style="background:var(--violet); color:#fff;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add', ${tabIdx}, '')">+ [${curTab.tabTitle}] 타임라인 내용 추가</button>` : ''}
+        ${isAdmin ? `<button class="btn-accent" style="background:var(--violet); color:#fff;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add', ${tabIdx})">+ 타임라인 내용 추가</button>` : ''}
       </div>
 
       <div class="ep-detail-wrap">
@@ -1517,7 +1491,6 @@ function renderChongDetail(epNo, tabIdx = 0) {
                 <span>${sec.title}</span>
                 ${isAdmin ? `
                   <div style="display:flex; gap:6px; align-items:center;">
-                    <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--violet-bg); color:var(--violet-ink); border-color:var(--violet-line); font-weight:bold;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add', ${tabIdx}, ${sIdx})">+ 내용 추가</button>
                     <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-edit', ${tabIdx}, ${sIdx})">섹션 제목 수정</button>
                     <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('chong-section', '${epObj.ep}', ${tabIdx}, ${sIdx})">섹션 삭제</button>
                   </div>
@@ -1525,7 +1498,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
               </div>
             ` : (isAdmin ? `
               <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
-                <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('chong-section', '${epObj.ep}', ${tabIdx}, ${sIdx})">이 빈 섹션 삭제</button>
+                <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-edit', ${tabIdx}, ${sIdx})">섹션 제목 부여</button>
               </div>
             ` : '')}
 
@@ -1541,9 +1514,9 @@ function renderChongDetail(epNo, tabIdx = 0) {
                     </div>
                     <div style="display:flex; align-items:center; gap:4px;">
                       ${isAdmin ? `
-                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, 1)" title="아래로 여백 넓히기">＋여백</button>
-                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, -1)" title="여백 줄이기">－여백</button>
-                        <button class="btn-btn" style="padding:1px 5px; font-size:11px; background:var(--violet-bg); color:var(--violet-ink);" onclick="duplicateChongTimeline('${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx})" title="이 타임라인 복사하기">복사</button>
+                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, 1)">＋여백</button>
+                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, -1)">－여백</button>
+                        <button class="btn-btn" style="padding:1px 5px; font-size:11px; background:var(--violet-bg); color:var(--violet-ink);" onclick="duplicateChongTimeline('${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx})">복사</button>
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-edit', ${tabIdx}, ${sIdx}, ${tIdx})">수정</button>
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px; color:red;" onclick="deleteSubItem('chong-timeline', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx})">삭제</button>
                       ` : ''}
@@ -1791,7 +1764,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                     <div class="card-sub">${c.dateRange || ''}</div>
                   </div>
                 </div>
-                <div class="card-footer-link" style="color: var(--yellow-ink);">
+                <div class="card-footer-link" style="color: var(--yellow-ink); justify-content: flex-end;">
                   <span>상세보기</span>
                   <span>→</span>
                 </div>
@@ -1908,7 +1881,7 @@ function renderMinecraft(subId, dayIndex = 0) {
                     <div class="card-sub">${s.dateRange || ''}</div>
                   </div>
                 </div>
-                <div class="card-footer-link" style="color: var(--sky-ink);">
+                <div class="card-footer-link" style="color: var(--sky-ink); justify-content: flex-end;">
                   <span>상세보기</span>
                   <span>→</span>
                 </div>
