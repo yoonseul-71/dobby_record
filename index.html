@@ -144,7 +144,7 @@ td.mono { font-family: var(--font-mono); }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.scrim-top-date-btn { padding: 8px 18px; border-radius: 8px; border: 1.5px solid #ca8a04; background: #fef08a; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; }
+.scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid #ca8a04; background: #fef08a; font-weight: bold; cursor: pointer; font-size: 13px; color: #713f12; box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .scrim-top-date-btn[aria-selected="true"] { background: #eab308; border-color: #ca8a04; color: #ffffff; }
 
 .scrim-time-btn { 
@@ -339,6 +339,7 @@ const DEFAULT_SCRIM = [
     groups: [
       {
         groupTitle: "25.11.15 토",
+        category: "스크림",
         dates: [
           {
             dateStr: "19시 스크림",
@@ -674,12 +675,27 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
   container.innerHTML = "";
 
   if (type === "scrim-group-add") {
-    document.getElementById("asTitle").textContent = "날짜 탭 추가 (예: 25.11.15 토)";
-    container.innerHTML = `<label>날짜 이름</label><input type="text" id="asGroupTitle" value="25.11.15 토">`;
+    document.getElementById("asTitle").textContent = "날짜 탭 추가 (스크림/대회 선택)";
+    container.innerHTML = `
+      <label>날짜 이름 (예: 25.11.15 토)</label><input type="text" id="asGroupTitle" value="25.11.15 토">
+      <label>분류</label>
+      <select id="asGroupCategory">
+        <option value="스크림">스크림</option>
+        <option value="대회">대회</option>
+      </select>
+    `;
   } else if (type === "scrim-group-edit") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
+    const grp = card.groups[ex1];
     document.getElementById("asTitle").textContent = "날짜 탭 수정";
-    container.innerHTML = `<label>날짜 이름</label><input type="text" id="asGroupTitle" value="${card.groups[ex1].groupTitle}">`;
+    container.innerHTML = `
+      <label>날짜 이름</label><input type="text" id="asGroupTitle" value="${grp.groupTitle}">
+      <label>분류</label>
+      <select id="asGroupCategory">
+        <option value="스크림" ${(grp.category||'스크림')==='스크림'?'selected':''}>스크림</option>
+        <option value="대회" ${grp.category==='대회'?'selected':''}>대회</option>
+      </select>
+    `;
   } else if (type === "scrim-date-add") {
     document.getElementById("asTitle").textContent = "시간대 추가 (예: 19시 스크림)";
     container.innerHTML = `<label>시간대 이름</label><input type="text" id="asDateStr" value="19시 스크림">`;
@@ -791,13 +807,18 @@ function handleSubFormSubmit(e) {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
     if (card) {
       if (!card.groups) card.groups = [];
-      card.groups.push({ groupTitle: document.getElementById("asGroupTitle").value, dates: [] });
+      card.groups.push({
+        groupTitle: document.getElementById("asGroupTitle").value,
+        category: document.getElementById("asGroupCategory").value,
+        dates: []
+      });
       saveData();
     }
   } else if (type === "scrim-group-edit") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
     if (card && card.groups[ex1]) {
       card.groups[ex1].groupTitle = document.getElementById("asGroupTitle").value;
+      card.groups[ex1].category = document.getElementById("asGroupCategory").value;
       saveData();
     }
   } else if (type === "scrim-date-add") {
@@ -1291,7 +1312,23 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
     const groups = card.groups || [];
-    const curGroup = groups[gI] || groups[0];
+    
+    // 필터링 적용된 그룹 목록 생성
+    const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
+      const cat = item.g.category || "스크림";
+      if (S.scrimFilter === "스크림") return cat === "스크림";
+      if (S.scrimFilter === "대회") return cat === "대회";
+      return true;
+    });
+
+    // 현재 선택된 gI가 필터링된 목록에 없거나 유효하지 않으면 첫 번째 항목으로 설정
+    let activeItem = filteredGroups.find(item => item.originalIndex === gI);
+    if (!activeItem && filteredGroups.length > 0) {
+      gI = filteredGroups[0].originalIndex;
+      activeItem = filteredGroups[0];
+    }
+
+    const curGroup = groups[gI] || (filteredGroups[0] ? filteredGroups[0].g : groups[0]);
     const dates = curGroup ? (curGroup.dates || []) : [];
     const curDateObj = dates[dI] || dates[0];
     const times = curDateObj ? (curDateObj.times || []) : [];
@@ -1320,30 +1357,46 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     const leftHeaderClass = isDhRed ? "header-red" : "header-blue";
     const rightHeaderClass = isDhRed ? "header-blue" : "header-red";
 
-    const isScrimType = (card.type || "스크림") === "스크림";
+    const isScrimCategory = (curGroup && (curGroup.category || "스크림") === "스크림");
 
     return `
       <div class="block">
         <a class="back-btn" onclick="location.hash='#scrim'">← 멸망전 목록으로</a>
         
         <div class="toolbar" style="align-items:center; margin-bottom:-10px;">
-          <h2>${card.no} 상세 전적</h2>
+          <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+            <h2>${card.no} 상세 전적</h2>
+            <div class="seg" style="display:inline-flex; border:1px solid #eab308; border-radius:999px; overflow:hidden; background:#ffffff;">
+              <button type="button" onclick="setScrimFilter('전체')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='전체'?'#eab308':'transparent'}; color:${S.scrimFilter==='전체'?'#ffffff':'#713f12'}; font-weight:bold; cursor:pointer;">전체</button>
+              <button type="button" onclick="setScrimFilter('스크림')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='스크림'?'#eab308':'transparent'}; color:${S.scrimFilter==='스크림'?'#ffffff':'#713f12'}; font-weight:bold; cursor:pointer;">스크림</button>
+              <button type="button" onclick="setScrimFilter('대회')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='대회'?'#eab308':'transparent'}; color:${S.scrimFilter==='대회'?'#ffffff':'#713f12'}; font-weight:bold; cursor:pointer;">대회</button>
+            </div>
+          </div>
         </div>
 
         <div class="scrim-top-date-bar">
-          ${groups.map((g, idx) => `
-            <div style="display:inline-flex; align-items:center; background:#ffffff; border-radius:8px; border:1.5px solid ${idx===gI?'#ca8a04':'#eab308'};">
-              <button class="scrim-top-date-btn" style="border:0; background:${idx===gI?'#fef08a':'transparent'}; color:#713f12;" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">${g.groupTitle}</button>
-              ${isAdmin ? `
-                <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${card.id}', 'scrim-group-edit', ${idx})">✏️</button>
-                <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('scrim-group', '${card.id}', ${idx})">✕</button>
-              ` : ''}
-            </div>
-          `).join('')}
+          ${filteredGroups.map(item => {
+            const idx = item.originalIndex;
+            const g = item.g;
+            const catLabel = g.category || "스크림";
+            const isSel = (idx === gI);
+            return `
+              <div style="display:inline-flex; align-items:center; background:#ffffff; border-radius:8px; border:1.5px solid ${isSel?'#ca8a04':'#eab308'};">
+                <button class="scrim-top-date-btn" style="border:0; background:${isSel?'#fef08a':'transparent'}; color:#713f12;" ${isSel?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">
+                  <span style="font-size:10px; font-weight:bold; color:${isSel?'#92400e':'#b45309'}; background:${isSel?'rgba(255,255,255,0.7)':'#fef9c3'}; padding:1px 5px; border-radius:4px; margin-bottom:1px;">[${catLabel}]</span>
+                  <span>${g.groupTitle}</span>
+                </button>
+                ${isAdmin ? `
+                  <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${card.id}', 'scrim-group-edit', ${idx})">✏️</button>
+                  <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('scrim-group', '${card.id}', ${idx})">✕</button>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
           ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
         </div>
 
-        ${isScrimType ? `
+        ${isScrimCategory ? `
         <div class="today-scrim-bar">
           <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <span>오늘의 전적: ${todayWins}승 ${todayLosses}패</span>
