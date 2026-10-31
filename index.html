@@ -832,8 +832,25 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>섹션 제목</label><input type="text" id="asSecTitle" value="${secObj.title}">`;
   } else if (type === "mc-timeline-add") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
-    document.getElementById("asTitle").textContent = `마크서버 [${srv.days[ex1].dayTitle}] 타임라인 추가`;
-    container.innerHTML = `<label>섹션 이름</label><input type="text" id="asSecTitle" value="모험 및 탐색"><label>내용</label><textarea id="asTimelineText" rows="3"></textarea><label>링크</label><input type="text" id="asTimelineUrl">`;
+    const dayIdx = parseInt(ex1, 10);
+    const secIdx = ex2 !== "" ? parseInt(ex2, 10) : -1;
+    
+    if (secIdx >= 0) {
+      const targetSec = srv.days[dayIdx].sections[secIdx];
+      document.getElementById("asTitle").textContent = `[${targetSec.title}] 섹션에 타임라인 내용 추가`;
+      container.innerHTML = `
+        <input type="hidden" id="asFixedSecTitle" value="${targetSec.title}">
+        <label>내용</label><textarea id="asTimelineText" rows="3"></textarea>
+        <label>링크</label><input type="text" id="asTimelineUrl">
+      `;
+    } else {
+      document.getElementById("asTitle").textContent = `마크서버 [${srv.days[dayIdx].dayTitle}] 타임라인 추가`;
+      container.innerHTML = `
+        <label>섹션 이름</label><input type="text" id="asSecTitle" value="모험 및 탐색">
+        <label>내용</label><textarea id="asTimelineText" rows="3"></textarea>
+        <label>링크</label><input type="text" id="asTimelineUrl">
+      `;
+    }
   } else if (type === "mc-timeline-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const item = srv.days[ex1].sections[ex2].timelines[ex3];
@@ -1009,8 +1026,10 @@ function handleSubFormSubmit(e) {
   } else if (type === "mc-timeline-add") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const dayIdx = parseInt(ex1, 10);
+    const secIdx = ex2 !== "" ? parseInt(ex2, 10) : -1;
     if (srv && srv.days[dayIdx]) {
-      const secTitle = document.getElementById("asSecTitle").value;
+      const fixedSecTitleInput = document.getElementById("asFixedSecTitle");
+      const secTitle = fixedSecTitleInput ? fixedSecTitleInput.value : document.getElementById("asSecTitle").value;
       const text = document.getElementById("asTimelineText").value;
       const url = document.getElementById("asTimelineUrl").value;
       let sec = srv.days[dayIdx].sections.find(s => s.title === secTitle);
@@ -1664,7 +1683,8 @@ function renderMinecraft(subId, dayIndex = 0) {
               <div class="ep-box-title">
                 <span>${sec.title}</span>
                 ${isAdmin ? `
-                  <div style="display:flex; gap:4px; align-items:center;">
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--sky-bg); color:var(--sky-ink); border-color:var(--sky); font-weight:bold;" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-add', ${dayIndex}, ${sIdx})">+ 내용 추가</button>
                     <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${srv.id}', 'mc-section-edit', ${dayIndex}, ${sIdx})">섹션 제목 수정</button>
                     <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('mc-section', '${srv.id}', ${dayIndex}, ${sIdx})">섹션 삭제</button>
                   </div>
