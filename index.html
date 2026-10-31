@@ -847,6 +847,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
       <label>탭 별도 제목 (상단 제목 및 카드에 표시될 제목)</label><input type="text" id="asTabCustomTitle" value="${tabObj.customTitle||''}" placeholder="예: 술먹방">
       <label>해당 탭 설명 및 멤버 소개</label><textarea id="asTabDesc" rows="3">${tabObj.desc||''}</textarea>
     `;
+  } else if (type === "chong-section-add") {
+    document.getElementById("asTitle").textContent = "새 섹션(타임라인 박스) 추가";
+    container.innerHTML = `
+      <label>섹션 박스 제목 (비워둘 경우 제목 없이 생성)</label>
+      <input type="text" id="asSecTitle" placeholder="예: 타임라인, 준비과정 등">
+    `;
   } else if (type === "chong-section-edit") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const secObj = epObj.tabs[ex1].sections[ex2];
@@ -855,7 +861,10 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
   } else if (type === "chong-timeline-add") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const tabIdx = parseInt(ex1, 10);
-    document.getElementById("asTitle").textContent = "타임라인 내용 추가";
+    const secIdx = ex2 !== "" ? parseInt(ex2, 10) : 0;
+    const targetSec = epObj.tabs[tabIdx].sections[secIdx];
+    const secLabel = targetSec && targetSec.title ? `[${targetSec.title}]` : "선택된";
+    document.getElementById("asTitle").textContent = `${secLabel} 섹션에 타임라인 내용 추가`;
     container.innerHTML = `
       <label>내용</label><textarea id="asChongText" rows="3"></textarea>
       <label>링크</label><input type="text" id="asChongUrl">
@@ -873,6 +882,9 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     const dObj = srv.days[ex1];
     document.getElementById("asTitle").textContent = "마크서버 일차 수정";
     container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="${dObj.dayTitle}"><label>날짜</label><input type="text" id="asDateStr" value="${dObj.dateStr}">`;
+  } else if (type === "mc-section-add") {
+    document.getElementById("asTitle").textContent = "마크서버 새 섹션 추가";
+    container.innerHTML = `<label>섹션 제목</label><input type="text" id="asSecTitle" placeholder="예: 주요 모험, 광질 타임라인 등">`;
   } else if (type === "mc-section-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const secObj = srv.days[ex1].sections[ex2];
@@ -1032,6 +1044,15 @@ function handleSubFormSubmit(e) {
       epObj.tabs[ex1].desc = document.getElementById("asTabDesc").value;
       saveData();
     }
+  } else if (type === "chong-section-add") {
+    const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
+    const tabIdx = parseInt(ex1, 10);
+    if (epObj && epObj.tabs[tabIdx]) {
+      if (!epObj.tabs[tabIdx].sections) epObj.tabs[tabIdx].sections = [];
+      const title = document.getElementById("asSecTitle").value;
+      epObj.tabs[tabIdx].sections.push({ title: title, timelines: [] });
+      saveData();
+    }
   } else if (type === "chong-section-edit") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     if (epObj && epObj.tabs[ex1] && epObj.tabs[ex1].sections[ex2]) {
@@ -1041,6 +1062,7 @@ function handleSubFormSubmit(e) {
   } else if (type === "chong-timeline-add") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const tabIdx = parseInt(ex1, 10);
+    const secIdx = ex2 !== "" ? parseInt(ex2, 10) : 0;
     if (epObj && epObj.tabs[tabIdx]) {
       const text = document.getElementById("asChongText").value;
       const url = document.getElementById("asChongUrl").value;
@@ -1048,7 +1070,10 @@ function handleSubFormSubmit(e) {
       if (!epObj.tabs[tabIdx].sections || epObj.tabs[tabIdx].sections.length === 0) {
         epObj.tabs[tabIdx].sections = [{ title: "", timelines: [] }];
       }
-      epObj.tabs[tabIdx].sections[0].timelines.push({ text, url, spacing: 0 });
+      if (!epObj.tabs[tabIdx].sections[secIdx].timelines) {
+        epObj.tabs[tabIdx].sections[secIdx].timelines = [];
+      }
+      epObj.tabs[tabIdx].sections[secIdx].timelines.push({ text, url, spacing: 0 });
       saveData();
     }
   } else if (type === "chong-timeline-edit") {
@@ -1075,6 +1100,15 @@ function handleSubFormSubmit(e) {
       srv.days[ex1].dateStr = document.getElementById("asDateStr").value;
       saveData();
     }
+  } else if (type === "mc-section-add") {
+    const srv = MC_SERVERS.find(s => s.id === parentId);
+    const dayIdx = parseInt(ex1, 10);
+    if (srv && srv.days[dayIdx]) {
+      if (!srv.days[dayIdx].sections) srv.days[dayIdx].sections = [];
+      const title = document.getElementById("asSecTitle").value;
+      srv.days[dayIdx].sections.push({ title: title, timelines: [] });
+      saveData();
+    }
   } else if (type === "mc-section-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     if (srv && srv.days[ex1] && srv.days[ex1].sections) {
@@ -1084,13 +1118,20 @@ function handleSubFormSubmit(e) {
   } else if (type === "mc-timeline-add") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const dayIdx = parseInt(ex1, 10);
+    const secIdx = ex2 !== "" ? parseInt(ex2, 10) : -1;
     if (srv && srv.days[dayIdx]) {
       const fixedSecTitleInput = document.getElementById("asFixedSecTitle");
       const secTitle = fixedSecTitleInput ? fixedSecTitleInput.value : document.getElementById("asSecTitle").value;
       const text = document.getElementById("asTimelineText").value;
       const url = document.getElementById("asTimelineUrl").value;
-      let sec = srv.days[dayIdx].sections.find(s => s.title === secTitle);
-      if (!sec) { sec = { title: secTitle, timelines: [] }; srv.days[dayIdx].sections.push(sec); }
+      let sec = null;
+      if (secIdx >= 0 && srv.days[dayIdx].sections[secIdx]) {
+        sec = srv.days[dayIdx].sections[secIdx];
+      } else {
+        sec = srv.days[dayIdx].sections.find(s => s.title === secTitle);
+        if (!sec) { sec = { title: secTitle, timelines: [] }; srv.days[dayIdx].sections.push(sec); }
+      }
+      if (!sec.timelines) sec.timelines = [];
       sec.timelines.push({ text, url, spacing: 0 });
       saveData();
     }
@@ -1453,11 +1494,16 @@ function renderChongList() {
 
   return `
     <div class="block">
-      <div class="toolbar" style="align-items:center;">
-        <h2>총겜동</h2>
-        <div class="seg" style="display:inline-flex; border:1px solid var(--violet-line); border-radius:999px; overflow:hidden; background:var(--surface);">
-          <button type="button" onclick="setChongSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='old'?'var(--violet)':'transparent'}; color:${S.chongSort==='old'?'#ffffff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
-          <button type="button" onclick="setChongSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='latest'?'var(--violet)':'transparent'}; color:${S.chongSort==='latest'?'#ffffff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+      <div>
+        <div class="toolbar" style="align-items:center;">
+          <h2>총겜동</h2>
+          <div class="seg" style="display:inline-flex; border:1px solid var(--violet-line); border-radius:999px; overflow:hidden; background:var(--surface);">
+            <button type="button" onclick="setChongSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='old'?'var(--violet)':'transparent'}; color:${S.chongSort==='old'?'#ffffff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+            <button type="button" onclick="setChongSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.chongSort==='latest'?'var(--violet)':'transparent'}; color:${S.chongSort==='latest'?'#ffffff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+          </div>
+        </div>
+        <div style="font-size:12.5px; color:#555; margin-top:4px; line-height:1.4;">
+          카드의 날짜는 '본편 날짜 / 벌칙 또는 회식 날짜'로 표기되며 같은 날 진행된 경우 본편 날짜를 기준으로 표기됩니다.
         </div>
       </div>
 
@@ -1513,7 +1559,6 @@ function renderChongDetail(epNo, tabIdx = 0) {
   const curTab = epObj.tabs[tabIdx] || epObj.tabs[0];
   const headerTitle = curTab.customTitle ? curTab.customTitle : epObj.title;
 
-  // 이전 및 다음 에피소드 찾기 (순서 정렬 기준)
   const sortedEps = [...CHONG_EPS].sort((a, b) => parseInt(a.ep) - parseInt(b.ep));
   const currentIndex = sortedEps.findIndex(e => String(e.ep) === String(epNo));
   const prevEp = currentIndex > 0 ? sortedEps[currentIndex - 1] : null;
@@ -1526,9 +1571,10 @@ function renderChongDetail(epNo, tabIdx = 0) {
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
         <h2>Ep.${epObj.ep} ${headerTitle}</h2>
         ${isAdmin ? `
-          <div style="display:flex; gap:6px;">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <button class="btn-btn" onclick="openAdminModal('chong', ${CHONG_EPS.indexOf(epObj)})">에피소드 기본정보 수정</button>
             <button class="btn-btn" style="background:var(--violet-bg); color:var(--violet-ink); border-color:var(--violet-line); font-weight:bold;" onclick="openSubAdminModal('${epObj.ep}', 'chong-tab-edit', ${tabIdx})">현재 탭 정보 수정</button>
+            <button class="btn-btn" style="background:var(--violet); color:#fff; border-color:var(--violet-line); font-weight:bold;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-add', ${tabIdx})">+ 새 섹션 추가</button>
             <button class="btn-btn" style="color:red;" onclick="deleteSubItem('chong-tab', '${epObj.ep}', ${tabIdx})">현재 탭 삭제</button>
           </div>
         ` : ''}
@@ -1563,14 +1609,19 @@ function renderChongDetail(epNo, tabIdx = 0) {
                 <span>${sec.title}</span>
                 ${isAdmin ? `
                   <div style="display:flex; gap:6px; align-items:center;">
+                    <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--violet-bg); color:var(--violet-ink); border-color:var(--violet-line); font-weight:bold;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add', ${tabIdx}, ${sIdx})">+ 내용 추가</button>
                     <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-edit', ${tabIdx}, ${sIdx})">섹션 제목 수정</button>
                     <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('chong-section', '${epObj.ep}', ${tabIdx}, ${sIdx})">섹션 삭제</button>
                   </div>
                 ` : ''}
               </div>
             ` : (isAdmin ? `
-              <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
-                <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-edit', ${tabIdx}, ${sIdx})">섹션 제목 부여</button>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--violet-bg); color:var(--violet-ink); border-color:var(--violet-line); font-weight:bold;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add', ${tabIdx}, ${sIdx})">+ 내용 추가</button>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-edit', ${tabIdx}, ${sIdx})">섹션 제목 부여</button>
+                  <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('chong-section', '${epObj.ep}', ${tabIdx}, ${sIdx})">섹션 삭제</button>
+                </div>
               </div>
             ` : '')}
 
@@ -1878,7 +1929,12 @@ function renderMinecraft(subId, dayIndex = 0) {
         <a class="back-btn" onclick="location.hash='#mc'">← 마크서버 목록으로</a>
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
           <h2>${srv.serverName} (${srv.guildName})</h2>
-          ${isAdmin ? `<button class="btn-btn" onclick="openAdminModal('mc', ${MC_SERVERS.indexOf(srv)})">서버 기본정보 수정</button>` : ''}
+          ${isAdmin ? `
+            <div style="display:flex; gap:6px;">
+              <button class="btn-btn" onclick="openAdminModal('mc', ${MC_SERVERS.indexOf(srv)})">서버 기본정보 수정</button>
+              <button class="btn-btn" style="background:var(--sky-bg); color:var(--sky-ink); border-color:var(--sky); font-weight:bold;" onclick="openSubAdminModal('${srv.id}', 'mc-section-add', ${dayIndex})">+ 새 섹션 추가</button>
+            </div>
+          ` : ''}
         </div>
 
         <div class="day-tabs">
