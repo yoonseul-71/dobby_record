@@ -22,28 +22,28 @@
   --loss: #dc2626;
   --loss-bg: #fef2f2;
 
-  /* 전적 탭 (원래 진한 색상 유지) */
+  /* 전적 탭 */
   --pink-bg: #fbcfe8;
   --pink-ink: #831843;
   --pink: #db2777;
 
-  /* 롤 멸망전 탭 (원래 진한 색상 유지) */
+  /* 롤 멸망전 탭 */
   --yellow-bg: #fef08a;
   --yellow-ink: #713f12;
   --yellow: #ca8a04;
 
-  /* 마크서버 탭 (원래 진한 색상 유지) */
+  /* 마크서버 탭 */
   --sky-bg: #bfdbfe;
   --sky-ink: #1e3a8a;
   --sky: #2563eb;
 
-  /* 총겜동 상단 탭 색상 (원래 진한 보라 유지) */
+  /* 총겜동 상단 탭 및 테마 색상 */
   --violet-bg: #e9d5ff;
   --violet-ink: #4c1d95;
   --violet-line: #7c3aed;
   --violet: #7c3aed;
 
-  /* ★ 총겜동 상세페이지 박스 전용 파스텔 연보라 배경색 */
+  /* 총겜동 상세페이지 박스 전용 파스텔 연보라 배경색 */
   --box-pastel-violet: #f3e8ff;
 
   --blue-team-bg: #eff6ff;
@@ -330,15 +330,24 @@ const DEFAULT_SETS = [];
 const DEFAULT_MC = [];
 const DEFAULT_CHONG = [
   {
-    ep: "0",
-    title: "FPS 동아리: 총겜동",
+    ep: "1",
+    title: "배그 서열정리 킬내기",
     dateStr: "2025.04.06",
     tabs: [
       {
         tabTitle: "본편",
+        customTitle: "",
         desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
         sections: [
           { title: "", timelines: [{ text: "오프닝 방송 시작", url: "", spacing: 0 }] }
+        ]
+      },
+      {
+        tabTitle: "벌칙",
+        customTitle: "패배팀 벌칙 술먹방",
+        desc: "패배팀 벌칙 술먹방",
+        sections: [
+          { title: "", timelines: [{ text: "시작", url: "", spacing: 0 }] }
         ]
       }
     ]
@@ -355,6 +364,7 @@ CHONG_EPS.forEach(e => {
   if (!e.tabs || e.tabs.length === 0) {
     e.tabs = [{
       tabTitle: "본편",
+      customTitle: "",
       desc: e.desc || "",
       sections: e.sections || (e.timeline ? [{ title: "", timelines: e.timeline }] : [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }])
     }];
@@ -408,7 +418,7 @@ window.initAppAfterFirebase = function() {
           CHONG_EPS = data.CHONG_EPS;
           CHONG_EPS.forEach(e => {
             if (!e.tabs || e.tabs.length === 0) {
-              e.tabs = [{ tabTitle: "본편", desc: e.desc || "", sections: e.sections || [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }] }];
+              e.tabs = [{ tabTitle: "본편", customTitle: "", desc: e.desc || "", sections: e.sections || [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }] }];
             }
           });
         }
@@ -592,7 +602,7 @@ function openAdminModal(target, idx = -1, copyIdx = -1) {
     document.getElementById("adminFormTitle").textContent = idx >= 0 ? "총겜동 에피소드 수정" : "새 총겜동 에피소드 추가";
     container.innerHTML = `
       <label>에피소드 표기 (예: 0, 1, 2 등)</label><input type="text" id="afEpNo" value="${e.ep??CHONG_EPS.length}">
-      <label>에피소드 제목</label><input type="text" id="afEpTitle" value="${e.title||''}">
+      <label>에피소드 기본 제목</label><input type="text" id="afEpTitle" value="${e.title||''}">
       <label>날짜 (YYYY.MM.DD)</label><input type="text" id="afEpDate" value="${e.dateStr||'2025.04.06'}">
       <label>본편 상세 설명</label><textarea id="afEpDesc" rows="3">${e.tabs && e.tabs[0] ? e.tabs[0].desc : (e.desc||'')}</textarea>
     `;
@@ -685,6 +695,7 @@ function handleAdminFormSubmit(e) {
         tabs: [
           {
             tabTitle: "본편",
+            customTitle: "",
             desc: desc,
             sections: [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }]
           }
@@ -809,6 +820,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     document.getElementById("asTitle").textContent = "총겜동 서브 탭 추가 (예: 벌칙, 회식 등)";
     container.innerHTML = `
       <label>탭 이름 (예: 벌칙)</label><input type="text" id="asTabTitle" value="벌칙">
+      <label>탭 별도 제목 (1번 사진 상단 및 2번 카드에 표시될 제목)</label><input type="text" id="asTabCustomTitle" placeholder="예: 패배팀 벌칙 술먹방">
       <label>해당 탭 설명 및 멤버 소개</label><textarea id="asTabDesc" rows="3"></textarea>
     `;
   } else if (type === "chong-tab-edit") {
@@ -817,6 +829,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     document.getElementById("asTitle").textContent = `[${tabObj.tabTitle}] 탭 정보 수정`;
     container.innerHTML = `
       <label>탭 이름</label><input type="text" id="asTabTitle" value="${tabObj.tabTitle}">
+      <label>탭 별도 제목 (1번 사진 상단 및 2번 카드에 표시될 제목)</label><input type="text" id="asTabCustomTitle" value="${tabObj.customTitle||''}" placeholder="예: 패배팀 벌칙 술먹방">
       <label>해당 탭 설명 및 멤버 소개</label><textarea id="asTabDesc" rows="3">${tabObj.desc||''}</textarea>
     `;
   } else if (type === "chong-section-edit") {
@@ -987,9 +1000,10 @@ function handleSubFormSubmit(e) {
   } else if (type === "chong-tab-add") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     if (epObj) {
-      if (!epObj.tabs) epObj.tabs = [{ tabTitle: "본편", desc: epObj.desc||"", sections: epObj.sections||[{ title: "", timelines: epObj.timeline||[] }] }];
+      if (!epObj.tabs) epObj.tabs = [{ tabTitle: "본편", customTitle: "", desc: epObj.desc||"", sections: epObj.sections||[{ title: "", timelines: epObj.timeline||[] }] }];
       epObj.tabs.push({
         tabTitle: document.getElementById("asTabTitle").value,
+        customTitle: document.getElementById("asTabCustomTitle").value,
         desc: document.getElementById("asTabDesc").value,
         sections: [{ title: "", timelines: [{ text: "시작", url: "", spacing: 0 }] }]
       });
@@ -999,6 +1013,7 @@ function handleSubFormSubmit(e) {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     if (epObj && epObj.tabs[ex1]) {
       epObj.tabs[ex1].tabTitle = document.getElementById("asTabTitle").value;
+      epObj.tabs[ex1].customTitle = document.getElementById("asTabCustomTitle").value;
       epObj.tabs[ex1].desc = document.getElementById("asTabDesc").value;
       saveData();
     }
@@ -1047,7 +1062,7 @@ function handleSubFormSubmit(e) {
     }
   } else if (type === "mc-section-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
-    if (srv && srv.days[ex1] && srv.days[ex1].sections[ex2]) {
+    if (srv && srv.days[ex1] && srv.days[ex1].sections) {
       srv.days[ex1].sections[ex2].title = document.getElementById("asSecTitle").value;
       saveData();
     }
@@ -1455,10 +1470,16 @@ function renderChongList() {
                   </div>
                 </div>
                 <div class="card-footer-link" style="color: var(--violet-ink); justify-content: space-between;">
-                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                    ${subTabs.map(st => `<span style="font-size:11px; font-weight:bold; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:2px 8px; border-radius:999px;">${st.tabTitle}</span>`).join('')}
+                  <!-- 2번 사진 위치: 서브 탭 태그 + 옆에 작은 글씨로 설정한 제목 출력 -->
+                  <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    ${subTabs.map(st => `
+                      <span style="font-size:11.5px; font-weight:bold; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:3px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:4px;">
+                        <span>${st.tabTitle}</span>
+                        ${st.customTitle ? `<span style="font-size:10.5px; font-weight:normal; color:#5b21b6; opacity:0.9;">${st.customTitle}</span>` : ''}
+                      </span>
+                    `).join('')}
                   </div>
-                  <div style="display:flex; align-items:center; gap:4px; margin-left:auto;">
+                  <div style="display:flex; align-items:center; gap:4px; margin-left:auto; white-space:nowrap;">
                     <span>상세보기</span>
                     <span>→</span>
                   </div>
@@ -1473,16 +1494,19 @@ function renderChongList() {
 
 function renderChongDetail(epNo, tabIdx = 0) {
   const epObj = CHONG_EPS.find(e => String(e.ep) === String(epNo)) || CHONG_EPS[0];
-  if (!epObj.tabs) epObj.tabs = [{ tabTitle: "본편", desc: epObj.desc || "", sections: epObj.sections || [{ title: "", timelines: epObj.timeline || [] }] }];
+  if (!epObj.tabs) epObj.tabs = [{ tabTitle: "본편", customTitle: "", desc: epObj.desc || "", sections: epObj.sections || [{ title: "", timelines: epObj.timeline || [] }] }];
   
   const curTab = epObj.tabs[tabIdx] || epObj.tabs[0];
+
+  /* 1번 사진 요구사항: 해당 서브 탭에서 지정된 제목이 있으면 그 제목을, 없으면 기본 에피소드 제목 출력 */
+  const headerTitle = curTab.customTitle ? curTab.customTitle : epObj.title;
 
   return `
     <div class="block">
       <a class="back-btn" onclick="location.hash='#chong'">← 총겜동 목록으로</a>
       
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <h2>Ep.${epObj.ep} ${epObj.title}</h2>
+        <h2>Ep.${epObj.ep} ${headerTitle}</h2>
         ${isAdmin ? `
           <div style="display:flex; gap:6px;">
             <button class="btn-btn" onclick="openAdminModal('chong', ${CHONG_EPS.indexOf(epObj)})">에피소드 기본정보 수정</button>
