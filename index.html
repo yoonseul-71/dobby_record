@@ -6,7 +6,7 @@
 <title>DOHYEON ARCHIVE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap">
 <style>
 :root {
   --page: #f1f3f6; --page-fg: #12161c; --page-muted: #566170;
@@ -26,7 +26,7 @@
   
   --font-body: "Noto Sans KR", system-ui, sans-serif;
   --font-title: "Gowun Dodum", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-mono: "Noto Sans KR", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -35,10 +35,20 @@ body { margin: 0; background: var(--page); color: var(--page-fg); font-family: v
 .wrap { max-width: 1090px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
 a { color: inherit; text-decoration: none; }
 
-header.top { display: flex; justify-content: space-between; align-items: flex-start; }
-h1 { margin: 0; font-family: var(--font-body); font-weight: 800; font-size: 48px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; }
+header.top { display: flex; justify-content: space-between; align-items: flex-end; }
+h1 { margin: 0; font-family: var(--font-body); font-weight: 900; font-size: 44px; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; color: #12161c; }
 
-nav.bar { display: flex; align-items: flex-end; gap: 6px; border-bottom: 1px solid var(--line); padding-left: 10px; }
+.header-external-links { display: flex; gap: 8px; align-items: center; }
+.external-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 10px; background: var(--panel);
+  border: 1.5px solid var(--line); color: var(--page-fg); font-size: 16px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: all 0.15s ease; text-decoration: none;
+}
+.external-icon-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+.nav-bar-container { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 10px; }
+nav.bar { display: flex; align-items: flex-end; gap: 6px; padding-left: 10px; border-bottom: 0; }
 nav.bar a {
   position: relative; display: inline-flex; align-items: center; padding: 8px 22px;
   border-radius: 8px 8px 0 0; font-weight: 700; font-size: 15px;
@@ -58,6 +68,8 @@ nav.bar a[aria-current="page"] {
   border-color: var(--line); border-bottom: 1px solid var(--panel); background: var(--panel); color: var(--page-fg);
 }
 
+.header-icons-right { display: flex; gap: 8px; align-items: center; padding-bottom: 8px; padding-right: 4px; }
+
 .panel { background: var(--panel); border-radius: 0 0 12px 12px; padding: 24px; border: 1px solid var(--line); border-top: 0; }
 .block { display: flex; flex-direction: column; gap: 20px; }
 
@@ -68,20 +80,20 @@ nav.bar a[aria-current="page"] {
 .subnav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .subnav a { padding: 4px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); font-size: 13px; cursor: pointer; }
 .subnav a[aria-current="page"] { background: var(--soft); border-color: var(--accent); color: var(--soft-ink); font-weight: 700; }
-.subnav .n { font-family: var(--font-mono); opacity: 0.7; margin-left: 4px; }
+.subnav .n { font-family: var(--font-body); font-weight: 600; opacity: 0.7; margin-left: 4px; }
 
 h2 { margin: 0; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
 
 .stats { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; }
 .stat .k { font-size: 12px; color: var(--page-muted); display: block; }
-.stat .v { font-family: var(--font-mono); font-size: 22px; font-weight: 700; }
+.stat .v { font-family: var(--font-body); font-weight: 800; font-size: 22px; }
 
 .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .month { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); margin-bottom: 16px; }
 .month summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: #eef3fc; color: #1a365d; font-weight: bold; }
 .month summary::-webkit-details-marker { display: none; }
-.month .m-title { font-family: var(--font-mono); font-size: 16px; color: #2b6cb0; }
+.month .m-title { font-family: var(--font-body); font-weight: 700; font-size: 16px; color: #2b6cb0; }
 .month .m-meta { font-size: 13px; opacity: 0.8; font-weight: normal; }
 .month .seg { margin-left: 10px; display: inline-flex; border: 1px solid #cbd5e0; border-radius: 999px; overflow: hidden; }
 .month .seg button { font: inherit; font-size: 11px; padding: 2px 10px; border: 0; background: transparent; cursor: pointer; }
@@ -100,7 +112,7 @@ th { font-size: 12px; color: var(--page-muted); font-weight: 500; border-bottom:
 tbody tr.detail-dropdown-row td { background: #f8fafc; border-bottom: 2px solid #cbd5e0; padding: 16px; }
 
 tbody tr:hover:not(.detail-dropdown-row) { background: rgba(0,0,0,0.02); }
-td.mono { font-family: var(--font-mono); }
+td.mono { font-family: var(--font-body); font-weight: 500; }
 .pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
@@ -129,7 +141,7 @@ td.mono { font-family: var(--font-mono); }
   border-bottom: 1px solid var(--line);
 }
 .card-title { font-size: 20px; font-weight: 800; color: #12161c; margin-bottom: 4px; }
-.card-sub { font-size: 13px; color: var(--page-muted); font-family: var(--font-mono); }
+.card-sub { font-size: 13px; color: var(--page-muted); font-family: var(--font-body); }
 
 .card-footer-link { 
   display: flex; 
@@ -229,12 +241,18 @@ footer.bottom-footer {
   </header>
 
   <div class="sheet">
-    <nav class="bar" id="mainNav">
-      <a href="#record" data-cat="record">전적</a>
-      <a href="#scrim" data-cat="scrim">롤 멸망전</a>
-      <a href="#mc" data-cat="mc">마크서버</a>
-      <a href="#chong" data-cat="chong">총겜동</a>
-    </nav>
+    <div class="nav-bar-container">
+      <nav class="bar" id="mainNav">
+        <a href="#record" data-cat="record">전적</a>
+        <a href="#scrim" data-cat="scrim">롤 멸망전</a>
+        <a href="#mc" data-cat="mc">마크서버</a>
+        <a href="#chong" data-cat="chong">총겜동</a>
+      </nav>
+      <div class="header-icons-right">
+        <a href="https://www.sooplive.com/station/dobby1031" target="_blank" class="external-icon-btn" title="SOOP 방송국">🏠</a>
+        <a href="https://yoonseul-71.github.io/dohyeon_calendar/" target="_blank" class="external-icon-btn" title="캘린더">📅</a>
+      </div>
+    </div>
     <div class="panel">
       <main id="view"></main>
     </div>
@@ -1106,16 +1124,19 @@ function renderRecords() {
   });
 
   if (!initializedMonths) {
-    groups.forEach((_, k) => { S.monthOrder[k] = { open: true, sort: 'asc' }; });
+    groups.forEach((_, k) => { S.monthOrder[k] = { open: true, sort: 'desc' }; });
     initializedMonths = true;
   } else {
     groups.forEach((_, k) => {
-      if (!S.monthOrder[k]) S.monthOrder[k] = { open: true, sort: 'asc' };
+      if (!S.monthOrder[k]) S.monthOrder[k] = { open: true, sort: 'desc' };
     });
   }
 
-  const monthsHtml = [...groups.entries()].map(([k, list]) => {
-    const mState = S.monthOrder[k] || { open: true, sort: 'asc' };
+  const sortedMonthKeys = [...groups.keys()].sort((a, b) => b.localeCompare(a));
+
+  const monthsHtml = sortedMonthKeys.map(k => {
+    const list = groups.get(k);
+    const mState = S.monthOrder[k] || { open: true, sort: 'desc' };
     const desc = mState.sort === "desc";
     const isOpen = mState.open;
     const sorted = [...list].sort((a, b) => desc ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date));
@@ -1172,17 +1193,17 @@ function renderRecords() {
         const parts = r.score.split(':').map(p => parseInt(p.trim(), 10));
         if (!isNaN(parts[0]) && !isNaN(parts[1])) {
           if (parts[0] > parts[1]) {
-            formattedScore = `<span style="font-family:var(--font-mono); color:#1d4ed8; font-weight:normal;">${parts[0]}</span>:<span style="font-family:var(--font-mono); color:#b3282d; font-weight:normal;">${parts[1]}</span>`;
+            formattedScore = `<span style="font-weight:normal; color:#1d4ed8;">${parts[0]}</span>:<span style="font-weight:normal; color:#b3282d;">${parts[1]}</span>`;
           } else if (parts[0] < parts[1]) {
-            formattedScore = `<span style="font-family:var(--font-mono); color:#b3282d; font-weight:normal;">${parts[0]}</span>:<span style="font-family:var(--font-mono); color:#1d4ed8; font-weight:normal;">${parts[1]}</span>`;
+            formattedScore = `<span style="font-weight:normal; color:#b3282d;">${parts[0]}</span>:<span style="font-weight:normal; color:#1d4ed8;">${parts[1]}</span>`;
           } else {
-            formattedScore = `<span style="font-family:var(--font-mono); font-weight:normal;">${r.score}</span>`;
+            formattedScore = `<span style="font-weight:normal;">${r.score}</span>`;
           }
         } else {
-          formattedScore = `<span style="font-family:var(--font-mono); font-weight:normal;">${r.score}</span>`;
+          formattedScore = `<span style="font-weight:normal;">${r.score}</span>`;
         }
       } else if (r.score && r.score.trim() !== '') {
-        formattedScore = `<span style="font-family:var(--font-mono); font-weight:normal;">${r.score}</span>`;
+        formattedScore = `<span style="font-weight:normal;">${r.score}</span>`;
       }
 
       let resPill = `<span class="pill none">진행중</span>`;
@@ -1279,7 +1300,13 @@ function renderRecords() {
         </div>
       </div>
       <div style="border-top: 1px dashed var(--line); margin: 2px 0;"></div>
-      <div class="subnav">${yearTabsHtml}</div>
+      <div class="toolbar" style="align-items:center;">
+        <div class="subnav" style="margin:0;">${yearTabsHtml}</div>
+        <div class="seg" style="display:inline-flex; border:1px solid #cbd5e0; border-radius:999px; overflow:hidden; background:var(--surface);">
+          <button type="button" onclick="setAllMonthOrd('asc')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${Object.values(S.monthOrder).every(o=>o.sort==='asc')?'var(--accent)':'transparent'}; color:${Object.values(S.monthOrder).every(o=>o.sort==='asc')?'#fff':'var(--page-fg)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+          <button type="button" onclick="setAllMonthOrd('desc')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${Object.values(S.monthOrder).every(o=>o.sort==='desc')?'var(--accent)':'transparent'}; color:${Object.values(S.monthOrder).every(o=>o.sort==='desc')?'#fff':'var(--page-fg)'}; font-weight:bold; cursor:pointer;">최신순</button>
+        </div>
+      </div>
       <div class="subnav" style="margin-top:-6px;">${subnavHtml}</div>
       <div class="stats" style="margin-top:10px;">
         <div class="stat"><span class="k">경기</span><span class="v">${total}</span></div>
@@ -1313,7 +1340,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
     const groups = card.groups || [];
     
-    // 필터링 적용된 그룹 목록 생성
     const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
       const cat = item.g.category || "스크림";
       if (S.scrimFilter === "스크림") return cat === "스크림";
@@ -1321,7 +1347,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
       return true;
     });
 
-    // 현재 선택된 gI가 필터링된 목록에 없거나 유효하지 않으면 첫 번째 항목으로 설정
     let activeItem = filteredGroups.find(item => item.originalIndex === gI);
     if (!activeItem && filteredGroups.length > 0) {
       gI = filteredGroups[0].originalIndex;
@@ -1792,8 +1817,14 @@ function setMcSort(sortType) { S.mcSort = sortType; render(); }
 function setScrimFilter(f) { S.scrimFilter = f; render(); }
 function setScrimSort(sortType) { S.scrimSort = sortType; render(); }
 function setMonthOrd(k, ord) {
-  if (!S.monthOrder[k]) S.monthOrder[k] = { open: true, sort: 'asc' };
+  if (!S.monthOrder[k]) S.monthOrder[k] = { open: true, sort: 'desc' };
   S.monthOrder[k].sort = ord;
+  render();
+}
+function setAllMonthOrd(ord) {
+  Object.keys(S.monthOrder).forEach(k => {
+    S.monthOrder[k].sort = ord;
+  });
   render();
 }
 
