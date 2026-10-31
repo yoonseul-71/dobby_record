@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap">
-<!-- Firebase SDK CDN 추가 -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -30,7 +29,6 @@
   window.firebaseSet = set;
   window.firebaseOnValue = onValue;
 
-  // 앱 초기화 및 데이터 로드 시작 트리거
   if (window.initAppAfterFirebase) {
     window.initAppAfterFirebase();
   }
@@ -430,7 +428,7 @@ window.initAppAfterFirebase = function() {
         if (data.CHONG_EPS) CHONG_EPS = data.CHONG_EPS;
         if (data.SCRIM_CARDS) SCRIM_CARDS = data.SCRIM_CARDS;
       } else {
-        saveData(); // 데이터가 없으면 기본값 업로드
+        saveData();
       }
       render();
     });
@@ -455,7 +453,6 @@ window.addEventListener("DOMContentLoaded", () => {
     sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
-  // 파이어베이스 모듈 로드가 빨라서 이벤트 전파가 안될 경우 대비한 안전장치
   setTimeout(() => {
     if (!window.dbRef && typeof render === 'function') {
       render();
@@ -465,8 +462,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function promptAdminLogin() {
   const pw = prompt("관리자 비밀코드를 입력하세요:");
-  const secureKeyVal = ["15", "207", "11"].join("");
-  if (pw === secureKeyVal) {
+  const encodedKey = "MTUyMDcxMQ==";
+  if (pw && btoa(pw) === encodedKey) {
     isAdmin = true;
     document.getElementById("admin-bar").style.display = "flex";
     alert("관리자 모드가 활성화되었습니다!");
