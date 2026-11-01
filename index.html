@@ -141,15 +141,6 @@ th { font-size: 12px; color: var(--page-muted); font-weight: 500; border-bottom:
 .card-sub { font-size: 13px; color: var(--page-muted); }
 .card-footer-link { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 
-.scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-.lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
-.lol-match-table th { padding: 10px 14px; border: 1px solid #dcdcdc; font-size: 14px; font-weight: 800; text-align: center; }
-.lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 12px; vertical-align: middle; font-size: 13.5px; background: #ffffff !important; }
-.lol-match-table .pos-col { width: 70px; text-align: center; background: #ffffff !important; font-weight: bold; color: #555; font-size: 13px; }
-
-th.header-blue { background-color: var(--blue-team-bg) !important; color: var(--blue-team-ink) !important; }
-th.header-red { background-color: var(--red-team-bg) !important; color: var(--red-team-ink) !important; }
-
 .text-pre { white-space: pre-wrap; word-break: break-all; }
 .ep-detail-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
 .ep-box { border: 2px solid #12161c; border-radius: 12px; padding: 20px; background: var(--surface); position: relative; }
@@ -223,7 +214,17 @@ let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || [];
 let setsData = JSON.parse(localStorage.getItem("local_setsData")) || [];
 
 let isAdmin = false;
-let S = { game: "발로란트", year: "전체", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", globalMonthSort: "desc", monthOrder: {}, openRows: {} };
+let S = { 
+  game: "발로란트", 
+  year: "전체", 
+  mode: "전체", 
+  chongSort: "old",  // 총겜동 기본: 오래된순
+  mcSort: "old",     // 마크 기본: 오래된순
+  scrimSort: "old",  // 멸망전 기본: 오래된순
+  globalMonthSort: "desc", // 전적 기본: 최신순 (desc)
+  monthOrder: {}, 
+  openRows: {} 
+};
 let initializedMonths = false;
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -321,7 +322,13 @@ function renderRecords() {
   return `<div class="block">
     <div class="game-tabs">${gameTabsHtml}</div>
     <div style="border-top: 1px dashed var(--line); margin: 2px 0;"></div>
-    <div class="toolbar"><div class="subnav" style="margin:0;">${yearTabsHtml}</div></div>
+    <div class="toolbar">
+      <div class="subnav" style="margin:0;">${yearTabsHtml}</div>
+      <div class="seg" style="display:inline-flex; border:1px solid #cbd5e0; border-radius:999px; overflow:hidden;">
+        <button type="button" onclick="setGlobalMonthSort('asc')" style="font:inherit; font-size:11px; padding:4px 12px; border:0; background:${S.globalMonthSort==='asc'?'var(--accent)':'transparent'}; color:${S.globalMonthSort==='asc'?'#fff':'var(--page-fg)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+        <button type="button" onclick="setGlobalMonthSort('desc')" style="font:inherit; font-size:11px; padding:4px 12px; border:0; background:${S.globalMonthSort==='desc'?'var(--accent)':'transparent'}; color:${S.globalMonthSort==='desc'?'#fff':'var(--page-fg)'}; font-weight:bold; cursor:pointer;">최신순</button>
+      </div>
+    </div>
     <div class="subnav">${subnavHtml}</div>
     <div class="stats">
       <div class="stat"><span class="k">경기</span><span class="v">${total}</span></div>
@@ -333,12 +340,17 @@ function renderRecords() {
 }
 
 function renderChongList() {
-  const sorted = [...CHONG_EPS];
+  const sorted = [...CHONG_EPS].sort((a, b) => S.chongSort === "latest" ? (parseInt(b.ep) - parseInt(a.ep)) : (parseInt(a.ep) - parseInt(b.ep)));
   return `<div class="block">
-    <div class="toolbar"><h2>총겜동</h2></div>
+    <div class="toolbar">
+      <h2>총겜동</h2>
+      <div class="seg" style="display:inline-flex; border:1px solid #cbd5e0; border-radius:999px; overflow:hidden;">
+        <button type="button" onclick="setChongSort('old')" style="font:inherit; font-size:11px; padding:4px 12px; border:0; background:${S.chongSort==='old'?'var(--violet)':'transparent'}; color:${S.chongSort==='old'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+        <button type="button" onclick="setChongSort('latest')" style="font:inherit; font-size:11px; padding:4px 12px; border:0; background:${S.chongSort==='latest'?'var(--violet)':'transparent'}; color:${S.chongSort==='latest'?'#fff':'var(--violet-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+      </div>
+    </div>
     <div class="cards">${sorted.map(e => {
       const tabs = e.tabs || [{ tabTitle: "본편" }];
-      const subTabs = tabs.filter(t => t.tabTitle !== "본편");
       return `
         <div class="card" style="border-top: 4px solid var(--violet);">
           <div class="card-corner-tag" style="--tag-bg: var(--violet-bg); --tag-ink: var(--violet-ink); --tag-border: var(--violet-line);">Ep.${e.ep}</div>
@@ -349,7 +361,7 @@ function renderChongList() {
             </div>
             <div class="card-footer-link" style="color: var(--violet-ink);">
               <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                ${subTabs.map(st => `<span style="font-size:11px; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:2px 8px; border-radius:999px;">${st.tabTitle}</span>`).join('')}
+                ${tabs.map(st => `<span style="font-size:11px; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:2px 8px; border-radius:999px;">${st.tabTitle} ${st.customTitle ? '('+st.customTitle+')' : ''}</span>`).join('')}
               </div>
               <span>상세보기 →</span>
             </div>
@@ -373,16 +385,14 @@ function renderChongDetail(epNo, tabIdx = 0) {
     <a class="back-btn" onclick="location.hash='#chong'">← 목록으로</a>
     <h2>Ep.${epObj.ep} ${headerTitle}</h2>
     
-    <!-- 서브 탭 바 (본편, 벌칙, 회식 등) -->
     <div class="day-tabs" style="margin-top:10px;">
       ${epObj.tabs.map((t, idx) => `
         <button class="day-tab-btn" style="border:1.5px solid ${idx===tabIdx?'var(--violet)':'var(--line)'}; background:${idx===tabIdx?'var(--violet-bg)':'transparent'}; color:${idx===tabIdx?'var(--violet-ink)':'inherit'};" onclick="location.hash='#chong-${epObj.ep}-t${idx}'" ${idx === tabIdx ? 'aria-selected="true"' : ''}>
-          ${t.tabTitle}
+          ${t.tabTitle} ${t.customTitle ? '('+t.customTitle+')' : ''}
         </button>
       `).join('')}
     </div>
 
-    <!-- 탭별 설명 및 소개 -->
     <div style="background:var(--box-pastel-violet); border:1.5px solid var(--violet-line); border-radius:10px; padding:16px 20px; color:var(--violet-ink);">
       <div style="font-size:13px; font-weight:bold; margin-bottom:6px;">[${curTab.tabTitle}]</div>
       <div class="text-pre" style="font-size:14px; color:var(--page-fg);">${curTab.desc || ''}</div>
@@ -406,32 +416,56 @@ function renderChongDetail(epNo, tabIdx = 0) {
 }
 
 function renderScrims() {
-  return `<div class="block"><h2>롤 멸망전</h2><div class="cards">${SCRIM_CARDS.map(c => `
-    <div class="card" style="border-top: 4px solid var(--yellow);">
-      <div class="card-corner-tag" style="--tag-bg: var(--yellow-bg); --tag-ink: var(--yellow-ink); --tag-border: var(--yellow);">${c.badge||'멸망전'}</div>
-      <a href="#scrim-${c.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
-        <div class="card-content-area"><div class="card-title" style="color: var(--yellow-ink);">${c.no}</div><div class="card-sub">${c.dateRange||''}</div></div>
-        <div class="card-footer-link" style="color: var(--yellow-ink);"><span>상세보기</span><span>→</span></div>
-      </a>
+  const sortedCards = [...SCRIM_CARDS].sort((a, b) => S.scrimSort === "latest" ? (b.dateRange||"").localeCompare(a.dateRange||"") : (a.dateRange||"").localeCompare(b.dateRange||""));
+  return `<div class="block">
+    <div class="toolbar">
+      <h2>롤 멸망전</h2>
+      <div class="seg" style="display:inline-flex; border:1px solid #cbd5e0; border-radius:999px; overflow:hidden;">
+        <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:11px; padding:4px 12px; border:0; background:${S.scrimSort==='old'?'var(--yellow)':'transparent'}; color:${S.scrimSort==='old'?'#fff':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+        <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:11px; padding:4px 12px; border:0; background:${S.scrimSort==='latest'?'var(--yellow)':'transparent'}; color:${S.scrimSort==='latest'?'#fff':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+      </div>
     </div>
-  `).join('')}</div></div>`;
+    <div class="cards">${sortedCards.map(c => `
+      <div class="card" style="border-top: 4px solid var(--yellow);">
+        <div class="card-corner-tag" style="--tag-bg: var(--yellow-bg); --tag-ink: var(--yellow-ink); --tag-border: var(--yellow);">${c.badge||'멸망전'}</div>
+        <a href="#scrim-${c.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+          <div class="card-content-area"><div class="card-title" style="color: var(--yellow-ink);">${c.no}</div><div class="card-sub">${c.dateRange||''}</div></div>
+          <div class="card-footer-link" style="color: var(--yellow-ink);"><span>상세보기</span><span>→</span></div>
+        </a>
+      </div>
+    `).join('')}</div>
+  </div>`;
 }
 
 function renderMinecraft() {
-  return `<div class="block"><h2>마크서버</h2><div class="cards">${MC_SERVERS.map(s => `
-    <div class="card" style="border-top: 4px solid var(--sky);">
-      <div class="card-corner-tag" style="--tag-bg: var(--sky-bg); --tag-ink: var(--sky-ink); --tag-border: var(--sky);">${s.serverName}</div>
-      <a href="#mc-${s.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
-        <div class="card-content-area"><div class="card-title" style="color: var(--sky-ink);">${s.guildName}</div><div class="card-sub">${s.dateRange||''}</div></div>
-        <div class="card-footer-link" style="color: var(--sky-ink);"><span>상세보기</span><span>→</span></div>
-      </a>
+  const sortedSrvs = [...MC_SERVERS].sort((a, b) => S.mcSort === "latest" ? (b.dateRange||"").localeCompare(a.dateRange||"") : (a.dateRange||"").localeCompare(b.dateRange||""));
+  return `<div class="block">
+    <div class="toolbar">
+      <h2>마크서버</h2>
+      <div class="seg" style="display:inline-flex; border:1px solid #cbd5e0; border-radius:999px; overflow:hidden;">
+        <button type="button" onclick="setMcSort('old')" style="font:inherit; font-size:11px; padding:4px 12px; border:0; background:${S.mcSort==='old'?'var(--sky)':'transparent'}; color:${S.mcSort==='old'?'#fff':'var(--sky-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+        <button type="button" onclick="setMcSort('latest')" style="font:inherit; font-size:11px; padding:4px 12px; border:0; background:${S.mcSort==='latest'?'var(--sky)':'transparent'}; color:${S.mcSort==='latest'?'#fff':'var(--sky-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+      </div>
     </div>
-  `).join('')}</div></div>`;
+    <div class="cards">${sortedSrvs.map(s => `
+      <div class="card" style="border-top: 4px solid var(--sky);">
+        <div class="card-corner-tag" style="--tag-bg: var(--sky-bg); --tag-ink: var(--sky-ink); --tag-border: var(--sky);">${s.serverName}</div>
+        <a href="#mc-${s.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+          <div class="card-content-area"><div class="card-title" style="color: var(--sky-ink);">${s.guildName}</div><div class="card-sub">${s.dateRange||''}</div></div>
+          <div class="card-footer-link" style="color: var(--sky-ink);"><span>상세보기</span><span>→</span></div>
+        </a>
+      </div>
+    `).join('')}</div>
+  </div>`;
 }
 
 function setGame(g) { S.game = g; S.mode = "전체"; render(); }
 function setYear(y) { S.year = y; S.mode = "전체"; render(); }
 function setMode(m) { S.mode = m; render(); }
+function setChongSort(so) { S.chongSort = so; render(); }
+function setMcSort(so) { S.mcSort = so; render(); }
+function setScrimSort(so) { S.scrimSort = so; render(); }
+function setGlobalMonthSort(so) { S.globalMonthSort = so; render(); }
 function logoutAdmin() { isAdmin = false; document.getElementById("admin-bar").style.display = "none"; render(); }
 
 function render() {
