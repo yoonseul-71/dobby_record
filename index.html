@@ -46,7 +46,7 @@
   /* 총겜동 상세페이지 박스 전용 파스텔 연보라 배경색 */
   --box-pastel-violet: #f3e8ff;
 
-  /* 롤 멸망전 표 레드/블루 진영 배경색 */
+  /* 롤 멸망전 표 레드/블루 진영 배경색 (살짝만 더 진하게 수정) */
   --blue-team-bg: #dbeafe;
   --blue-team-ink: #12161c;
   --red-team-bg: #fee2e2;
@@ -66,7 +66,6 @@ a { color: inherit; text-decoration: none; }
 header.top { display: flex; justify-content: space-between; align-items: flex-end; }
 h1 { margin: 0; font-family: var(--font-body); font-weight: 900; font-size: 44px; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; color: #12161c; }
 
-/* 상단 탭 컨테이너 및 화살표 제거 설정 */
 .nav-bar-container { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--line); flex-wrap: nowrap; gap: 10px; overflow: hidden; }
 nav.bar { display: flex; align-items: flex-end; gap: 6px; padding-left: 10px; border-bottom: 0; width: 100%; overflow-x: auto; overflow-y: hidden; -ms-overflow-style: none; scrollbar-width: none; }
 nav.bar::-webkit-scrollbar { display: none; width: 0; height: 0; }
@@ -430,8 +429,8 @@ const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
 
   if (i % 2 === 0) {
     tabs.push({
-      tabTitle: "벌칙/회식",
-      customTitle: "뒷풀이 및 벌칙 수행",
+      tabTitle: "벌칙",
+      customTitle: "술먹방",
       desc: `Ep.${epNum} 진행 후 진행된 서브 콘텐츠 (회식/벌칙)`,
       sections: [
         {
@@ -907,12 +906,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     `;
   } else if (type === "chong-section-add") {
     document.getElementById("asTitle").textContent = "새 섹션 추가";
-    container.innerHTML = `<label>섹션 제목 (비워두면 박스 없이 바로 내용 출력)</label><input type="text" id="asSecTitle" placeholder="예: 1부 타임라인">`;
+    container.innerHTML = `<label>섹션 제목 (비워두어도 기본 네모 박스 틀은 유지됩니다)</label><input type="text" id="asSecTitle" placeholder="예: 1부 타임라인">`;
   } else if (type === "chong-section-edit") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const secObj = epObj.tabs[ex1].sections[ex2];
     document.getElementById("asTitle").textContent = "섹션 제목 수정";
-    container.innerHTML = `<label>섹션 제목 (비워두면 박스 없음)</label><input type="text" id="asSecTitle" value="${secObj.title||''}">`;
+    container.innerHTML = `<label>섹션 제목 (비워두어도 네모 박스 유지)</label><input type="text" id="asSecTitle" value="${secObj.title||''}">`;
   } else if (type === "chong-timeline-add") {
     document.getElementById("asTitle").textContent = "타임라인 내용 추가";
     container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3"></textarea><label>링크</label><input type="text" id="asChongUrl">`;
@@ -931,12 +930,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="${dObj.dayTitle}"><label>날짜</label><input type="text" id="asDateStr" value="${dObj.dateStr}">`;
   } else if (type === "mc-section-add") {
     document.getElementById("asTitle").textContent = "마크서버 섹션 추가";
-    container.innerHTML = `<label>섹션 제목 (비워두면 박스 없음)</label><input type="text" id="asSecTitle" placeholder="예: 주요 모험">`;
+    container.innerHTML = `<label>섹션 제목 (비워두어도 박스 유지)</label><input type="text" id="asSecTitle" placeholder="예: 주요 모험">`;
   } else if (type === "mc-section-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const secObj = srv.days[ex1].sections[ex2];
     document.getElementById("asTitle").textContent = "섹션 제목 수정";
-    container.innerHTML = `<label>섹션 제목 (비워두면 박스 없음)</label><input type="text" id="asSecTitle" value="${secObj.title}">`;
+    container.innerHTML = `<label>섹션 제목 (비워두어도 박스 유지)</label><input type="text" id="asSecTitle" value="${secObj.title}">`;
   } else if (type === "mc-timeline-add") {
     document.getElementById("asTitle").textContent = "타임라인 내용 추가";
     container.innerHTML = `<label>내용</label><textarea id="asTimelineText" rows="3"></textarea><label>링크</label><input type="text" id="asTimelineUrl">`;
@@ -1221,7 +1220,6 @@ function deleteItem(target, idx) {
   render();
 }
 
-/* 멸망전 세트 복사 모달 열기 및 실행 함수 */
 function openScrimCopyModal(cardId, gIdx, dIdx, tIdx) {
   document.getElementById("scCopyCardId").value = cardId;
   document.getElementById("scCopySrcG").value = gIdx;
@@ -1255,7 +1253,6 @@ function executeScrimCopy() {
   const srcSet = card.groups[srcG].dates[srcD].times[srcT].sets[0];
   if (!srcSet) return;
 
-  // 복사 데이터 생성
   let newPositions = srcSet.positions.map(p => {
     if (copyMode === "member_tier") {
       return { pos: p.pos, p1: p.p1, t1: p.t1, c1: "", p2: p.p2, t2: p.t2, c2: "" };
@@ -1272,7 +1269,6 @@ function executeScrimCopy() {
     positions: newPositions
   };
 
-  // 대상 날짜/시간이 없으면 자동으로 생성해주는 로직
   let targetGroup = card.groups.find(g => g.groupTitle === targetGroupTitle);
   if (!targetGroup) {
     targetGroup = { groupTitle: targetGroupTitle, category: "스크림", dates: [] };
@@ -1312,7 +1308,6 @@ function renderRecords() {
 
   const currentModes = GAME_MODES[S.game] || ["전체"];
 
-  // 서브제목이 있더라도(예: CK (VSL)) 기본 키워드(랜드, CK, 킬내기, 내전 등)가 포함되면 정상 필터링되도록 처리
   let rows = setsData.filter(r => r.game === S.game);
   if (S.year !== "전체") rows = rows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
   if (S.mode !== "전체") {
@@ -1637,7 +1632,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
       <div class="day-tabs" style="margin-top:10px;">
         ${epObj.tabs.map((t, idx) => `
           <button class="day-tab-btn" style="border:1.5px solid ${idx===tabIdx?'var(--violet)':'var(--line)'}; background:${idx===tabIdx?'var(--violet-bg)':'transparent'}; color:${idx===tabIdx?'var(--violet-ink)':'inherit'};" onclick="location.hash='#chong-${epObj.ep}-t${idx}'" ${idx === tabIdx ? 'aria-selected="true"' : ''}>
-            ${t.tabTitle} ${t.customTitle ? '(' + t.customTitle + ')' : ''}
+            ${t.tabTitle}
           </button>
         `).join('')}
         ${isAdmin ? `<button class="btn-accent" style="background:var(--violet); color:#fff;" onclick="openSubAdminModal('${epObj.ep}', 'chong-tab-add')">+ 서브 탭 추가</button>` : ''}
@@ -1677,36 +1672,21 @@ function renderChongDetail(epNo, tabIdx = 0) {
             </ul>
           `;
 
-          if (hasTitle) {
-            return `
-              <div class="ep-box">
-                <div class="ep-box-title">
-                  <span>${sec.title}</span>
-                  ${isAdmin ? `
-                    <div style="display:flex; gap:6px; align-items:center;">
-                      <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--violet-bg); color:var(--violet-ink); border-color:var(--violet-line); font-weight:bold;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add', ${tabIdx}, ${sIdx})">+ 추가</button>
-                      <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-edit', ${tabIdx}, ${sIdx})">수정</button>
-                      <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('chong-section', '${epObj.ep}', ${tabIdx}, ${sIdx})">삭제</button>
-                    </div>
-                  ` : ''}
-                </div>
-                ${timelinesHtml}
-              </div>
-            `;
-          } else {
-            return `
-              <div style="position:relative;">
+          return `
+            <div class="ep-box">
+              <div class="ep-box-title">
+                <span>${hasTitle ? sec.title : ''}</span>
                 ${isAdmin ? `
-                  <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:6px;">
-                    <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--violet-bg); color:var(--violet-ink); border-color:var(--violet-line); font-weight:bold;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add', ${tabIdx}, ${sIdx})">+ 내용 추가</button>
-                    <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-edit', ${tabIdx}, ${sIdx})">제목 부여</button>
+                  <div style="display:flex; gap:6px; align-items:center; margin-left:auto;">
+                    <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--violet-bg); color:var(--violet-ink); border-color:var(--violet-line); font-weight:bold;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-add', ${tabIdx}, ${sIdx})">+ 추가</button>
+                    <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-section-edit', ${tabIdx}, ${sIdx})">제목 수정</button>
                     <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('chong-section', '${epObj.ep}', ${tabIdx}, ${sIdx})">삭제</button>
                   </div>
                 ` : ''}
-                ${timelinesHtml}
               </div>
-            `;
-          }
+              ${timelinesHtml}
+            </div>
+          `;
         }).join('')}
       </div>
 
@@ -2041,36 +2021,21 @@ function renderMinecraft(subId, dayIndex = 0) {
               </ul>
             `;
 
-            if (hasTitle) {
-              return `
-                <div class="ep-box">
-                  <div class="ep-box-title">
-                    <span>${sec.title}</span>
-                    ${isAdmin ? `
-                      <div style="display:flex; gap:6px; align-items:center;">
-                        <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--sky-bg); color:var(--sky-ink); border-color:var(--sky); font-weight:bold;" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-add', ${dayIndex}, ${sIdx})">+ 추가</button>
-                        <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${srv.id}', 'mc-section-edit', ${dayIndex}, ${sIdx})">수정</button>
-                        <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('mc-section', '${srv.id}', ${dayIndex}, ${sIdx})">삭제</button>
-                      </div>
-                    ` : ''}
-                  </div>
-                  ${timelinesHtml}
-                </div>
-              `;
-            } else {
-              return `
-                <div style="position:relative;">
+            return `
+              <div class="ep-box">
+                <div class="ep-box-title">
+                  <span>${hasTitle ? sec.title : ''}</span>
                   ${isAdmin ? `
-                    <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:6px;">
-                      <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--sky-bg); color:var(--sky-ink); border-color:var(--sky); font-weight:bold;" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-add', ${dayIndex}, ${sIdx})">+ 내용 추가</button>
-                      <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${srv.id}', 'mc-section-edit', ${dayIndex}, ${sIdx})">제목 부여</button>
+                    <div style="display:flex; gap:6px; align-items:center; margin-left:auto;">
+                      <button class="btn-btn" style="font-size:11px; padding:3px 8px; background:var(--sky-bg); color:var(--sky-ink); border-color:var(--sky); font-weight:bold;" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-add', ${dayIndex}, ${sIdx})">+ 추가</button>
+                      <button class="btn-btn" style="font-size:11px; padding:2px 6px;" onclick="openSubAdminModal('${srv.id}', 'mc-section-edit', ${dayIndex}, ${sIdx})">제목 수정</button>
                       <button class="btn-btn" style="font-size:11px; padding:2px 6px; color:red;" onclick="deleteSubItem('mc-section', '${srv.id}', ${dayIndex}, ${sIdx})">삭제</button>
                     </div>
                   ` : ''}
-                  ${timelinesHtml}
                 </div>
-              `;
-            }
+                ${timelinesHtml}
+              </div>
+            `;
           }).join('')}
         </div>
       </div>`;
