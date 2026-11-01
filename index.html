@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=3.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>도현 아카이브</title>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -330,23 +330,21 @@ const GAME_MODES = {
 
 const DEFAULT_SETS = [];
 const DEFAULT_MC = [];
-const DEFAULT_CHONG = [
-  {
-    ep: "0",
-    title: "FPS 동아리: 총겜동",
-    dateStr: "2025.04.05",
-    tabs: [
-      {
-        tabTitle: "본편",
-        customTitle: "",
-        desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
-        sections: [
-          { title: "타임라인", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }
-        ]
-      }
-    ]
-  }
-];
+const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => ({
+  ep: String(i),
+  title: i === 0 ? "FPS 동아리: 총겜동" : (i === 1 ? "배그 서열정리 킬내기" : `총겜동 에피소드 ${i}`),
+  dateStr: "2025.04.05",
+  tabs: [
+    {
+      tabTitle: "본편",
+      customTitle: "",
+      desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
+      sections: [
+        { title: "타임라인", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }
+      ]
+    }
+  ]
+}));
 const DEFAULT_SCRIM = [];
 
 let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || JSON.parse(JSON.stringify(DEFAULT_MC));
