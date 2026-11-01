@@ -203,7 +203,8 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 
 .ep-detail-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
 .ep-box { border: 2px solid #12161c; border-radius: 12px; padding: 20px; background: var(--surface); position: relative; }
-.ep-box-title { font-size: 15px; font-weight: bold; color: var(--page-fg); margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.ep-box-title { font-size: 15px; font-weight: bold; color: var(--page-fg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.ep-box-title-line { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
 .timeline-clean { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .timeline-clean li { font-size: 14px; display: flex; align-items: center; justify-content: space-between; color: #000; flex-wrap: wrap; gap: 6px; }
 .timeline-clean a { color: #000; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
@@ -906,12 +907,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     `;
   } else if (type === "chong-section-add") {
     document.getElementById("asTitle").textContent = "새 섹션 추가";
-    container.innerHTML = `<label>섹션 제목 (비워두어도 기본 네모 박스 틀은 유지됩니다)</label><input type="text" id="asSecTitle" placeholder="예: 1부 타임라인">`;
+    container.innerHTML = `<label>섹션 제목 (비워두면 밑줄 없이 박스만 유지됩니다)</label><input type="text" id="asSecTitle" placeholder="예: 1부 타임라인">`;
   } else if (type === "chong-section-edit") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     const secObj = epObj.tabs[ex1].sections[ex2];
     document.getElementById("asTitle").textContent = "섹션 제목 수정";
-    container.innerHTML = `<label>섹션 제목 (비워두어도 네모 박스 유지)</label><input type="text" id="asSecTitle" value="${secObj.title||''}">`;
+    container.innerHTML = `<label>섹션 제목 (비워두면 밑줄 없음)</label><input type="text" id="asSecTitle" value="${secObj.title||''}">`;
   } else if (type === "chong-timeline-add") {
     document.getElementById("asTitle").textContent = "타임라인 내용 추가";
     container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3"></textarea><label>링크</label><input type="text" id="asChongUrl">`;
@@ -930,12 +931,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="${dObj.dayTitle}"><label>날짜</label><input type="text" id="asDateStr" value="${dObj.dateStr}">`;
   } else if (type === "mc-section-add") {
     document.getElementById("asTitle").textContent = "마크서버 섹션 추가";
-    container.innerHTML = `<label>섹션 제목 (비워두어도 박스 유지)</label><input type="text" id="asSecTitle" placeholder="예: 주요 모험">`;
+    container.innerHTML = `<label>섹션 제목 (비워두면 밑줄 없음)</label><input type="text" id="asSecTitle" placeholder="예: 주요 모험">`;
   } else if (type === "mc-section-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const secObj = srv.days[ex1].sections[ex2];
     document.getElementById("asTitle").textContent = "섹션 제목 수정";
-    container.innerHTML = `<label>섹션 제목 (비워두어도 박스 유지)</label><input type="text" id="asSecTitle" value="${secObj.title}">`;
+    container.innerHTML = `<label>섹션 제목 (비워두면 밑줄 없음)</label><input type="text" id="asSecTitle" value="${secObj.title}">`;
   } else if (type === "mc-timeline-add") {
     document.getElementById("asTitle").textContent = "타임라인 내용 추가";
     container.innerHTML = `<label>내용</label><textarea id="asTimelineText" rows="3"></textarea><label>링크</label><input type="text" id="asTimelineUrl">`;
@@ -1674,7 +1675,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
 
           return `
             <div class="ep-box">
-              <div class="ep-box-title">
+              <div class="ep-box-title ${hasTitle ? 'ep-box-title-line' : ''}">
                 <span>${hasTitle ? sec.title : ''}</span>
                 ${isAdmin ? `
                   <div style="display:flex; gap:6px; align-items:center; margin-left:auto;">
@@ -2023,7 +2024,7 @@ function renderMinecraft(subId, dayIndex = 0) {
 
             return `
               <div class="ep-box">
-                <div class="ep-box-title">
+                <div class="ep-box-title ${hasTitle ? 'ep-box-title-line' : ''}">
                   <span>${hasTitle ? sec.title : ''}</span>
                   ${isAdmin ? `
                     <div style="display:flex; gap:6px; align-items:center; margin-left:auto;">
