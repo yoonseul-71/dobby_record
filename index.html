@@ -46,7 +46,7 @@
   /* 총겜동 상세페이지 박스 전용 파스텔 연보라 배경색 */
   --box-pastel-violet: #f3e8ff;
 
-  /* 롤 멸망전 표 레드/블루 진영 배경색 */
+  /* 롤 멸망전 표 레드/블루 진영 배경색 (살짝만 더 진하게 수정) */
   --blue-team-bg: #dbeafe;
   --blue-team-ink: #12161c;
   --red-team-bg: #fee2e2;
@@ -66,8 +66,11 @@ a { color: inherit; text-decoration: none; }
 header.top { display: flex; justify-content: space-between; align-items: flex-end; }
 h1 { margin: 0; font-family: var(--font-body); font-weight: 900; font-size: 44px; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; color: #12161c; }
 
-.nav-bar-container { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 10px; }
-nav.bar { display: flex; align-items: flex-end; gap: 6px; padding-left: 10px; border-bottom: 0; width: 100%; overflow-x: auto; }
+/* 상단 탭 컨테이너 및 화살표 제거 설정 */
+.nav-bar-container { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--line); flex-wrap: nowrap; gap: 10px; overflow: hidden; }
+nav.bar { display: flex; align-items: flex-end; gap: 6px; padding-left: 10px; border-bottom: 0; width: 100%; overflow-x: auto; overflow-y: hidden; -ms-overflow-style: none; scrollbar-width: none; }
+nav.bar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
 nav.bar a {
   position: relative; display: inline-flex; align-items: center; padding: 8px 22px;
   border-radius: 8px 8px 0 0; font-weight: 700; font-size: 15px;
@@ -99,7 +102,7 @@ nav.bar a[aria-current="page"] {
 
 .subnav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .subnav a { padding: 4px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); font-size: 13px; cursor: pointer; }
-.subnav a[aria-current="page"] { background: var(--soft); border-color: var(--accent); color: var(--soft-ink); font-weight: 700; }
+.subnav a[aria-current="page"] { background: var(--neutral-bg); border-color: var(--accent); color: var(--page-fg); font-weight: 700; }
 .subnav .n { font-weight: 600; opacity: 0.7; margin-left: 4px; }
 
 h2 { margin: 0; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
@@ -156,36 +159,18 @@ td.mono { font-weight: 500; }
   background: var(--tag-bg, #f5f5f5); color: var(--tag-ink, #333); border-top: 0; border-right: 0;
 }
 
-.card-content-area {
-  margin-top: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
-}
+.card-content-area { margin-top: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
 .card-title { font-size: 20px; font-weight: 800; color: #12161c; margin-bottom: 4px; }
 .card-sub { font-size: 13px; color: var(--page-muted); }
-
-.card-footer-link { 
-  display: flex; 
-  justify-content: flex-end; 
-  align-items: center; 
-  gap: 6px; 
-  padding-top: 12px; 
-  font-size: 13px; 
-  font-weight: bold; 
-}
-
+.card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid #ca8a04; background: #fef08a; font-weight: bold; cursor: pointer; font-size: 13px; color: #713f12; box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .scrim-top-date-btn[aria-selected="true"] { background: #eab308; border-color: #ca8a04; color: #ffffff; }
 
-.scrim-time-btn { 
-  padding: 6px 16px; border-radius: 7px; border: 1.5px solid #eab308; background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%;
-}
-.scrim-time-btn[aria-selected="true"] { 
-  border-color: #ca8a04; background: #fef08a; color: #713f12; 
-}
+.scrim-time-btn { padding: 6px 16px; border-radius: 7px; border: 1.5px solid #eab308; background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: #713f12; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.scrim-time-btn[aria-selected="true"] { border-color: #ca8a04; background: #fef08a; color: #713f12; }
 .scrim-time-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 
 .today-scrim-bar { background: transparent; border: 1.5px solid #eab308; border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: #713f12; }
@@ -278,7 +263,7 @@ footer.bottom-footer {
 </div>
 
 <div id="admin-bar">
-  <span>⚡ 관리자 모드 활성화됨 (백업 기능 추가됨)</span>
+  <span>⚡ 관리자 모드 활성화됨</span>
   <div style="display:flex; gap:8px;">
     <button onclick="backupJsonData()" style="background:#3b82f6; color:#fff; border:0; padding:6px 12px; border-radius:6px; cursor:pointer;">데이터 백업(저장)</button>
     <button onclick="logoutAdmin()">관리자 종료</button>
@@ -329,23 +314,112 @@ const GAME_MODES = {
 };
 
 const DEFAULT_SETS = [];
-const DEFAULT_MC = [];
-const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => ({
-  ep: String(i),
-  title: i === 0 ? "FPS 동아리: 총겜동" : (i === 1 ? "배그 서열정리 킬내기" : `총겜동 에피소드 ${i}`),
-  dateStr: "2025.04.05",
-  tabs: [
+
+const DEFAULT_SCRIM = [
+  {
+    id: "scrim-2025-season1",
+    no: "2025 ALL 롤 멸망전",
+    type: "스크림",
+    badge: "2025 시즌1",
+    dateRange: "2025.02.10 ~ 2025.02.25",
+    groups: [
+      {
+        groupTitle: "25.02.15 토",
+        category: "스크림",
+        dates: [
+          {
+            dateStr: "19시 스크림",
+            times: [
+              {
+                timeLabel: "1세트",
+                sets: [{
+                  side: "레드",
+                  result: "승",
+                  leftTeamName: "도현 팀",
+                  rightTeamName: "상대 팀",
+                  positions: [
+                    { pos: "탑", p1: "선수A", t1: "골드", c1: "사이온", p2: "상대A", t2: "플레", c2: "아트록스" },
+                    { pos: "정글", p1: "선수B", t1: "실버", c1: "바이", p2: "상대B", t2: "골드", c2: "세주아니" },
+                    { pos: "미드", p1: "도현", t1: "에메랄드", c1: "빅토르", p2: "상대C", t2: "에메랄드", c2: "아리" },
+                    { pos: "원딜", p1: "선수D", t1: "다이아", c1: "이즈리얼", p2: "상대D", t2: "다이아", c2: "카이사" },
+                    { pos: "서포터", p1: "선수E", t1: "골드", c1: "노틸러스", p2: "상대E", t2: "골드", c2: "레오나" }
+                  ]
+                }]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
+
+const DEFAULT_MC = [
+  {
+    id: "mc-server-1",
+    serverName: "마인크래프트 서버 A",
+    guildName: "도현 길드",
+    dateRange: "2025.01.01 ~ 2025.01.20",
+    days: [
+      {
+        dayTitle: "1일차",
+        dateStr: "2025.01.01",
+        sections: [
+          {
+            title: "서버 오픈 및 초기 자리 잡기",
+            timelines: [
+              { text: "서버 첫 접속 및 정착지 탐색", url: "", spacing: 0 },
+              { text: "길드 창설 완료", url: "", spacing: 0 }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
+
+const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
+  const epNum = i;
+  let tabs = [
     {
       tabTitle: "본편",
       customTitle: "",
-      desc: "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
+      desc: i === 0 ? "FPS 동아리 총겜동 멤버공개 합방 (도현, 성태, 오아, 사장, 만식, 수피)" : `총겜동 에피소드 ${epNum} 본편 방송 내용 기록`,
       sections: [
-        { title: "타임라인", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }
+        {
+          title: "타임라인",
+          timelines: [
+            { text: "방송 시작 및 멤버 집결", url: "", spacing: 0 },
+            { text: "메인 게임 진행", url: "", spacing: 0 }
+          ]
+        }
       ]
     }
-  ]
-}));
-const DEFAULT_SCRIM = [];
+  ];
+
+  if (i % 3 === 0) {
+    tabs.push({
+      tabTitle: "벌칙/회식",
+      customTitle: "뒷풀이 및 벌칙 수행",
+      desc: `Ep.${epNum} 진행 후 진행된 서브 콘텐츠 (회식/벌칙)`,
+      sections: [
+        {
+          title: "서브 콘텐츠 기록",
+          timelines: [
+            { text: "벌칙 수행 및 토크 타임", url: "", spacing: 0 }
+          ]
+        }
+      ]
+    });
+  }
+
+  return {
+    ep: String(epNum),
+    title: epNum === 0 ? "FPS 동아리: 총겜동" : (epNum === 1 ? "배그 서열정리 킬내기" : `총겜동 에피소드 ${epNum}`),
+    dateStr: "2025.04.05",
+    tabs: tabs
+  };
+});
 
 let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || JSON.parse(JSON.stringify(DEFAULT_MC));
 let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || JSON.parse(JSON.stringify(DEFAULT_CHONG));
@@ -495,10 +569,7 @@ function updateRecordFormFields(selectedGame, r = {}) {
   } else if (selectedGame === "배그") {
     let pubgRows = r.pubgRows || [
       { leftName: "도현\n30(40-10)", rightName: "예시E\n16(30-14)" },
-      { leftName: "예시A\n16(28-12)", rightName: "예시F\n9(21-12)" },
-      { leftName: "예시B\n13(22-9)", rightName: "예시G\n9(19-10)" },
-      { leftName: "예시C\n2(17-15)", rightName: "예시H\n3(16-13)" },
-      { leftName: "예시D\n4(12-8)", rightName: "예시I\n0(9-9)" }
+      { leftName: "예시A\n16(28-12)", rightName: "예시F\n9(21-12)" }
     ];
 
     let rowsHtml = pubgRows.map((row, pIdx) => `
@@ -512,7 +583,6 @@ function updateRecordFormFields(selectedGame, r = {}) {
       <label>목표킬 (예: [10])</label><input type="text" id="afTargetKill" value="${r.targetKill||''}">
       <label>도현 순수킬 요약 (예: 30(40-10))</label><input type="text" id="afPureKill" value="${r.pureKill||''}">
       <label>스코어 (예: 13:5 또는 1위)</label><input type="text" id="afScore" value="${r.score||''}">
-      
       <div style="margin-top:14px; border-top:1px solid var(--line); padding-top:10px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <label style="margin:0;">배그 상세 멤버별 순수킬 표 입력</label>
@@ -788,19 +858,6 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
         </div>`;
     });
     container.innerHTML = pHtml;
-  } else if (type === "scrim-set-copy-target") {
-    const card = SCRIM_CARDS.find(c => c.id === parentId);
-    document.getElementById("asTitle").textContent = "세트 복사";
-    let optionsHtml = "";
-    card.groups.forEach((g, gIdx) => {
-      (g.dates || []).forEach((d, dIdx) => {
-        (d.times || []).forEach((t, tIdx) => {
-          const label = `${g.groupTitle} > ${d.dateStr} > ${t.timeLabel}`;
-          optionsHtml += `<option value="${gIdx}_${dIdx}_${tIdx}">${label}</option>`;
-        });
-      });
-    });
-    container.innerHTML = `<label>대상 선택</label><select id="asCopyTargetCoord" style="padding:10px; font-size:14px;">${optionsHtml}</select>`;
   } else if (type === "chong-tab-add") {
     document.getElementById("asTitle").textContent = "서브 탭 추가";
     container.innerHTML = `
@@ -946,16 +1003,6 @@ function handleSubFormSubmit(e) {
       });
       saveData();
     }
-  } else if (type === "scrim-set-copy-target") {
-    const card = SCRIM_CARDS.find(c => c.id === parentId);
-    const sourceSet = card.groups[ex1].dates[ex2].times[ex3].sets[0];
-    if (sourceSet) {
-      const val = document.getElementById("asCopyTargetCoord").value;
-      const [destGI, destDI, destTI] = val.split('_').map(Number);
-      card.groups[destGI].dates[destDI].times[destTI].sets[0] = JSON.parse(JSON.stringify(sourceSet));
-      saveData();
-      location.hash = `#scrim-${card.id}-g${destGI}-d${destDI}-t${destTI}`;
-    }
   } else if (type === "chong-tab-add") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
     if (epObj) {
@@ -1077,32 +1124,6 @@ function handleSubFormSubmit(e) {
   }
   closeModal("adminSubModal");
   render();
-}
-
-function duplicateScrimSet(cardId, gI, dI, tI) {
-  openSubAdminModal(cardId, 'scrim-set-copy-target', gI, dI, tI);
-}
-
-function duplicateChongTimeline(epId, tabIdx, secIdx, timeIdx) {
-  const epObj = CHONG_EPS.find(e => String(e.ep) === String(epId));
-  if (epObj && epObj.tabs[tabIdx] && epObj.tabs[tabIdx].sections[secIdx]) {
-    const targetSec = epObj.tabs[tabIdx].sections[secIdx];
-    const item = targetSec.timelines[timeIdx];
-    targetSec.timelines.splice(timeIdx + 1, 0, { text: item.text, url: item.url, spacing: item.spacing || 0 });
-    saveData();
-    render();
-  }
-}
-
-function duplicateMcTimeline(srvId, dayIdx, secIdx, timeIdx) {
-  const srv = MC_SERVERS.find(s => s.id === srvId);
-  if (srv && srv.days[dayIdx] && srv.days[dayIdx].sections[secIdx]) {
-    const targetSec = srv.days[dayIdx].sections[secIdx];
-    const item = targetSec.timelines[timeIdx];
-    targetSec.timelines.splice(timeIdx + 1, 0, { text: item.text, url: item.url, spacing: item.spacing || 0 });
-    saveData();
-    render();
-  }
 }
 
 function adjustSpacing(targetType, parentId, idx1, idx2, idx3, delta) {
@@ -1737,7 +1758,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
             <span>${curDateObj.dateStr} · ${curTimeObj.timeLabel}</span>
             <span class="pill ${curSetPillClass}">${curSet.result}</span>
             ${isAdmin ? `
-              <button class="btn-btn" style="background:var(--yellow-bg); color:var(--yellow-ink); font-weight:bold;" onclick="duplicateScrimSet('${card.id}', ${gI}, ${dI}, ${tI})">세트 복사</button>
               <button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-set-edit', ${gI}, ${dI}, ${tI})">세트 수정</button>
               <button class="btn-btn" onclick="openSubAdminModal('${card.id}', 'scrim-player-edit', ${gI}, ${dI}, ${tI})">선수 수정</button>
               <button class="btn-btn" style="color:red;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${tI})">삭제</button>
