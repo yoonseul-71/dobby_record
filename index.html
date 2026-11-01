@@ -183,10 +183,10 @@ footer.bottom-footer {
   <div class="sheet">
     <div class="nav-bar-container">
       <nav class="bar" id="mainNav">
-        <a href="#record" data-cat="record">전적</a>
+        <a href="#chong" data-cat="chong">총겜동</a>
         <a href="#scrim" data-cat="scrim">롤 멸망전</a>
         <a href="#mc" data-cat="mc">마크서버</a>
-        <a href="#chong" data-cat="chong">총겜동</a>
+        <a href="#record" data-cat="record">전적</a>
       </nav>
     </div>
     <div class="panel">
@@ -204,7 +204,7 @@ footer.bottom-footer {
 </div>
 
 <script>
-// 외부 데이터 종속 해제 - 백업 데이터 완전 고정
+// 외부 파일 의존성 없는 고정 데이터베이스
 const MC_SERVERS = [
   {
     "dateRange": "2024.11.04 ~ 12.10",
@@ -401,9 +401,7 @@ let S = {
   chongSort: "old",  
   mcSort: "old",     
   scrimSort: "old",  
-  globalMonthSort: "desc", 
-  monthOrder: {}, 
-  openRows: {} 
+  globalMonthSort: "desc"
 };
 
 function getWd(dateStr) {
@@ -415,9 +413,7 @@ function getWd(dateStr) {
 
 function renderRecords() {
   const games = ["발로란트", "롤", "배그"];
-  const yearsSet = new Set(["전체", "2024년", "2025년", "2026년"]);
-  setsData.forEach(r => { if (r.date && r.date.length >= 4) yearsSet.add(r.date.slice(0, 4) + "년"); });
-  const years = Array.from(yearsSet).sort((a, b) => a === "전체" ? -1 : b === "전체" ? 1 : a.localeCompare(b));
+  const years = ["전체", "2026년", "2025년", "2024년"];
   const currentModes = GAME_MODES[S.game] || ["전체"];
 
   let rows = setsData.filter(r => r.game === S.game);
@@ -428,20 +424,10 @@ function renderRecords() {
   const winCount = rows.filter(r => r.result === "W").length;
   const lossCount = rows.filter(r => r.result === "L").length;
   const winRate = (winCount + lossCount) ? Math.round((winCount / (winCount + lossCount)) * 100) : 0;
-  
-  const gameFilteredRows = setsData.filter(r => r.game === S.game);
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
 
   const gameTabsHtml = games.map(g => `<button class="game-tab-btn" onclick="setGame('${g}')" aria-pressed="${S.game === g}">${g}</button>`).join("");
-  const yearTabsHtml = years.map(y => {
-    const count = y === "전체" ? gameFilteredRows.length : gameFilteredRows.filter(r => r.date && r.date.startsWith(y.replace("년", ""))).length;
-    return `<a onclick="setYear('${y}')" ${S.year === y ? 'aria-current="page"' : ''}>${y} <span class="n">${count}</span></a>`;
-  }).join("");
-
-  const subnavHtml = currentModes.map(m => {
-    const count = m === "전체" ? yearFilteredRows.length : yearFilteredRows.filter(r => r.mode === m).length;
-    return `<a onclick="setMode('${m}')" ${S.mode === m ? 'aria-current="page"' : ''}>${m} <span class="n">${count}</span></a>`;
-  }).join("");
+  const yearTabsHtml = years.map(y => `<a onclick="setYear('${y}')" ${S.year === y ? 'aria-current="page"' : ''}>${y}</a>`).join("");
+  const subnavHtml = currentModes.map(m => `<a onclick="setMode('${m}')" ${S.mode === m ? 'aria-current="page"' : ''}>${m}</a>`).join("");
 
   return `<div class="block">
     <div class="game-tabs">${gameTabsHtml}</div>
@@ -730,6 +716,7 @@ function render() {
 }
 
 window.addEventListener("hashchange", render);
+window.addEventListener("DOMContentLoaded", render);
 window.addEventListener("load", render);
 </script>
 </body>
