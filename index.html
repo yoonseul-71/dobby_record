@@ -106,12 +106,6 @@ h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; backgro
 .month summary::-webkit-details-marker { display: none; }
 .month .m-title { font-weight: 700; font-size: 16px; color: #2b6cb0; }
 .month .m-meta { font-size: 13px; opacity: 0.8; font-weight: normal; }
-.month .seg { margin-left: 10px; display: inline-flex; border: 1px solid #cbd5e0; border-radius: 999px; overflow: hidden; }
-.month .seg button { font: inherit; font-size: 11px; padding: 2px 10px; border: 0; background: transparent; cursor: pointer; }
-.month .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: bold; }
-.month .rate-box { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-.month .bar { width: 100px; height: 8px; border-radius: 4px; background: var(--loss-bg); overflow: hidden; }
-.month .bar b { display: block; height: 100%; background: var(--win); }
 
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table { border-collapse: collapse; width: 100%; min-width: 600px; }
@@ -120,14 +114,9 @@ th { font-size: 12px; color: var(--page-muted); font-weight: 500; border-bottom:
 
 .record-row { border-bottom: 1px dashed #e2e8f0; }
 .record-row-last-of-date { border-bottom: 2px solid #cbd5e0; }
-tbody tr.detail-dropdown-row td { background: #f8fafc; border-bottom: 2px solid #cbd5e0; padding: 16px; }
-
-tbody tr:hover:not(.detail-dropdown-row) { background: rgba(0,0,0,0.02); }
-td.mono { font-weight: 500; }
 .pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
-.pill.d { background: #e2e8f0; color: #475569; }
 .pill.none { background: var(--neutral-bg); color: var(--page-muted); }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 15px; }
@@ -150,9 +139,7 @@ td.mono { font-weight: 500; }
 .card-content-area { margin-top: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
 .card-title { font-size: 20px; font-weight: 800; color: #12161c; margin-bottom: 4px; }
 .card-sub { font-size: 13px; color: var(--page-muted); }
-
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
-.card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
 .lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
@@ -170,6 +157,8 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .timeline-clean { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .timeline-clean li { font-size: 14px; display: flex; align-items: center; justify-content: space-between; color: #000; }
 .timeline-clean a { color: #000; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+.timeline-clean a:hover { text-decoration: underline; }
+.timeline-clean .arrow { color: var(--violet-ink); font-weight: bold; }
 
 .back-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--page-muted); margin-bottom: 10px; cursor: pointer; text-decoration: none; }
 
@@ -181,8 +170,6 @@ footer.bottom-footer {
 .footer-signature { font-weight: 700; color: #8c95a1; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
 
 #admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #18181b; color: #fff; padding: 10px 24px; display: none; justify-content: space-between; align-items: center; z-index: 999; font-weight: bold; }
-.btn-btn { font: inherit; font-size: 12px; padding: 3px 8px; border-radius: 6px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); }
-.btn-accent { background: var(--accent); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -227,22 +214,9 @@ const GAME_MODES = {
   "배그": ["전체", "킬내기", "랜드", "공장"]
 };
 
+// 기존 로컬스토리지 데이터를 그대로 불러오며, 빈 경우에만 최소한의 기본값 설정 (덮어쓰기 방지)
 let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || [];
-let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [
-  {
-    ep: "0",
-    title: "FPS 동아리: 총겜동",
-    dateStr: "2025.04.05",
-    tabs: [
-      {
-        tabTitle: "본편",
-        customTitle: "",
-        desc: "FPS 동아리 총겜동 멤버공개 합방",
-        sections: [{ title: "타임라인", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }]
-      }
-    ]
-  }
-];
+let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [];
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || [];
 let setsData = JSON.parse(localStorage.getItem("local_setsData")) || [];
 
@@ -250,13 +224,11 @@ let isAdmin = false;
 let S = { game: "발로란트", year: "전체", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", globalMonthSort: "desc", monthOrder: {}, openRows: {} };
 let initializedMonths = false;
 
-// 안전한 렌더링 실행 보장
 window.addEventListener("DOMContentLoaded", () => {
   try {
     render();
   } catch(err) {
     console.error("렌더링 오류:", err);
-    document.getElementById("view").innerHTML = `<div style="padding:20px; color:red; text-align:center;">데이터를 불러오는 중 오류가 발생했습니다. 콘솔을 확인해주세요.</div>`;
   }
 });
 
@@ -321,7 +293,6 @@ function renderRecords() {
     const mRate = (mWin + mLoss) ? Math.round((mWin / (mWin + mLoss)) * 100) : 0;
 
     const trs = sorted.map((r, sIdx) => {
-      const realIdx = setsData.indexOf(r);
       const nextR = sorted[sIdx + 1];
       const rowClass = (!nextR || nextR.date !== r.date) ? "record-row-last-of-date" : "record-row";
       const vDate = r.date ? (r.date.slice(5).replace('-', '.') + ' ' + getWd(r.date)) : '-';
@@ -348,16 +319,14 @@ function renderRecords() {
   return `<div class="block">
     <div class="game-tabs">${gameTabsHtml}</div>
     <div style="border-top: 1px dashed var(--line); margin: 2px 0;"></div>
-    <div class="toolbar">
-      <div class="subnav" style="margin:0;">${yearTabsHtml}</div>
-    </div>
+    <div class="toolbar"><div class="subnav" style="margin:0;">${yearTabsHtml}</div></div>
     <div class="subnav">${subnavHtml}</div>
     <div class="stats">
       <div class="stat"><span class="k">경기</span><span class="v">${total}</span></div>
       <div class="stat"><span class="k">승 / 패</span><span class="v">${winCount} / ${lossCount}</span></div>
       <div class="stat"><span class="k">승률</span><span class="v">${winRate}%</span></div>
     </div>
-    ${monthsHtml || '<div style="padding:40px;text-align:center;color:#888;">전적 기록이 없습니다. 상단 탭에서 다른 메뉴를 확인해보세요.</div>'}
+    ${monthsHtml || '<div style="padding:40px;text-align:center;color:#888;">전적 기록이 없습니다.</div>'}
   </div>`;
 }
 
@@ -379,7 +348,9 @@ function renderChongList() {
 
 function renderChongDetail(epNo) {
   const epObj = CHONG_EPS.find(e => String(e.ep) === String(epNo)) || CHONG_EPS[0];
-  const curTab = epObj.tabs && epObj.tabs[0] ? epObj.tabs[0] : { tabTitle: "본편", desc: "", sections: [] };
+  if (!epObj) return `<div class="block"><a class="back-btn" onclick="location.hash='#chong'">← 목록으로</a><div style="padding:20px;">에피소드를 찾을 수 없습니다.</div></div>`;
+  const tabs = epObj.tabs || [{ tabTitle: "본편", desc: epObj.desc || "", sections: epObj.sections || [] }];
+  const curTab = tabs[0];
 
   return `<div class="block">
     <a class="back-btn" onclick="location.hash='#chong'">← 목록으로</a>
@@ -390,18 +361,38 @@ function renderChongDetail(epNo) {
     <div class="ep-detail-wrap">${(curTab.sections || []).map(sec => `
       <div class="ep-box">
         ${sec.title ? `<div class="ep-box-title"><span>${sec.title}</span></div>` : ''}
-        <ul class="timeline-clean">${(sec.timelines || []).map(item => `<li>${item.text}</li>`).join('')}</ul>
+        <ul class="timeline-clean">${(sec.timelines || []).map(item => `
+          <li>
+            ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
+          </li>
+        `).join('')}</ul>
       </div>
     `).join('')}</div>
   </div>`;
 }
 
 function renderScrims() {
-  return `<div class="block"><h2>롤 멸망전</h2><div style="padding:20px; color:#666;">등록된 롤 멸망전 카드가 없습니다.</div></div>`;
+  return `<div class="block"><h2>롤 멸망전</h2><div class="cards">${SCRIM_CARDS.map(c => `
+    <div class="card" style="border-top: 4px solid var(--yellow);">
+      <div class="card-corner-tag" style="--tag-bg: var(--yellow-bg); --tag-ink: var(--yellow-ink); --tag-border: var(--yellow);">${c.badge||'멸망전'}</div>
+      <a href="#scrim-${c.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+        <div class="card-content-area"><div class="card-title" style="color: var(--yellow-ink);">${c.no}</div><div class="card-sub">${c.dateRange||''}</div></div>
+        <div class="card-footer-link" style="color: var(--yellow-ink);"><span>상세보기</span><span>→</span></div>
+      </a>
+    </div>
+  `).join('')}</div></div>`;
 }
 
 function renderMinecraft() {
-  return `<div class="block"><h2>마크서버</h2><div style="padding:20px; color:#666;">등록된 마크서버 기록이 없습니다.</div></div>`;
+  return `<div class="block"><h2>마크서버</h2><div class="cards">${MC_SERVERS.map(s => `
+    <div class="card" style="border-top: 4px solid var(--sky);">
+      <div class="card-corner-tag" style="--tag-bg: var(--sky-bg); --tag-ink: var(--sky-ink); --tag-border: var(--sky);">${s.serverName}</div>
+      <a href="#mc-${s.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+        <div class="card-content-area"><div class="card-title" style="color: var(--sky-ink);">${s.guildName}</div><div class="card-sub">${s.dateRange||''}</div></div>
+        <div class="card-footer-link" style="color: var(--sky-ink);"><span>상세보기</span><span>→</span></div>
+      </a>
+    </div>
+  `).join('')}</div></div>`;
 }
 
 function setGame(g) { S.game = g; S.mode = "전체"; render(); }
