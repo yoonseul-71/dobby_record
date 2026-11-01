@@ -141,6 +141,15 @@ th { font-size: 12px; color: var(--page-muted); font-weight: 500; border-bottom:
 .card-sub { font-size: 13px; color: var(--page-muted); }
 .card-footer-link { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 
+.scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+.lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
+.lol-match-table th { padding: 10px 14px; border: 1px solid #dcdcdc; font-size: 14px; font-weight: 800; text-align: center; }
+.lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 12px; vertical-align: middle; font-size: 13.5px; background: #ffffff !important; }
+.lol-match-table .pos-col { width: 70px; text-align: center; background: #ffffff !important; font-weight: bold; color: #555; font-size: 13px; }
+
+th.header-blue { background-color: var(--blue-team-bg) !important; color: var(--blue-team-ink) !important; }
+th.header-red { background-color: var(--red-team-bg) !important; color: var(--red-team-ink) !important; }
+
 .text-pre { white-space: pre-wrap; word-break: break-all; }
 .ep-detail-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
 .ep-box { border: 2px solid #12161c; border-radius: 12px; padding: 20px; background: var(--surface); position: relative; }
@@ -154,7 +163,6 @@ th { font-size: 12px; color: var(--page-muted); font-weight: 500; border-bottom:
 .back-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--page-muted); margin-bottom: 10px; cursor: pointer; text-decoration: none; }
 .day-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
 .day-tab-btn { padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; }
-.day-tab-btn[aria-selected="true"] { background: var(--violet-bg); border-color: var(--violet); color: var(--violet-ink); }
 
 footer.bottom-footer {
   margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);
@@ -415,7 +423,64 @@ function renderChongDetail(epNo, tabIdx = 0) {
   </div>`;
 }
 
-function renderScrims() {
+function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
+  if (subId) {
+    const card = SCRIM_CARDS.find(c => String(c.id) === String(subId)) || SCRIM_CARDS[0];
+    if (!card) return `<div class="block"><a class="back-btn" onclick="location.hash='#scrim'">← 목록으로</a><div style="padding:20px;">멸망전 정보를 찾을 수 없습니다.</div></div>`;
+    
+    const groups = card.groups || [];
+    const curGroup = groups[gI] || groups[0];
+    const dates = curGroup ? (curGroup.dates || []) : [];
+    const curDateObj = dates[dI] || dates[0];
+    const times = curDateObj ? (curDateObj.times || []) : [];
+    const curTimeObj = times[tI] || times[0];
+    const sets = curTimeObj ? (curTimeObj.sets || []) : [];
+    const curSet = sets[0] || {};
+
+    return `<div class="block">
+      <a class="back-btn" onclick="location.hash='#scrim'">← 목록으로</a>
+      <h2>${card.no} 상세 전적</h2>
+      
+      <!-- 날짜/그룹 탭 -->
+      ${groups.length > 1 ? `<div class="scrim-top-date-bar">${groups.map((g, idx) => `<button class="scrim-top-date-btn" onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'" ${idx===gI?'aria-selected="true"':''}><span>${g.groupTitle}</span></button>`).join('')}</div>` : ''}
+      
+      <!-- 시간대 탭 -->
+      ${dates.length > 1 ? `<div class="scrim-time-bar">${dates.map((d, idx) => `<button class="scrim-time-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0'" ${idx===dI?'aria-selected="true"':''}>${d.dateStr}</button>`).join('')}</div>` : ''}
+
+      <!-- 세트 탭 -->
+      ${times.length > 1 ? `<div class="day-tabs">${times.map((t, idx) => `<button class="day-tab-btn" onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}'" ${idx===tI?'aria-selected="true"':''}>${t.timeLabel}</button>`).join('')}</div>` : ''}
+
+      <div class="scrim-detail-box">
+        <table class="lol-match-table">
+          <thead>
+            <tr>
+              <th colspan="2" class="header-red">${curSet.leftTeamName || '도현 팀'} (${curSet.side === '레드' ? '레드진영' : '블루진영'})</th>
+              <th class="pos-col">포지션</th>
+              <th colspan="2" class="header-blue">${curSet.rightTeamName || '상대 팀'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(curSet.positions || []).map(pos => `
+              <tr>
+                <td class="player-info-left" style="width:35%;">
+                  <div class="player-name">${pos.p1 || '-'}</div>
+                  <div class="player-tier">${pos.t1 || ''}</div>
+                </td>
+                <td style="width:15%; font-weight:bold; color:var(--violet-ink);">${pos.c1 || '-'}</td>
+                <td class="pos-col">${pos.pos}</td>
+                <td style="width:15%; font-weight:bold; color:var(--blue-team-ink);">${pos.c2 || '-'}</td>
+                <td class="player-info-right" style="width:35%;">
+                  <div class="player-name">${pos.p2 || '-'}</div>
+                  <div class="player-tier">${pos.t2 || ''}</div>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }
+
   const sortedCards = [...SCRIM_CARDS].sort((a, b) => S.scrimSort === "latest" ? (b.dateRange||"").localeCompare(a.dateRange||"") : (a.dateRange||"").localeCompare(b.dateRange||""));
   return `<div class="block">
     <div class="toolbar">
@@ -428,7 +493,7 @@ function renderScrims() {
     <div class="cards">${sortedCards.map(c => `
       <div class="card" style="border-top: 4px solid var(--yellow);">
         <div class="card-corner-tag" style="--tag-bg: var(--yellow-bg); --tag-ink: var(--yellow-ink); --tag-border: var(--yellow);">${c.badge||'멸망전'}</div>
-        <a href="#scrim-${c.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+        <a href="#scrim-${c.id}-g0-d0-t0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
           <div class="card-content-area"><div class="card-title" style="color: var(--yellow-ink);">${c.no}</div><div class="card-sub">${c.dateRange||''}</div></div>
           <div class="card-footer-link" style="color: var(--yellow-ink);"><span></span><span>상세보기 →</span></div>
         </a>
@@ -437,19 +502,36 @@ function renderScrims() {
   </div>`;
 }
 
-function renderScrimDetail(id) {
-  const c = SCRIM_CARDS.find(item => String(item.id) === String(id));
-  if (!c) return `<div class="block"><a class="back-btn" onclick="location.hash='#scrim'">← 목록으로</a><div style="padding:20px;">멸망전 정보를 찾을 수 없습니다.</div></div>`;
-  return `<div class="block">
-    <a class="back-btn" onclick="location.hash='#scrim'">← 목록으로</a>
-    <h2>${c.no} (${c.dateRange||''})</h2>
-    <div style="background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:20px;">
-      <div class="text-pre" style="font-size:14px;">${c.desc || '등록된 상세 내용이 없습니다.'}</div>
-    </div>
-  </div>`;
-}
+function renderMinecraft(subId, dayIndex = 0) {
+  if (subId) {
+    const srv = MC_SERVERS.find(s => String(s.id) === String(subId)) || MC_SERVERS[0];
+    if (!srv) return `<div class="block"><a class="back-btn" onclick="location.hash='#mc'">← 목록으로</a><div style="padding:20px;">마크서버 정보를 찾을 수 없습니다.</div></div>`;
+    
+    const days = srv.days || [];
+    const curDay = days[dayIndex] || days[0];
 
-function renderMinecraft() {
+    return `<div class="block">
+      <a class="back-btn" onclick="location.hash='#mc'">← 목록으로</a>
+      <h2>[${srv.serverName}] ${srv.guildName} (${srv.dateRange||''})</h2>
+      
+      <!-- 일차별 탭 -->
+      ${days.length > 1 ? `<div class="day-tabs">${days.map((d, idx) => `<button class="day-tab-btn" onclick="location.hash='#mc-${srv.id}-d${idx}'" ${idx===dayIndex?'aria-selected="true"':''}>${d.dayTitle} (${d.dateStr})</button>`).join('')}</div>` : ''}
+
+      <div class="ep-detail-wrap">
+        ${(curDay.sections || []).map(sec => `
+          <div class="ep-box">
+            ${sec.title ? `<div class="ep-box-title"><span>${sec.title}</span></div>` : ''}
+            <ul class="timeline-clean">
+              ${(sec.timelines || []).map(item => `
+                <li><span class="text-pre">${item.text}</span></li>
+              `).join('')}
+            </ul>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }
+
   const sortedSrvs = [...MC_SERVERS].sort((a, b) => S.mcSort === "latest" ? (b.dateRange||"").localeCompare(a.dateRange||"") : (a.dateRange||"").localeCompare(b.dateRange||""));
   return `<div class="block">
     <div class="toolbar">
@@ -462,24 +544,12 @@ function renderMinecraft() {
     <div class="cards">${sortedSrvs.map(s => `
       <div class="card" style="border-top: 4px solid var(--sky);">
         <div class="card-corner-tag" style="--tag-bg: var(--sky-bg); --tag-ink: var(--sky-ink); --tag-border: var(--sky);">${s.serverName}</div>
-        <a href="#mc-${s.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+        <a href="#mc-${s.id}-d0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
           <div class="card-content-area"><div class="card-title" style="color: var(--sky-ink);">${s.guildName}</div><div class="card-sub">${s.dateRange||''}</div></div>
           <div class="card-footer-link" style="color: var(--sky-ink);"><span></span><span>상세보기 →</span></div>
         </a>
       </div>
     `).join('')}</div>
-  </div>`;
-}
-
-function renderMinecraftDetail(id) {
-  const s = MC_SERVERS.find(item => String(item.id) === String(id));
-  if (!s) return `<div class="block"><a class="back-btn" onclick="location.hash='#mc'">← 목록으로</a><div style="padding:20px;">마크서버 정보를 찾을 수 없습니다.</div></div>`;
-  return `<div class="block">
-    <a class="back-btn" onclick="location.hash='#mc'">← 목록으로</a>
-    <h2>[${s.serverName}] ${s.guildName} (${s.dateRange||''})</h2>
-    <div style="background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:20px;">
-      <div class="text-pre" style="font-size:14px;">${s.desc || '등록된 상세 내용이 없습니다.'}</div>
-    </div>
   </div>`;
 }
 
@@ -510,15 +580,27 @@ function render() {
     view.innerHTML = renderRecords();
   } else if (hash.startsWith("#scrim")) {
     const parts = hash.split("-");
+    let subId = null, gI = 0, dI = 0, tI = 0;
     if (parts[1]) {
-      view.innerHTML = renderScrimDetail(parts[1]);
+      subId = parts[1];
+      parts.forEach(p => {
+        if (p.startsWith("g")) gI = parseInt(p.slice(1), 10) || 0;
+        if (p.startsWith("d")) dI = parseInt(p.slice(1), 10) || 0;
+        if (p.startsWith("t")) tI = parseInt(p.slice(1), 10) || 0;
+      });
+      view.innerHTML = renderScrims(subId, gI, dI, tI);
     } else {
       view.innerHTML = renderScrims();
     }
   } else if (hash.startsWith("#mc")) {
     const parts = hash.split("-");
+    let subId = null, dayIdx = 0;
     if (parts[1]) {
-      view.innerHTML = renderMinecraftDetail(parts[1]);
+      subId = parts[1];
+      parts.forEach(p => {
+        if (p.startsWith("d")) dayIdx = parseInt(p.slice(1), 10) || 0;
+      });
+      view.innerHTML = renderMinecraft(subId, dayIdx);
     } else {
       view.innerHTML = renderMinecraft();
     }
