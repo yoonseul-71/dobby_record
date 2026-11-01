@@ -217,8 +217,8 @@ const GAME_MODES = {
   "배그": ["전체", "킬내기", "랜드", "공장"]
 };
 
-// 백업 데이터 직접 탑재 (덮어쓰기 방지)
-let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || [
+// 백업 데이터 정의
+const DEFAULT_MC_SERVERS = [
   {
     "dateRange": "2024.11.04 ~ 12.10",
     "days": [
@@ -245,7 +245,7 @@ let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || [
   }
 ];
 
-let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [
+const DEFAULT_CHONG_EPS = [
   {
     "dateStr": "2025.04.06",
     "desc": "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
@@ -256,91 +256,23 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [
         "sections": [
           {
             "timelines": [
-              {
-                "spacing": 0,
-                "text": "총겜동 소개 시작",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=16217"
-              },
-              {
-                "text": "수피",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=16325",
-                "spacing": 0
-              },
-              {
-                "text": "도현",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=17231",
-                "spacing": 0
-              },
-              {
-                "text": "사장",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=18524",
-                "spacing": 0
-              },
-              {
-                "text": "오아",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=19877",
-                "spacing": 0
-              },
-              {
-                "text": "만식",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=20556",
-                "spacing": 0
-              },
-              {
-                "text": "멤버 뽑은 이유",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=21944",
-                "spacing": 0
-              },
-              {
-                "text": "벌칙 이야기",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=22058",
-                "spacing": 1
-              },
-              {
-                "text": "먹방 시작",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=22790",
-                "spacing": 0
-              },
-              {
-                "text": "제일 먼저 하고 싶은 게임",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=22853",
-                "spacing": 0
-              },
-              {
-                "text": "오버워치 밸런스는 도현이가 짜자",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=22947",
-                "spacing": 0
-              },
-              {
-                "text": "동아리 수장의 한마디",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=23364",
-                "spacing": 0
-              },
-              {
-                "text": "Ep. 1 게임 결정",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=23499",
-                "spacing": 0
-              },
-              {
-                "text": "배그 킬내기 멤버 섭외",
-                "url": "https://vod.sooplive.co.kr/player/156453055?change_second=24212",
-                "spacing": 0
-              },
-              {
-                "text": "짧은 토크",
-                "url": "https://vod.sooplive.co.kr/player/156470727?change_second=112",
-                "spacing": 0
-              },
-              {
-                "text": "동아리 이름 정하기",
-                "url": "https://vod.sooplive.co.kr/player/156470727?change_second=351",
-                "spacing": 0
-              },
-              {
-                "text": "뒷정리 및 마무리",
-                "url": "https://vod.sooplive.co.kr/player/156470727?change_second=393",
-                "spacing": 0
-              }
+              { "spacing": 0, "text": "총겜동 소개 시작", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=16217" },
+              { "text": "수피", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=16325", "spacing": 0 },
+              { "text": "도현", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=17231", "spacing": 0 },
+              { "text": "사장", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=18524", "spacing": 0 },
+              { "text": "오아", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=19877", "spacing": 0 },
+              { "text": "만식", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=20556", "spacing": 0 },
+              { "text": "멤버 뽑은 이유", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=21944", "spacing": 0 },
+              { "text": "벌칙 이야기", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=22058", "spacing": 1 },
+              { "text": "먹방 시작", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=22790", "spacing": 0 },
+              { "text": "제일 먼저 하고 싶은 게임", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=22853", "spacing": 0 },
+              { "text": "오버워치 밸런스는 도현이가 짜자", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=22947", "spacing": 0 },
+              { "text": "동아리 수장의 한마디", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=23364", "spacing": 0 },
+              { "text": "Ep. 1 게임 결정", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=23499", "spacing": 0 },
+              { "text": "배그 킬내기 멤버 섭외", "url": "https://vod.sooplive.co.kr/player/156453055?change_second=24212", "spacing": 0 },
+              { "text": "짧은 토크", "url": "https://vod.sooplive.co.kr/player/156470727?change_second=112", "spacing": 0 },
+              { "text": "동아리 이름 정하기", "url": "https://vod.sooplive.co.kr/player/156470727?change_second=351", "spacing": 0 },
+              { "text": "뒷정리 및 마무리", "url": "https://vod.sooplive.co.kr/player/156470727?change_second=393", "spacing": 0 }
             ],
             "title": ""
           }
@@ -361,51 +293,15 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [
             {
               "title": "",
               "timelines": [
-                {
-                  "text": "디코 on",
-                  "url": "https://vod.sooplive.co.kr/player/156709685?change_second=7616",
-                  "spacing": 0
-                },
-                {
-                  "text": "진행 방식 설명",
-                  "url": "https://vod.sooplive.co.kr/player/156709685?change_second=7721",
-                  "spacing": 0
-                },
-                {
-                  "text": "팀 정하기",
-                  "url": "https://vod.sooplive.co.kr/player/156709685?change_second=7926",
-                  "spacing": 0
-                },
-                {
-                  "text": "벌칙 핀볼 펀딩 받기",
-                  "url": "https://vod.sooplive.co.kr/player/156709685?change_second=8536",
-                  "spacing": 1
-                },
-                {
-                  "text": "킬내기 시작",
-                  "url": "https://vod.sooplive.co.kr/player/156709685?change_second=10905",
-                  "spacing": 0
-                },
-                {
-                  "text": "도현아 그리고 성태형",
-                  "url": "https://vod.sooplive.co.kr/player/156739177?change_second=12639",
-                  "spacing": 0
-                },
-                {
-                  "text": "킬내기 종료",
-                  "url": "https://vod.sooplive.co.kr/player/156739177?change_second=12987",
-                  "spacing": 0
-                },
-                {
-                  "text": "벌칙 핀볼",
-                  "url": "https://vod.sooplive.co.kr/player/156739177?change_second=13210",
-                  "spacing": 0
-                },
-                {
-                  "text": "벌칙 확정",
-                  "url": "https://vod.sooplive.co.kr/player/156739177?change_second=13819",
-                  "spacing": 0
-                }
+                { "text": "디코 on", "url": "https://vod.sooplive.co.kr/player/156709685?change_second=7616", "spacing": 0 },
+                { "text": "진행 방식 설명", "url": "https://vod.sooplive.co.kr/player/156709685?change_second=7721", "spacing": 0 },
+                { "text": "팀 정하기", "url": "https://vod.sooplive.co.kr/player/156709685?change_second=7926", "spacing": 0 },
+                { "text": "벌칙 핀볼 펀딩 받기", "url": "https://vod.sooplive.co.kr/player/156709685?change_second=8536", "spacing": 1 },
+                { "text": "킬내기 시작", "url": "https://vod.sooplive.co.kr/player/156709685?change_second=10905", "spacing": 0 },
+                { "text": "도현아 그리고 성태형", "url": "https://vod.sooplive.co.kr/player/156739177?change_second=12639", "spacing": 0 },
+                { "text": "킬내기 종료", "url": "https://vod.sooplive.co.kr/player/156739177?change_second=12987", "spacing": 0 },
+                { "text": "벌칙 핀볼", "url": "https://vod.sooplive.co.kr/player/156739177?change_second=13210", "spacing": 0 },
+                { "text": "벌칙 확정", "url": "https://vod.sooplive.co.kr/player/156739177?change_second=13819", "spacing": 0 }
               ]
             }
           ],
@@ -418,51 +314,15 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [
             {
               "title": "",
               "timelines": [
-                {
-                  "text": "오아x성태 토크",
-                  "url": "https://vod.sooplive.co.kr/player/156751261",
-                  "spacing": 0
-                },
-                {
-                  "text": "오아x성태 영어 회화",
-                  "url": "https://vod.sooplive.co.kr/player/156751261?change_second=214",
-                  "spacing": 0
-                },
-                {
-                  "text": "수피 도착",
-                  "url": "https://vod.sooplive.co.kr/player/156751261?change_second=1639",
-                  "spacing": 0
-                },
-                {
-                  "text": "총겜동 발로란트 멤버 짜기",
-                  "url": "https://vod.sooplive.co.kr/player/156751261?change_second=1802",
-                  "spacing": 0
-                },
-                {
-                  "text": "도현x사장x쪼이 도착",
-                  "url": "https://vod.sooplive.co.kr/player/156751261?change_second=2313",
-                  "spacing": 0
-                },
-                {
-                  "text": "킬내기 이야기 시작",
-                  "url": "https://vod.sooplive.co.kr/player/156751261?change_second=2393",
-                  "spacing": 0
-                },
-                {
-                  "text": "만식 도착",
-                  "url": "https://vod.sooplive.co.kr/player/156751261?change_second=2841",
-                  "spacing": 0
-                },
-                {
-                  "text": "나닝 도착",
-                  "url": "https://vod.sooplive.co.kr/player/156751261?change_second=3156",
-                  "spacing": 1
-                },
-                {
-                  "text": "술먹방 시작",
-                  "url": "https://vod.sooplive.co.kr/player/156751261?change_second=3357",
-                  "spacing": 0
-                }
+                { "text": "오아x성태 토크", "url": "https://vod.sooplive.co.kr/player/156751261", "spacing": 0 },
+                { "text": "오아x성태 영어 회화", "url": "https://vod.sooplive.co.kr/player/156751261?change_second=214", "spacing": 0 },
+                { "text": "수피 도착", "url": "https://vod.sooplive.co.kr/player/156751261?change_second=1639", "spacing": 0 },
+                { "text": "총겜동 발로란트 멤버 짜기", "url": "https://vod.sooplive.co.kr/player/156751261?change_second=1802", "spacing": 0 },
+                { "text": "도현x사장x쪼이 도착", "url": "https://vod.sooplive.co.kr/player/156751261?change_second=2313", "spacing": 0 },
+                { "text": "킬내기 이야기 시작", "url": "https://vod.sooplive.co.kr/player/156751261?change_second=2393", "spacing": 0 },
+                { "text": "만식 도착", "url": "https://vod.sooplive.co.kr/player/156751261?change_second=2841", "spacing": 0 },
+                { "text": "나닝 도착", "url": "https://vod.sooplive.co.kr/player/156751261?change_second=3156", "spacing": 1 },
+                { "text": "술먹방 시작", "url": "https://vod.sooplive.co.kr/player/156751261?change_second=3357", "spacing": 0 }
               ]
             }
           ],
@@ -470,190 +330,33 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [
         }
       ]
     },
-    {
-      "ep": "2",
-      "title": "발로 내전",
-      "dateStr": "2025.04.12",
-      "tabs": [
-        {
-          "tabTitle": "본편",
-          "customTitle": "",
-          "desc": "총겜동 vs 밸런스 5:5 내전",
-          "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]
-        },
-        {
-          "tabTitle": "벌칙",
-          "customTitle": "독버섯 월드컵, 세차장 샤워",
-          "desc": "찐텐+웃참 독버섯 월드컵 32강, 세차장 샤워",
-          "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]
-        }
-      ]
-    },
-    {
-      "ep": "3",
-      "title": "발로 내전 리벤지",
-      "dateStr": "2025.04.13",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 5:5 내전 리벤지", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "4",
-      "title": "서든 밸런스 체크 내전",
-      "dateStr": "2025.04.15",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 실력 및 밸런스 체크 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "5",
-      "title": "서든 내전",
-      "dateStr": "2025.04.16",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 6:6 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "6",
-      "title": "총겜동x무수",
-      "dateStr": "2025.04.26",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동x무수 보라+게임 합방", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "7",
-      "title": "옵치 밸런스 체크 내전",
-      "dateStr": "2025.04.29",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 실력 및 밸런스 체크 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "8",
-      "title": "옵치 내전",
-      "dateStr": "2025.05.02 / 06.10",
-      "tabs": [
-        {"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 6:6 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]},
-        {"tabTitle": "벌칙", "customTitle": "코스프레 6인큐", "desc": "오버워치 영웅 코스프레하고 오버워치 6인큐", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}
-      ]
-    },
-    {
-      "ep": "9",
-      "title": "발로 친선전 vs 늪지대",
-      "dateStr": "2025.05.15",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 늪지대 5:5 친선전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "10",
-      "title": "롤 내전",
-      "dateStr": "2025.05.20",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 5:5 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "11",
-      "title": "배그 듀오 크루룰",
-      "dateStr": "2025.06.20",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 같은방 듀오 크루룰", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "12",
-      "title": "배그 깐부 킬내기",
-      "dateStr": "2025.08.03",
-      "tabs": [
-        {"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 연합팀 8:8 깐부 킬내기", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]},
-        {"tabTitle": "벌칙", "customTitle": "만겹살", "desc": "만식 신혼집에서 삼겹살 먹방", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}
-      ]
-    },
-    {
-      "ep": "13",
-      "title": "배그 듀오 크루룰",
-      "dateStr": "2025.08.05",
-      "tabs": [
-        {"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 수니그룹 듀오 크루룰", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]},
-        {"tabTitle": "회식", "customTitle": "", "desc": "승리 기념 오프 회식", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}
-      ]
-    },
-    {
-      "ep": "14",
-      "title": "배그 깐부 킬내기",
-      "dateStr": "2025.08.25",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 씨나인 8:8 깐부 킬내기", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "15",
-      "title": "배그 깐부 킬내기",
-      "dateStr": "2025.10.02",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 수니그룹 8:8 깐부 킬내기", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "16",
-      "title": "총겜동의 도전",
-      "dateStr": "2025.12.31 / 2026.02.20",
-      "tabs": [
-        {"tabTitle": "본편", "customTitle": "", "desc": "총겜동의 도전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]},
-        {"tabTitle": "벌칙", "customTitle": "총겜동 MT", "desc": "총겜동 MT", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}
-      ]
-    },
-    {
-      "ep": "17",
-      "title": "배그 듀오 깐부 킬내기",
-      "dateStr": "2026.04.07 / 04.18",
-      "tabs": [
-        {"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 수니그룹 듀오 깐부 4파전 킬내기", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]},
-        {"tabTitle": "벌칙", "customTitle": "강남에서 아이돌댄스", "desc": "총겜동 강남에서 아이돌 댄스 추기", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}
-      ]
-    },
-    {
-      "ep": "18",
-      "title": "옵치 내전",
-      "dateStr": "2026.04.13 / 04.26-27",
-      "tabs": [
-        {"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 6:6 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]},
-        {"tabTitle": "벌칙", "customTitle": "24시간 합숙", "desc": "총겜동 24시간 합숙", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}
-      ]
-    },
-    {
-      "ep": "19",
-      "title": "서든 내전",
-      "dateStr": "2026.06.13",
-      "tabs": [
-        {"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 6:6 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]},
-        {"tabTitle": "회식", "customTitle": "", "desc": "승리 기념 오프 회식", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}
-      ]
-    },
-    {
-      "ep": "20",
-      "title": "무수네 민박",
-      "dateStr": "2026.07.08-07.09",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 무수네 민박 1박 2일 게스트", "sections": [{"title": "DAY 1", "timelines": [{"text": "방송 시작", "url": "", "spacing": 0}]},{"title": "DAY 2", "timelines": []}]}]
-    },
-    {
-      "ep": "21",
-      "title": "총겜동 내수서버",
-      "dateStr": "2026.07.14-07.21",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "마크 총겜동 내수서버", "sections": [{"title":"","timelines":[]}]}]
-    },
-    {
-      "ep": "22",
-      "title": "내수서버 수장 뒤풀이",
-      "dateStr": "2026.07.25",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 내수서버 수장 뒤풀이", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "23",
-      "title": "FC 온라인 내전",
-      "dateStr": "2026.08.17",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    },
-    {
-      "ep": "24",
-      "title": "온리업2 릴레이",
-      "dateStr": "2026.10.08",
-      "tabs": [
-        {"tabTitle": "본편", "customTitle": "", "desc": "총겜동 온리업2 릴레이", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]},
-        {"tabTitle": "벌칙", "customTitle": "오끼롤", "desc": "오아 끼고 롤CK", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}
-      ]
-    },
-    {
-      "ep": "25",
-      "title": "총겜상사",
-      "dateStr": "2026.10.28",
-      "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜상사 제 2화: 사무실편", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}]
-    }
+    { "ep": "2", "title": "발로 내전", "dateStr": "2025.04.12", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 5:5 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "벌칙", "customTitle": "독버섯 월드컵, 세차장 샤워", "desc": "찐텐+웃참 독버섯 월드컵 32강, 세차장 샤워", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "3", "title": "발로 내전 리벤지", "dateStr": "2025.04.13", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 5:5 내전 리벤지", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "4", "title": "서든 밸런스 체크 내전", "dateStr": "2025.04.15", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 실력 및 밸런스 체크 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "5", "title": "서든 내전", "dateStr": "2025.04.16", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 6:6 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "6", "title": "총겜동x무수", "dateStr": "2025.04.26", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동x무수 보라+게임 합방", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "7", "title": "옵치 밸런스 체크 내전", "dateStr": "2025.04.29", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 실력 및 밸런스 체크 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "8", "title": "옵치 내전", "dateStr": "2025.05.02 / 06.10", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 6:6 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "벌칙", "customTitle": "코스프레 6인큐", "desc": "오버워치 영웅 코스프레하고 오버워치 6인큐", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "9", "title": "발로 친선전 vs 늪지대", "dateStr": "2025.05.15", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 늪지대 5:5 친선전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "10", "title": "롤 내전", "dateStr": "2025.05.20", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 5:5 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "11", "title": "배그 듀오 크루룰", "dateStr": "2025.06.20", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 같은방 듀오 크루룰", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "12", "title": "배그 깐부 킬내기", "dateStr": "2025.08.03", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 연합팀 8:8 깐부 킬내기", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "벌칙", "customTitle": "만겹살", "desc": "만식 신혼집에서 삼겹살 먹방", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "13", "title": "배그 듀오 크루룰", "dateStr": "2025.08.05", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 수니그룹 듀오 크루룰", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "회식", "customTitle": "", "desc": "승리 기념 오프 회식", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "14", "title": "배그 깐부 킬내기", "dateStr": "2025.08.25", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 씨나인 8:8 깐부 킬내기", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "15", "title": "배그 깐부 킬내기", "dateStr": "2025.10.02", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 수니그룹 8:8 깐부 킬내기", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "16", "title": "총겜동의 도전", "dateStr": "2025.12.31 / 2026.02.20", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동의 도전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "벌칙", "customTitle": "총겜동 MT", "desc": "총겜동 MT", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "17", "title": "배그 듀오 깐부 킬내기", "dateStr": "2026.04.07 / 04.18", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 수니그룹 듀오 깐부 4파전 킬내기", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "벌칙", "customTitle": "강남에서 아이돌댄스", "desc": "총겜동 강남에서 아이돌 댄스 추기", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "18", "title": "옵치 내전", "dateStr": "2026.04.13 / 04.26-27", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 6:6 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "벌칙", "customTitle": "24시간 합숙", "desc": "총겜동 24시간 합숙", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "19", "title": "서든 내전", "dateStr": "2026.06.13", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 6:6 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "회식", "customTitle": "", "desc": "승리 기념 오프 회식", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "20", "title": "무수네 민박", "dateStr": "2026.07.08-07.09", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 무수네 민박 1박 2일 게스트", "sections": [{"title": "DAY 1", "timelines": [{"text": "방송 시작", "url": "", "spacing": 0}]},{"title": "DAY 2", "timelines": []}]}] },
+    { "ep": "21", "title": "총겜동 내수서버", "dateStr": "2026.07.14-07.21", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "마크 총겜동 내수서버", "sections": [{"title":"","timelines":[]}]}] },
+    { "ep": "22", "title": "내수서버 수장 뒤풀이", "dateStr": "2026.07.25", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 내수서버 수장 뒤풀이", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "23", "title": "FC 온라인 내전", "dateStr": "2026.08.17", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 vs 밸런스 내전", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] },
+    { "ep": "24", "title": "온리업2 릴레이", "dateStr": "2026.10.08", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜동 온리업2 릴레이", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}, {"tabTitle": "벌칙", "customTitle": "오끼롤", "desc": "오아 끼고 롤CK", "sections": [{"title":"","timelines":[{"text":"시작","url":"","spacing":0}]}]}] },
+    { "ep": "25", "title": "총겜상사", "dateStr": "2026.10.28", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜상사 제 2화: 사무실편", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] }
   ];
 
-let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || [
+const DEFAULT_SCRIM_CARDS = [
   {
     "badge": "2025 시즌2 멸망전",
     "dateRange": "2025.11.01 ~ 11.20",
@@ -696,6 +399,16 @@ let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || [
   }
 ];
 
+// 로컬 스토리지 데이터 안전 로드 (없거나 비어있으면 기본 백업 데이터 강제 주입)
+let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || DEFAULT_MC_SERVERS;
+if (!Array.isArray(MC_SERVERS) || MC_SERVERS.length === 0) MC_SERVERS = DEFAULT_MC_SERVERS;
+
+let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || DEFAULT_CHONG_EPS;
+if (!Array.isArray(CHONG_EPS) || CHONG_EPS.length === 0) CHONG_EPS = DEFAULT_CHONG_EPS;
+
+let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || DEFAULT_SCRIM_CARDS;
+if (!Array.isArray(SCRIM_CARDS) || SCRIM_CARDS.length === 0) SCRIM_CARDS = DEFAULT_SCRIM_CARDS;
+
 let setsData = JSON.parse(localStorage.getItem("local_setsData")) || [];
 
 let isAdmin = false;
@@ -717,6 +430,7 @@ window.addEventListener("DOMContentLoaded", () => {
     render();
   } catch(err) {
     console.error("렌더링 오류:", err);
+    document.getElementById("view").innerHTML = `<div style="padding:20px; color:red;">렌더링 중 오류 발생: ${err.message}</div>`;
   }
 });
 
@@ -778,7 +492,6 @@ function renderRecords() {
     const sorted = [...list].sort((a, b) => desc ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date));
     const mWin = sorted.filter(r => r.result === "W").length;
     const mLoss = sorted.filter(r => r.result === "L").length;
-    const mRate = (mWin + mLoss) ? Math.round((mWin / (mWin + mLoss)) * 100) : 0;
 
     const trs = sorted.map((r, sIdx) => {
       const nextR = sorted[sIdx + 1];
