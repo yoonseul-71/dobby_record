@@ -139,7 +139,7 @@ th { font-size: 12px; color: var(--page-muted); font-weight: 500; border-bottom:
 .card-content-area { margin-top: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
 .card-title { font-size: 20px; font-weight: 800; color: #12161c; margin-bottom: 4px; }
 .card-sub { font-size: 13px; color: var(--page-muted); }
-.card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
+.card-footer-link { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
 .lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
@@ -161,6 +161,9 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .timeline-clean .arrow { color: var(--violet-ink); font-weight: bold; }
 
 .back-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--page-muted); margin-bottom: 10px; cursor: pointer; text-decoration: none; }
+.day-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+.day-tab-btn { padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; }
+.day-tab-btn[aria-selected="true"] { background: var(--violet-bg); border-color: var(--violet); color: var(--violet-ink); }
 
 footer.bottom-footer {
   margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);
@@ -214,7 +217,6 @@ const GAME_MODES = {
   "배그": ["전체", "킬내기", "랜드", "공장"]
 };
 
-// 기존 로컬스토리지 데이터를 그대로 불러오며, 빈 경우에만 최소한의 기본값 설정 (덮어쓰기 방지)
 let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || [];
 let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [];
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || [];
@@ -334,40 +336,72 @@ function renderChongList() {
   const sorted = [...CHONG_EPS];
   return `<div class="block">
     <div class="toolbar"><h2>총겜동</h2></div>
-    <div class="cards">${sorted.map(e => `
-      <div class="card" style="border-top: 4px solid var(--violet);">
-        <div class="card-corner-tag" style="--tag-bg: var(--violet-bg); --tag-ink: var(--violet-ink); --tag-border: var(--violet-line);">Ep.${e.ep}</div>
-        <a href="#chong-${e.ep}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
-          <div class="card-content-area"><div class="card-title" style="color: var(--violet-ink);">${e.title}</div><div class="card-sub">${e.dateStr || ''}</div></div>
-          <div class="card-footer-link" style="color: var(--violet-ink);"><span>상세보기</span><span>→</span></div>
-        </a>
-      </div>
-    `).join('')}</div>
+    <div class="cards">${sorted.map(e => {
+      const tabs = e.tabs || [{ tabTitle: "본편" }];
+      const subTabs = tabs.filter(t => t.tabTitle !== "본편");
+      return `
+        <div class="card" style="border-top: 4px solid var(--violet);">
+          <div class="card-corner-tag" style="--tag-bg: var(--violet-bg); --tag-ink: var(--violet-ink); --tag-border: var(--violet-line);">Ep.${e.ep}</div>
+          <a href="#chong-${e.ep}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+            <div class="card-content-area">
+              <div class="card-title" style="color: var(--violet-ink);">${e.title}</div>
+              <div class="card-sub">${e.dateStr || ''}</div>
+            </div>
+            <div class="card-footer-link" style="color: var(--violet-ink);">
+              <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                ${subTabs.map(st => `<span style="font-size:11px; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:2px 8px; border-radius:999px;">${st.tabTitle}</span>`).join('')}
+              </div>
+              <span>상세보기 →</span>
+            </div>
+          </a>
+        </div>`;
+    }).join('')}</div>
   </div>`;
 }
 
-function renderChongDetail(epNo) {
+function renderChongDetail(epNo, tabIdx = 0) {
   const epObj = CHONG_EPS.find(e => String(e.ep) === String(epNo)) || CHONG_EPS[0];
   if (!epObj) return `<div class="block"><a class="back-btn" onclick="location.hash='#chong'">← 목록으로</a><div style="padding:20px;">에피소드를 찾을 수 없습니다.</div></div>`;
-  const tabs = epObj.tabs || [{ tabTitle: "본편", desc: epObj.desc || "", sections: epObj.sections || [] }];
-  const curTab = tabs[0];
+  
+  if (!epObj.tabs || epObj.tabs.length === 0) {
+    epObj.tabs = [{ tabTitle: "본편", customTitle: "", desc: epObj.desc || "", sections: epObj.sections || [] }];
+  }
+  const curTab = epObj.tabs[tabIdx] || epObj.tabs[0];
+  const headerTitle = curTab.customTitle ? curTab.customTitle : epObj.title;
 
   return `<div class="block">
     <a class="back-btn" onclick="location.hash='#chong'">← 목록으로</a>
-    <h2>Ep.${epObj.ep} ${epObj.title}</h2>
+    <h2>Ep.${epObj.ep} ${headerTitle}</h2>
+    
+    <!-- 서브 탭 바 (본편, 벌칙, 회식 등) -->
+    <div class="day-tabs" style="margin-top:10px;">
+      ${epObj.tabs.map((t, idx) => `
+        <button class="day-tab-btn" style="border:1.5px solid ${idx===tabIdx?'var(--violet)':'var(--line)'}; background:${idx===tabIdx?'var(--violet-bg)':'transparent'}; color:${idx===tabIdx?'var(--violet-ink)':'inherit'};" onclick="location.hash='#chong-${epObj.ep}-t${idx}'" ${idx === tabIdx ? 'aria-selected="true"' : ''}>
+          ${t.tabTitle}
+        </button>
+      `).join('')}
+    </div>
+
+    <!-- 탭별 설명 및 소개 -->
     <div style="background:var(--box-pastel-violet); border:1.5px solid var(--violet-line); border-radius:10px; padding:16px 20px; color:var(--violet-ink);">
+      <div style="font-size:13px; font-weight:bold; margin-bottom:6px;">[${curTab.tabTitle}]</div>
       <div class="text-pre" style="font-size:14px; color:var(--page-fg);">${curTab.desc || ''}</div>
     </div>
-    <div class="ep-detail-wrap">${(curTab.sections || []).map(sec => `
-      <div class="ep-box">
-        ${sec.title ? `<div class="ep-box-title"><span>${sec.title}</span></div>` : ''}
-        <ul class="timeline-clean">${(sec.timelines || []).map(item => `
-          <li>
-            ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
-          </li>
-        `).join('')}</ul>
-      </div>
-    `).join('')}</div>
+
+    <div class="ep-detail-wrap">
+      ${(curTab.sections || []).map(sec => `
+        <div class="ep-box">
+          ${sec.title ? `<div class="ep-box-title"><span>${sec.title}</span></div>` : ''}
+          <ul class="timeline-clean">
+            ${(sec.timelines || []).map(item => `
+              <li>
+                ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `).join('')}
+    </div>
   </div>`;
 }
 
@@ -419,7 +453,17 @@ function render() {
   else if (hash.startsWith("#mc")) view.innerHTML = renderMinecraft();
   else if (hash.startsWith("#chong")) {
     const parts = hash.split("-");
-    view.innerHTML = parts[1] ? renderChongDetail(parts[1]) : renderChongList();
+    const epNo = parts[1] && !parts[1].startsWith("t") ? parts[1] : null;
+    let tabIdx = 0;
+    parts.forEach(p => {
+      if (p.startsWith("t")) tabIdx = parseInt(p.slice(1), 10) || 0;
+    });
+    
+    if (epNo) {
+      view.innerHTML = renderChongDetail(epNo, tabIdx);
+    } else {
+      view.innerHTML = renderChongList();
+    }
   } else {
     view.innerHTML = renderRecords();
   }
