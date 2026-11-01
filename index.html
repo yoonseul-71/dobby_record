@@ -171,8 +171,6 @@ footer.bottom-footer {
   font-size: 11.5px; color: #8c95a1; line-height: 1.6;
 }
 .footer-signature { font-weight: 700; color: #8c95a1; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
-
-#admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #18181b; color: #fff; padding: 10px 24px; display: none; justify-content: space-between; align-items: center; z-index: 999; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -205,20 +203,9 @@ footer.bottom-footer {
   </footer>
 </div>
 
-<div id="admin-bar">
-  <span>⚡ 관리자 모드 활성화됨</span>
-  <button onclick="logoutAdmin()" style="background:#ef4444; color:#fff; border:0; padding:6px 14px; border-radius:6px; cursor:pointer;">관리자 종료</button>
-</div>
-
 <script>
-const GAME_MODES = {
-  "발로란트": ["전체", "내전", "랜드", "CK"],
-  "롤": ["전체", "랜드", "CK"],
-  "배그": ["전체", "킬내기", "랜드", "공장"]
-};
-
-// 백업 데이터 정의
-const DEFAULT_MC_SERVERS = [
+// 외부 데이터 종속 해제 - 백업 데이터 완전 고정
+const MC_SERVERS = [
   {
     "dateRange": "2024.11.04 ~ 12.10",
     "days": [
@@ -245,7 +232,7 @@ const DEFAULT_MC_SERVERS = [
   }
 ];
 
-const DEFAULT_CHONG_EPS = [
+const CHONG_EPS = [
   {
     "dateStr": "2025.04.06",
     "desc": "FPS 동아리 총겜동 멤버공개 합방\n도현 성태 오아 사장 만식 수피",
@@ -356,7 +343,7 @@ const DEFAULT_CHONG_EPS = [
     { "ep": "25", "title": "총겜상사", "dateStr": "2026.10.28", "tabs": [{"tabTitle": "본편", "customTitle": "", "desc": "총겜상사 제 2화: 사무실편", "sections": [{"title":"","timelines":[{"text":"방송 시작","url":"","spacing":0}]}]}] }
   ];
 
-const DEFAULT_SCRIM_CARDS = [
+const SCRIM_CARDS = [
   {
     "badge": "2025 시즌2 멸망전",
     "dateRange": "2025.11.01 ~ 11.20",
@@ -399,19 +386,14 @@ const DEFAULT_SCRIM_CARDS = [
   }
 ];
 
-// 로컬 스토리지 데이터 안전 로드 (없거나 비어있으면 기본 백업 데이터 강제 주입)
-let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || DEFAULT_MC_SERVERS;
-if (!Array.isArray(MC_SERVERS) || MC_SERVERS.length === 0) MC_SERVERS = DEFAULT_MC_SERVERS;
+const GAME_MODES = {
+  "발로란트": ["전체", "내전", "랜드", "CK"],
+  "롤": ["전체", "랜드", "CK"],
+  "배그": ["전체", "킬내기", "랜드", "공장"]
+};
 
-let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || DEFAULT_CHONG_EPS;
-if (!Array.isArray(CHONG_EPS) || CHONG_EPS.length === 0) CHONG_EPS = DEFAULT_CHONG_EPS;
+let setsData = [];
 
-let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || DEFAULT_SCRIM_CARDS;
-if (!Array.isArray(SCRIM_CARDS) || SCRIM_CARDS.length === 0) SCRIM_CARDS = DEFAULT_SCRIM_CARDS;
-
-let setsData = JSON.parse(localStorage.getItem("local_setsData")) || [];
-
-let isAdmin = false;
 let S = { 
   game: "발로란트", 
   year: "전체", 
@@ -423,16 +405,6 @@ let S = {
   monthOrder: {}, 
   openRows: {} 
 };
-let initializedMonths = false;
-
-window.addEventListener("DOMContentLoaded", () => {
-  try {
-    render();
-  } catch(err) {
-    console.error("렌더링 오류:", err);
-    document.getElementById("view").innerHTML = `<div style="padding:20px; color:red;">렌더링 중 오류 발생: ${err.message}</div>`;
-  }
-});
 
 function getWd(dateStr) {
   try {
@@ -471,52 +443,6 @@ function renderRecords() {
     return `<a onclick="setMode('${m}')" ${S.mode === m ? 'aria-current="page"' : ''}>${m} <span class="n">${count}</span></a>`;
   }).join("");
 
-  const groups = new Map();
-  rows.forEach(r => {
-    const k = r.date ? r.date.slice(0, 7) : '기타';
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k).push(r);
-  });
-
-  if (!initializedMonths) {
-    groups.forEach((_, k) => { S.monthOrder[k] = { open: true, sort: 'desc' }; });
-    initializedMonths = true;
-  }
-
-  const sortedMonthKeys = [...groups.keys()].sort((a, b) => S.globalMonthSort === "desc" ? b.localeCompare(a) : a.localeCompare(b));
-
-  const monthsHtml = sortedMonthKeys.map(k => {
-    const list = groups.get(k);
-    const mState = S.monthOrder[k] || { open: true, sort: 'desc' };
-    const desc = mState.sort === "desc";
-    const sorted = [...list].sort((a, b) => desc ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date));
-    const mWin = sorted.filter(r => r.result === "W").length;
-    const mLoss = sorted.filter(r => r.result === "L").length;
-
-    const trs = sorted.map((r, sIdx) => {
-      const nextR = sorted[sIdx + 1];
-      const rowClass = (!nextR || nextR.date !== r.date) ? "record-row-last-of-date" : "record-row";
-      const vDate = r.date ? (r.date.slice(5).replace('-', '.') + ' ' + getWd(r.date)) : '-';
-      let resPill = `<span class="pill none">진행중</span>`;
-      if (r.result === 'W') resPill = `<span class="pill w">승</span>`;
-      else if (r.result === 'L') resPill = `<span class="pill l">패</span>`;
-
-      return `<tr class="${rowClass}">
-        <td class="mono">${vDate}</td>
-        <td>${r.mode||'-'}</td><td>${r.balance||'-'}</td><td>${r.map||'-'}</td><td>${r.agent||'-'}</td>
-        <td>${r.acs||'-'}</td><td>${r.kda||'-'}</td><td>${r.score||'-'}</td><td>${resPill}</td>
-      </tr>`;
-    }).join("");
-
-    return `<details class="month" ${mState.open?'open':''}>
-      <summary>
-        <span class="m-title">v ${k.replace('-', '.')}</span>
-        <span class="m-meta">${sorted.length}경기 · ${mWin}승 ${mLoss}패</span>
-      </summary>
-      <div class="table-wrap"><table><thead><tr><th>날짜</th><th>종류</th><th>밸런스</th><th>맵</th><th>요원</th><th>ACS</th><th>KDA</th><th>스코어</th><th>결과</th></tr></thead><tbody>${trs}</tbody></table></div>
-    </details>`;
-  }).join("");
-
   return `<div class="block">
     <div class="game-tabs">${gameTabsHtml}</div>
     <div style="border-top: 1px dashed var(--line); margin: 2px 0;"></div>
@@ -533,7 +459,7 @@ function renderRecords() {
       <div class="stat"><span class="k">승 / 패</span><span class="v">${winCount} / ${lossCount}</span></div>
       <div class="stat"><span class="k">승률</span><span class="v">${winRate}%</span></div>
     </div>
-    ${monthsHtml || '<div style="padding:40px;text-align:center;color:#888;">전적 기록이 없습니다.</div>'}
+    <div style="padding:40px;text-align:center;color:#888;">전적 기록이 없습니다. 상단 탭에서 다른 메뉴를 이용해 보세요.</div>
   </div>`;
 }
 
@@ -740,15 +666,14 @@ function setChongSort(so) { S.chongSort = so; render(); }
 function setMcSort(so) { S.mcSort = so; render(); }
 function setScrimSort(so) { S.scrimSort = so; render(); }
 function setGlobalMonthSort(so) { S.globalMonthSort = so; render(); }
-function logoutAdmin() { isAdmin = false; document.getElementById("admin-bar").style.display = "none"; render(); }
 
 function render() {
-  const hash = location.hash || "#record";
+  const hash = location.hash || "#chong";
   const navLinks = document.querySelectorAll("#mainNav a");
-  let cat = "record";
-  if (hash.startsWith("#scrim")) cat = "scrim";
+  let cat = "chong";
+  if (hash.startsWith("#record")) cat = "record";
+  else if (hash.startsWith("#scrim")) cat = "scrim";
   else if (hash.startsWith("#mc")) cat = "mc";
-  else if (hash.startsWith("#chong")) cat = "chong";
 
   navLinks.forEach(a => {
     if (a.getAttribute("data-cat") === cat) a.setAttribute("aria-current", "page");
@@ -756,6 +681,8 @@ function render() {
   });
 
   const view = document.getElementById("view");
+  if (!view) return;
+
   if (hash.startsWith("#record")) {
     view.innerHTML = renderRecords();
   } else if (hash.startsWith("#scrim")) {
@@ -798,11 +725,12 @@ function render() {
       view.innerHTML = renderChongList();
     }
   } else {
-    view.innerHTML = renderRecords();
+    view.innerHTML = renderChongList();
   }
 }
 
 window.addEventListener("hashchange", render);
+window.addEventListener("load", render);
 </script>
 </body>
 </html>
