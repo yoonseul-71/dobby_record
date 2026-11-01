@@ -218,10 +218,10 @@ let S = {
   game: "발로란트", 
   year: "전체", 
   mode: "전체", 
-  chongSort: "old",  // 총겜동 기본: 오래된순
-  mcSort: "old",     // 마크 기본: 오래된순
-  scrimSort: "old",  // 멸망전 기본: 오래된순
-  globalMonthSort: "desc", // 전적 기본: 최신순 (desc)
+  chongSort: "old",  
+  mcSort: "old",     
+  scrimSort: "old",  
+  globalMonthSort: "desc", 
   monthOrder: {}, 
   openRows: {} 
 };
@@ -350,7 +350,7 @@ function renderChongList() {
       </div>
     </div>
     <div class="cards">${sorted.map(e => {
-      const tabs = e.tabs || [{ tabTitle: "본편" }];
+      const tabs = (e.tabs || []).filter(t => t.tabTitle !== "본편");
       return `
         <div class="card" style="border-top: 4px solid var(--violet);">
           <div class="card-corner-tag" style="--tag-bg: var(--violet-bg); --tag-ink: var(--violet-ink); --tag-border: var(--violet-line);">Ep.${e.ep}</div>
@@ -361,7 +361,7 @@ function renderChongList() {
             </div>
             <div class="card-footer-link" style="color: var(--violet-ink);">
               <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                ${tabs.map(st => `<span style="font-size:11px; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:2px 8px; border-radius:999px;">${st.tabTitle} ${st.customTitle ? '('+st.customTitle+')' : ''}</span>`).join('')}
+                ${tabs.map(st => `<span style="font-size:12px; font-weight:bold; background:var(--violet-bg); color:var(--violet-ink); border:1px solid var(--violet-line); padding:3px 10px; border-radius:999px;">${st.tabTitle}${st.customTitle ? ' ' + st.customTitle : ''}</span>`).join('')}
               </div>
               <span>상세보기 →</span>
             </div>
@@ -388,13 +388,13 @@ function renderChongDetail(epNo, tabIdx = 0) {
     <div class="day-tabs" style="margin-top:10px;">
       ${epObj.tabs.map((t, idx) => `
         <button class="day-tab-btn" style="border:1.5px solid ${idx===tabIdx?'var(--violet)':'var(--line)'}; background:${idx===tabIdx?'var(--violet-bg)':'transparent'}; color:${idx===tabIdx?'var(--violet-ink)':'inherit'};" onclick="location.hash='#chong-${epObj.ep}-t${idx}'" ${idx === tabIdx ? 'aria-selected="true"' : ''}>
-          ${t.tabTitle} ${t.customTitle ? '('+t.customTitle+')' : ''}
+          ${t.tabTitle}${t.customTitle ? ' ' + t.customTitle : ''}
         </button>
       `).join('')}
     </div>
 
     <div style="background:var(--box-pastel-violet); border:1.5px solid var(--violet-line); border-radius:10px; padding:16px 20px; color:var(--violet-ink);">
-      <div style="font-size:13px; font-weight:bold; margin-bottom:6px;">[${curTab.tabTitle}]</div>
+      <div style="font-size:13px; font-weight:bold; margin-bottom:6px;">[${curTab.tabTitle}${curTab.customTitle ? ' ' + curTab.customTitle : ''}]</div>
       <div class="text-pre" style="font-size:14px; color:var(--page-fg);">${curTab.desc || ''}</div>
     </div>
 
@@ -430,10 +430,22 @@ function renderScrims() {
         <div class="card-corner-tag" style="--tag-bg: var(--yellow-bg); --tag-ink: var(--yellow-ink); --tag-border: var(--yellow);">${c.badge||'멸망전'}</div>
         <a href="#scrim-${c.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
           <div class="card-content-area"><div class="card-title" style="color: var(--yellow-ink);">${c.no}</div><div class="card-sub">${c.dateRange||''}</div></div>
-          <div class="card-footer-link" style="color: var(--yellow-ink);"><span>상세보기</span><span>→</span></div>
+          <div class="card-footer-link" style="color: var(--yellow-ink);"><span></span><span>상세보기 →</span></div>
         </a>
       </div>
     `).join('')}</div>
+  </div>`;
+}
+
+function renderScrimDetail(id) {
+  const c = SCRIM_CARDS.find(item => String(item.id) === String(id));
+  if (!c) return `<div class="block"><a class="back-btn" onclick="location.hash='#scrim'">← 목록으로</a><div style="padding:20px;">멸망전 정보를 찾을 수 없습니다.</div></div>`;
+  return `<div class="block">
+    <a class="back-btn" onclick="location.hash='#scrim'">← 목록으로</a>
+    <h2>${c.no} (${c.dateRange||''})</h2>
+    <div style="background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:20px;">
+      <div class="text-pre" style="font-size:14px;">${c.desc || '등록된 상세 내용이 없습니다.'}</div>
+    </div>
   </div>`;
 }
 
@@ -452,10 +464,22 @@ function renderMinecraft() {
         <div class="card-corner-tag" style="--tag-bg: var(--sky-bg); --tag-ink: var(--sky-ink); --tag-border: var(--sky);">${s.serverName}</div>
         <a href="#mc-${s.id}" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
           <div class="card-content-area"><div class="card-title" style="color: var(--sky-ink);">${s.guildName}</div><div class="card-sub">${s.dateRange||''}</div></div>
-          <div class="card-footer-link" style="color: var(--sky-ink);"><span>상세보기</span><span>→</span></div>
+          <div class="card-footer-link" style="color: var(--sky-ink);"><span></span><span>상세보기 →</span></div>
         </a>
       </div>
     `).join('')}</div>
+  </div>`;
+}
+
+function renderMinecraftDetail(id) {
+  const s = MC_SERVERS.find(item => String(item.id) === String(id));
+  if (!s) return `<div class="block"><a class="back-btn" onclick="location.hash='#mc'">← 목록으로</a><div style="padding:20px;">마크서버 정보를 찾을 수 없습니다.</div></div>`;
+  return `<div class="block">
+    <a class="back-btn" onclick="location.hash='#mc'">← 목록으로</a>
+    <h2>[${s.serverName}] ${s.guildName} (${s.dateRange||''})</h2>
+    <div style="background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:20px;">
+      <div class="text-pre" style="font-size:14px;">${s.desc || '등록된 상세 내용이 없습니다.'}</div>
+    </div>
   </div>`;
 }
 
@@ -482,10 +506,23 @@ function render() {
   });
 
   const view = document.getElementById("view");
-  if (hash.startsWith("#record")) view.innerHTML = renderRecords();
-  else if (hash.startsWith("#scrim")) view.innerHTML = renderScrims();
-  else if (hash.startsWith("#mc")) view.innerHTML = renderMinecraft();
-  else if (hash.startsWith("#chong")) {
+  if (hash.startsWith("#record")) {
+    view.innerHTML = renderRecords();
+  } else if (hash.startsWith("#scrim")) {
+    const parts = hash.split("-");
+    if (parts[1]) {
+      view.innerHTML = renderScrimDetail(parts[1]);
+    } else {
+      view.innerHTML = renderScrims();
+    }
+  } else if (hash.startsWith("#mc")) {
+    const parts = hash.split("-");
+    if (parts[1]) {
+      view.innerHTML = renderMinecraftDetail(parts[1]);
+    } else {
+      view.innerHTML = renderMinecraft();
+    }
+  } else if (hash.startsWith("#chong")) {
     const parts = hash.split("-");
     const epNo = parts[1] && !parts[1].startsWith("t") ? parts[1] : null;
     let tabIdx = 0;
