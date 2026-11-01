@@ -315,16 +315,17 @@ const GAME_MODES = {
 
 const DEFAULT_SETS = [];
 
+/* 백업 데이터: 롤 멸망전 (스크린샷 스펙 복구: 도이온2 / 2025 시즌2 멸망전 / 2025.11.) */
 const DEFAULT_SCRIM = [
   {
-    id: "scrim-2025-season1",
-    no: "2025 ALL 롤 멸망전",
+    id: "scrim-2025-season2",
+    no: "도이온2",
     type: "스크림",
-    badge: "2025 시즌1",
-    dateRange: "2025.02.10 ~ 2025.02.25",
+    badge: "2025 시즌2 멸망전",
+    dateRange: "2025.11.",
     groups: [
       {
-        groupTitle: "25.02.15 토",
+        groupTitle: "25.11.15 토",
         category: "스크림",
         dates: [
           {
@@ -338,11 +339,11 @@ const DEFAULT_SCRIM = [
                   leftTeamName: "도현 팀",
                   rightTeamName: "상대 팀",
                   positions: [
-                    { pos: "탑", p1: "선수A", t1: "골드", c1: "사이온", p2: "상대A", t2: "플레", c2: "아트록스" },
-                    { pos: "정글", p1: "선수B", t1: "실버", c1: "바이", p2: "상대B", t2: "골드", c2: "세주아니" },
-                    { pos: "미드", p1: "도현", t1: "에메랄드", c1: "빅토르", p2: "상대C", t2: "에메랄드", c2: "아리" },
-                    { pos: "원딜", p1: "선수D", t1: "다이아", c1: "이즈리얼", p2: "상대D", t2: "다이아", c2: "카이사" },
-                    { pos: "서포터", p1: "선수E", t1: "골드", c1: "노틸러스", p2: "상대E", t2: "골드", c2: "레오나" }
+                    { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+                    { pos: "정글", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+                    { pos: "미드", p1: "도현", t1: "", c1: "", p2: "", t2: "", c2: "" },
+                    { pos: "원딜", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+                    { pos: "서포터", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" }
                   ]
                 }]
               }
@@ -354,22 +355,22 @@ const DEFAULT_SCRIM = [
   }
 ];
 
+/* 백업 데이터: 마크서버 (스크린샷 스펙 복구: 북해빙궁 / 코창서버 / 2024.11.04 ~ 12.10) */
 const DEFAULT_MC = [
   {
-    id: "mc-server-1",
-    serverName: "마인크래프트 서버 A",
-    guildName: "도현 길드",
-    dateRange: "2025.01.01 ~ 2025.01.20",
+    id: "mc-cochang-bukhae",
+    serverName: "코창서버",
+    guildName: "북해빙궁",
+    dateRange: "2024.11.04 ~ 12.10",
     days: [
       {
         dayTitle: "1일차",
-        dateStr: "2025.01.01",
+        dateStr: "2024.11.04",
         sections: [
           {
-            title: "서버 오픈 및 초기 자리 잡기",
+            title: "북해빙궁 입성 및 개척",
             timelines: [
-              { text: "서버 첫 접속 및 정착지 탐색", url: "", spacing: 0 },
-              { text: "길드 창설 완료", url: "", spacing: 0 }
+              { text: "코창서버 접속 및 북해빙궁 정착", url: "", spacing: 0 }
             ]
           }
         ]
@@ -378,26 +379,26 @@ const DEFAULT_MC = [
   }
 ];
 
+/* 백업 데이터: 총겜동 에피소드 25개 전수 생성 (벌칙/회식 서브 탭 포함) */
 const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
   const epNum = i;
   let tabs = [
     {
       tabTitle: "본편",
       customTitle: "",
-      desc: i === 0 ? "FPS 동아리 총겜동 멤버공개 합방 (도현, 성태, 오아, 사장, 만식, 수피)" : `총겜동 에피소드 ${epNum} 본편 방송 내용 기록`,
+      desc: i === 0 ? "FPS 동아리 총겜동 멤버공개 합방 (도현, 성태, 오아, 사장, 만식, 수피)" : `총겜동 에피소드 ${epNum} 본편 방송 기록`,
       sections: [
         {
           title: "타임라인",
           timelines: [
-            { text: "방송 시작 및 멤버 집결", url: "", spacing: 0 },
-            { text: "메인 게임 진행", url: "", spacing: 0 }
+            { text: "방송 시작 및 멤버 집결", url: "", spacing: 0 }
           ]
         }
       ]
     }
   ];
 
-  if (i % 3 === 0) {
+  if (i % 2 === 0) {
     tabs.push({
       tabTitle: "벌칙/회식",
       customTitle: "뒷풀이 및 벌칙 수행",
