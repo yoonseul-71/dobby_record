@@ -250,7 +250,7 @@ function promptAdminLogin() {
 function logoutAdmin() { isAdmin = false; document.getElementById("admin-bar").style.display = "none"; render(); }
 function toggleRowDetail(idx) { S.openRows[idx] = !S.openRows[idx]; render(); }
 
-// 오리지널 풀 디자인이 적용되고 undefined 에러를 완벽 방어하는 renderRecords 함수
+// 전적 렌더링 함수
 function renderRecords() {
   const games = ["발로란트", "롤", "배그"];
   const currentSets = Array.isArray(setsData) ? setsData : [];
@@ -431,6 +431,72 @@ function renderRecords() {
     </div>`;
 }
 
+// 롤 멸망전(#scrim) 렌더링 함수
+function renderScrim() {
+  const cards = Array.isArray(SCRIM_CARDS) ? SCRIM_CARDS : [];
+  const cardsHtml = cards.map(c => `
+    <div class="card">
+      <div class="card-content-area">
+        <div class="card-title">${c.title || '멸망전'}</div>
+        <div class="card-sub">${c.dateStr || ''}</div>
+      </div>
+    </div>
+  `).join("");
+
+  return `
+    <div class="block">
+      <h2>롤 멸망전 기록</h2>
+      <div class="cards">
+        ${cardsHtml.length > 0 ? cardsHtml : '<div style="padding:40px; text-align:center; color:#888;">등록된 멸망전 데이터가 없습니다.</div>'}
+      </div>
+    </div>
+  `;
+}
+
+// 마크서버(#mc) 렌더링 함수
+function renderMC() {
+  const servers = Array.isArray(MC_SERVERS) ? MC_SERVERS : [];
+  const listHtml = servers.map(s => `
+    <div class="card">
+      <div class="card-content-area">
+        <div class="card-title">${s.serverName || '서버'} (${s.guildName || ''})</div>
+        <div class="card-sub">${s.dateRange || ''}</div>
+      </div>
+    </div>
+  `).join("");
+
+  return `
+    <div class="block">
+      <h2>마크서버 아카이브</h2>
+      <div class="cards">
+        ${listHtml.length > 0 ? listHtml : '<div style="padding:40px; text-align:center; color:#888;">등록된 마크서버 데이터가 없습니다.</div>'}
+      </div>
+    </div>
+  `;
+}
+
+// 총겜동(#chong) 렌더링 함수
+function renderChong() {
+  const eps = Array.isArray(CHONG_EPS) ? CHONG_EPS : [];
+  const listHtml = eps.map(e => `
+    <div class="card">
+      <div class="card-content-area">
+        <div class="card-title">EP.${e.ep} - ${e.title || ''}</div>
+        <div class="card-sub">${e.dateStr || ''}</div>
+      </div>
+    </div>
+  `).join("");
+
+  return `
+    <div class="block">
+      <h2>총겜동 에피소드</h2>
+      <div class="cards">
+        ${listHtml.length > 0 ? listHtml : '<div style="padding:40px; text-align:center; color:#888;">등록된 총겜동 데이터가 없습니다.</div>'}
+      </div>
+    </div>
+  `;
+}
+
 function setGame(g) { S.game = g; S.mode = "전체"; render(); }
 function setYear(y) { S.year = y; S.mode = "전체"; render(); }
 function setMode(m) { S.mode = m; render(); }
@@ -444,13 +510,13 @@ function getWd(dateStr) {
   } catch(e) { return ''; }
 }
 
-// 탭 전환 및 활성화 처리 로직이 수정된 부분
+// 통합 렌더링 및 탭 전환 관리 함수
 function render() {
   const hash = location.hash || "#record";
   const view = document.getElementById("view");
   if (!view) return;
 
-  // 1. 상단 네비게이션 탭들의 활성화 상태(aria-current) 동기화
+  // 상단 네비게이션 탭 활성화 상태(aria-current) 동기화
   const navLinks = document.querySelectorAll("#mainNav a");
   navLinks.forEach(link => {
     if (link.getAttribute("href") === hash) {
@@ -460,15 +526,15 @@ function render() {
     }
   });
 
-  // 2. 해시에 따른 화면 렌더링 분기
+  // 해시에 따른 각 탭 화면 분기 처리
   if (hash === "#record") {
     view.innerHTML = renderRecords();
   } else if (hash === "#scrim") {
-    view.innerHTML = "<div style='padding:40px; text-align:center;'><h2>롤 멸망전</h2><p style='margin-top:10px; color:#64748b;'>해당 탭의 컨텐츠 영역입니다.</p></div>";
+    view.innerHTML = renderScrim();
   } else if (hash === "#mc") {
-    view.innerHTML = "<div style='padding:40px; text-align:center;'><h2>마크서버</h2><p style='margin-top:10px; color:#64748b;'>해당 탭의 컨텐츠 영역입니다.</p></div>";
+    view.innerHTML = renderMC();
   } else if (hash === "#chong") {
-    view.innerHTML = "<div style='padding:40px; text-align:center;'><h2>총겜동</h2><p style='margin-top:10px; color:#64748b;'>해당 탭의 컨텐츠 영역입니다.</p></div>";
+    view.innerHTML = renderChong();
   } else {
     view.innerHTML = renderRecords();
   }
