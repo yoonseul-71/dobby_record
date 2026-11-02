@@ -258,6 +258,19 @@ window.addEventListener("DOMContentLoaded", () => {
     sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
+
+  // Alt + A 단축키로 관리자 모드 토글 기능 복구
+  window.addEventListener("keydown", (e) => {
+    if (e.altKey && e.code === "KeyA") {
+      e.preventDefault();
+      if (!isAdmin) {
+        promptAdminLogin();
+      } else {
+        logoutAdmin();
+      }
+    }
+  });
+
   if (!location.hash) location.hash = "#record";
   render();
 });
@@ -491,7 +504,7 @@ function renderRecords() {
     </div>`;
 }
 
-// 롤 멸망전(#scrim) 목록 및 상세 페이지 렌더링[cite: 1, 7]
+// 롤 멸망전(#scrim) 상세 레이아웃 및 목록 렌더링[cite: 1, 7]
 function renderScrim() {
   const hash = location.hash;
   const match = hash.match(/^#scrim-detail-(\d+)$/);
@@ -504,11 +517,32 @@ function renderScrim() {
     return `
       <div class="block">
         <div><a href="#scrim" style="font-weight:bold; color:var(--accent);">← 멸망전 목록으로</a></div>
-        <h2>${c.title || '멸망전'} 상세 전적</h2>
-        <div style="padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;">
-          <p><b>날짜:</b> ${c.dateStr || ''}</p>
-          <p><b>태그:</b> ${c.tag || ''}</p>
-          <div style="margin-top:20px; color:var(--page-muted);">상세 경기가 여기에 표시됩니다.</div>
+        <h2>${c.title || '도이온2'} 상세 전적</h2>
+        <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;">
+          <span class="pill" style="background:var(--yellow-bg); color:var(--yellow-ink);">${c.tag || ''}</span>
+          <span style="font-weight:bold; color:var(--page-muted);">${c.dateStr || ''}</span>
+        </div>
+        <div class="scrim-detail-box">
+          <table class="lol-match-table">
+            <thead>
+              <tr style="background:var(--neutral-bg);">
+                <th style="width:40%;">도현팀</th>
+                <th style="width:10%;">레드</th>
+                <th style="width:10%;">포지션</th>
+                <th style="width:10%;">블루</th>
+                <th style="width:40%;">박이언팀</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="text-align:center;">박사장<br><span style="font-size:11px; color:#888;">[E] 31.2</span></td>
+                <td style="text-align:center; font-weight:bold;">카밀</td>
+                <td style="text-align:center; color:var(--page-muted);">탑</td>
+                <td style="text-align:center; font-weight:bold;">모데카이저</td>
+                <td style="text-align:center;">염보성<br><span style="font-size:11px; color:#888;">[P] 24.3</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     `;
@@ -537,7 +571,7 @@ function renderScrim() {
   `;
 }
 
-// 마크서버(#mc) 목록 및 상세 페이지 렌더링[cite: 3, 4]
+// 마크서버(#mc) 상세 레이아웃 및 목록 렌더링[cite: 3, 4]
 function renderMC() {
   const hash = location.hash;
   const match = hash.match(/^#mc-detail-(\d+)$/);
@@ -547,14 +581,19 @@ function renderMC() {
     const s = MC_SERVERS[idx];
     if (!s) return `<div>해당 서버 정보를 찾을 수 없습니다. <a href="#mc">← 목록으로</a></div>`;
 
+    let daysHtml = (s.days || []).map(day => `
+      <div style="margin-bottom:20px; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:16px;">
+        <h3 style="margin-top:0; font-size:16px; color:var(--accent);">${day.dayTitle || ''} (${day.dateStr || ''})</h3>
+        <div style="margin-top:10px; color:var(--page-fg);">마크 서버 일차별 타임라인 및 상세 기록 내용 영역입니다.</div>
+      </div>
+    `).join("");
+
     return `
       <div class="block">
         <div><a href="#mc" style="font-weight:bold; color:var(--accent);">← 마크서버 목록으로</a></div>
-        <h2>${s.serverName || '서버'} - ${s.guildName || ''} 상세 정보</h2>
-        <div style="padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;">
-          <p><b>기간:</b> ${s.dateRange || ''}</p>
-          <div style="margin-top:20px; color:var(--page-muted);">서버 일차별 타임라인 및 상세 기록 영역입니다.</div>
-        </div>
+        <h2>${s.serverName || '서버'} - ${s.guildName || ''}</h2>
+        <p style="color:var(--page-muted); font-weight:500;">진행 기간: ${s.dateRange || ''}</p>
+        <div style="margin-top:16px;">${daysHtml || '등록된 일차별 기록이 없습니다.'}</div>
       </div>
     `;
   }
@@ -582,7 +621,7 @@ function renderMC() {
   `;
 }
 
-// 총겜동(#chong) 목록 및 상세 페이지 렌더링[cite: 2, 5, 6]
+// 총겜동(#chong) 상세 레이아웃 및 목록 렌더링[cite: 2, 5, 6]
 function renderChong() {
   const hash = location.hash;
   const match = hash.match(/^#chong-detail-(\d+)$/);
@@ -592,13 +631,15 @@ function renderChong() {
     const e = CHONG_EPS[idx];
     if (!e) return `<div>해당 에피소드 정보를 찾을 수 없습니다. <a href="#chong">← 목록으로</a></div>`;
 
+    let tabDesc = e.tabs && e.tabs[0] ? e.tabs[0].desc : '';
+
     return `
       <div class="block">
         <div><a href="#chong" style="font-weight:bold; color:var(--accent);">← 총겜동 목록으로</a></div>
         <h2>Ep.${e.ep || 0} ${e.title || ''}</h2>
-        <div style="padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;">
-          <p><b>날짜:</b> ${e.dateStr || ''}</p>
-          <div style="margin-top:20px; background:var(--box-pastel-violet); padding:15px; border-radius:8px; white-space:pre-wrap;">${e.tabs && e.tabs[0] ? e.tabs[0].desc : ''}</div>
+        <p style="color:var(--page-muted); font-weight:500;">방송일: ${e.dateStr || ''}</p>
+        <div style="margin-top:16px; background:var(--box-pastel-violet); padding:20px; border-radius:8px; white-space:pre-wrap; border:1px solid var(--violet-line);">
+          ${tabDesc || '설명이 없습니다.'}
         </div>
       </div>
     `;
