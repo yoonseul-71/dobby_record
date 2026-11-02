@@ -136,6 +136,29 @@ td.mono { font-weight: 500; }
 .pill.d { background: #e2e8f0; color: #475569; }
 .pill.none { background: var(--neutral-bg); color: var(--page-muted); }
 
+/* 카드 디자인 스타일 복구 */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 15px; }
+.card {
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 22px; text-decoration: none; color: var(--page-fg);
+  transition: all 0.15s ease; position: relative; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  display: flex; flex-direction: column; justify-content: space-between; min-height: 160px; cursor: pointer;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+.card-corner-tag {
+  position: absolute; top: 0; right: 0;
+  font-size: 12px; font-weight: bold; padding: 5px 14px;
+  border-bottom-left-radius: 10px; border: 1.5px solid var(--tag-border, var(--line));
+  background: var(--tag-bg, #f5f5f5); color: var(--tag-ink, #333); border-top: 0; border-right: 0;
+}
+
+.card-content-area { margin-top: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.card-title { font-size: 20px; font-weight: 800; color: #12161c; margin-bottom: 4px; }
+.card-sub { font-size: 13px; color: var(--page-muted); }
+.card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; color: var(--accent); }
+
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
 .lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
 .lol-match-table th { padding: 10px 14px; border: 1px solid #dcdcdc; font-size: 14px; font-weight: 800; text-align: center; }
@@ -431,21 +454,23 @@ function renderRecords() {
     </div>`;
 }
 
-// 롤 멸망전(#scrim) 렌더링 함수
+// 롤 멸망전(#scrim) 카드 디자인 복구[cite: 1]
 function renderScrim() {
   const cards = Array.isArray(SCRIM_CARDS) ? SCRIM_CARDS : [];
-  const cardsHtml = cards.map(c => `
-    <div class="card">
+  const cardsHtml = cards.map((c, idx) => `
+    <div class="card" style="--tag-bg:var(--yellow-bg); --tag-ink:var(--yellow-ink); --tag-border:var(--yellow);">
+      <div class="card-corner-tag">${c.tag || '멸망전'}</div>
       <div class="card-content-area">
-        <div class="card-title">${c.title || '멸망전'}</div>
+        <div class="card-title">${c.title || '도이온2'}</div>
         <div class="card-sub">${c.dateStr || ''}</div>
       </div>
+      <div class="card-footer-link">상세보기 →</div>
     </div>
   `).join("");
 
   return `
     <div class="block">
-      <h2>롤 멸망전 기록</h2>
+      <h2>롤 멸망전</h2>
       <div class="cards">
         ${cardsHtml.length > 0 ? cardsHtml : '<div style="padding:40px; text-align:center; color:#888;">등록된 멸망전 데이터가 없습니다.</div>'}
       </div>
@@ -453,15 +478,17 @@ function renderScrim() {
   `;
 }
 
-// 마크서버(#mc) 렌더링 함수
+// 마크서버(#mc) 카드 디자인 복구[cite: 3]
 function renderMC() {
   const servers = Array.isArray(MC_SERVERS) ? MC_SERVERS : [];
-  const listHtml = servers.map(s => `
-    <div class="card">
+  const listHtml = servers.map((s, idx) => `
+    <div class="card" style="--tag-bg:var(--sky-bg); --tag-ink:var(--sky-ink); --tag-border:var(--sky);">
+      <div class="card-corner-tag">${s.serverName || '서버'}</div>
       <div class="card-content-area">
-        <div class="card-title">${s.serverName || '서버'} (${s.guildName || ''})</div>
+        <div class="card-title">${s.guildName || '길드명'}</div>
         <div class="card-sub">${s.dateRange || ''}</div>
       </div>
+      <div class="card-footer-link">상세보기 →</div>
     </div>
   `).join("");
 
@@ -475,21 +502,23 @@ function renderMC() {
   `;
 }
 
-// 총겜동(#chong) 렌더링 함수
+// 총겜동(#chong) 카드 디자인 복구[cite: 2]
 function renderChong() {
   const eps = Array.isArray(CHONG_EPS) ? CHONG_EPS : [];
-  const listHtml = eps.map(e => `
-    <div class="card">
+  const listHtml = eps.map((e, idx) => `
+    <div class="card" style="--tag-bg:var(--violet-bg); --tag-ink:var(--violet-ink); --tag-border:var(--violet-line);">
+      <div class="card-corner-tag">Ep. ${e.ep || 0}</div>
       <div class="card-content-area">
-        <div class="card-title">EP.${e.ep} - ${e.title || ''}</div>
+        <div class="card-title">${e.title || ''}</div>
         <div class="card-sub">${e.dateStr || ''}</div>
       </div>
+      <div class="card-footer-link">상세보기 →</div>
     </div>
   `).join("");
 
   return `
     <div class="block">
-      <h2>총겜동 에피소드</h2>
+      <h2>총겜동</h2>
       <div class="cards">
         ${listHtml.length > 0 ? listHtml : '<div style="padding:40px; text-align:center; color:#888;">등록된 총겜동 데이터가 없습니다.</div>'}
       </div>
