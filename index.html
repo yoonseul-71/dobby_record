@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1200">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>도현 아카이브</title>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -29,7 +29,6 @@
   --yellow-bg: #fef08a;
   --yellow-ink: #713f12;
   --yellow: #ca8a04;
-  --yellow-bright: #eab308;
   --yellow-dark: #b45309;
 
   --sky-bg: #bfdbfe;
@@ -53,7 +52,7 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--page); color: var(--page-fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 28px 16px 56px; min-width: 1200px; }
+body { margin: 0; background: var(--page); color: var(--page-fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 28px 16px 56px; }
 
 .wrap { max-width: 1090px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
 a { color: inherit; text-decoration: none; }
@@ -159,6 +158,7 @@ td.mono { font-weight: 500; }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
+/* 롤 멸망전 전용 노란색 테마 스타일 */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
@@ -169,6 +169,7 @@ td.mono { font-weight: 500; }
 
 .today-scrim-bar { background: transparent; border: 1.5px solid var(--yellow); border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: var(--yellow-ink); }
 
+/* 마크서버 상세페이지 날짜 버튼 스타일 */
 .day-tabs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -267,9 +268,7 @@ footer.bottom-footer {
       </nav>
     </div>
     <div class="panel">
-      <main id="view">
-        <div style="padding: 40px; text-align: center; color: #64748b; font-weight: bold;">데이터를 불러오는 중입니다...</div>
-      </main>
+      <main id="view"></main>
     </div>
   </div>
 
@@ -290,6 +289,7 @@ footer.bottom-footer {
   </div>
 </div>
 
+<!-- 메인 항목 추가/수정 모달 -->
 <div class="modal-overlay" id="adminFormModal">
   <div class="light-modal">
     <h3><span id="adminFormTitle">항목 편집</span><button class="close-btn" onclick="closeModal('adminFormModal')">✕</button></h3>
@@ -305,6 +305,7 @@ footer.bottom-footer {
   </div>
 </div>
 
+<!-- 상세 세부 항목 추가/수정 모달 -->
 <div class="modal-overlay" id="adminSubModal">
   <div class="light-modal">
     <h3><span id="asTitle">세부 내용 작업</span><button class="close-btn" onclick="closeModal('adminSubModal')">✕</button></h3>
@@ -324,6 +325,7 @@ footer.bottom-footer {
   </div>
 </div>
 
+<!-- 멸망전 세트 복사 모달 -->
 <div class="modal-overlay" id="scrimCopyModal">
   <div class="light-modal">
     <h3><span>다른 날짜/시간으로 세트 복사</span><button class="close-btn" onclick="closeModal('scrimCopyModal')">✕</button></h3>
@@ -356,41 +358,6 @@ footer.bottom-footer {
   </div>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyD...",
-    authDomain: "dohyeon-archive.firebaseapp.com",
-    databaseURL: "https://dohyeon-archive-default-rtdb.firebaseio.com",
-    projectId: "dohyeon-archive",
-    storageBucket: "dohyeon-archive.appspot.com",
-    messagingSenderId: "...",
-    appId: "..."
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  window.dbRef = db;
-  window.firebaseRef = ref;
-  window.firebaseSet = set;
-  window.firebaseOnValue = onValue;
-
-  // Firebase 연결 완료 즉시 실시간 데이터 리스너 등록
-  onValue(ref(db, 'archiveData'), (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      if (data.setsData) { setsData = data.setsData; localStorage.setItem("local_setsData", JSON.stringify(setsData)); }
-      if (data.MC_SERVERS) { MC_SERVERS = data.MC_SERVERS; localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS)); }
-      if (data.CHONG_EPS) { CHONG_EPS = data.CHONG_EPS; localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS)); }
-      if (data.SCRIM_CARDS) { SCRIM_CARDS = data.SCRIM_CARDS; localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS)); }
-    }
-    render();
-  });
-</script>
-
 <script>
 const GAME_MODES = {
   "발로란트": ["전체", "내전", "랜드", "CK"],
@@ -399,6 +366,7 @@ const GAME_MODES = {
 };
 
 const DEFAULT_SETS = [];
+
 const DEFAULT_SCRIM = [
   {
     id: "scrim-2025-season2",
@@ -448,11 +416,15 @@ const DEFAULT_MC = [
       {
         dayTitle: "1일차",
         dateStr: "2024.11.04 월",
-        videos: [{ name: "1일차 풀영상", url: "" }],
+        videos: [
+          { name: "1일차 풀영상", url: "" }
+        ],
         sections: [
           {
             title: "",
-            timelines: [{ text: "코창서버 접속 및 북해빙궁 정착", url: "", spacing: 0, highlight: "", bossItem: false, bossCount: 0 }]
+            timelines: [
+              { text: "코창서버 접속 및 북해빙궁 정착", url: "", spacing: 0, highlight: "", bossItem: false, bossCount: 0 }
+            ]
           }
         ]
       }
@@ -467,17 +439,33 @@ const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
       tabTitle: "본편",
       customTitle: "",
       desc: i === 0 ? "FPS 동아리 총겜동 멤버공개 합방 (도현, 성태, 오아, 사장, 만식, 수피)" : `총겜동 에피소드 ${epNum} 본편 방송 기록`,
-      sections: [{ title: "", timelines: [{ text: "방송 시작 및 멤버 집결", url: "", spacing: 0 }] }]
+      sections: [
+        {
+          title: "",
+          timelines: [
+            { text: "방송 시작 및 멤버 집결", url: "", spacing: 0 }
+          ]
+        }
+      ]
     }
   ];
+
   if (i % 2 === 0) {
     tabs.push({
       tabTitle: "벌칙",
       customTitle: "술먹방",
       desc: `Ep.${epNum} 진행 후 진행된 서브 콘텐츠 (회식/벌칙)`,
-      sections: [{ title: "", timelines: [{ text: "벌칙 수행 및 토크 타임", url: "", spacing: 0 }] }]
+      sections: [
+        {
+          title: "",
+          timelines: [
+            { text: "벌칙 수행 및 토크 타임", url: "", spacing: 0 }
+          ]
+        }
+      ]
     });
   }
+
   return {
     ep: String(epNum),
     title: epNum === 0 ? "FPS 동아리: 총겜동" : (epNum === 1 ? "배그 서열정리 킬내기" : `총겜동 에피소드 ${epNum}`),
@@ -491,18 +479,47 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || JSON.pars
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || JSON.parse(JSON.stringify(DEFAULT_SCRIM));
 let setsData = JSON.parse(localStorage.getItem("local_setsData")) || JSON.parse(JSON.stringify(DEFAULT_SETS));
 
-function saveData() {
-  localStorage.setItem("local_setsData", JSON.stringify(setsData));
-  localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
-  localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
-  localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS));
+MC_SERVERS.forEach(s => {
+  if (s.days) {
+    s.days.forEach(d => {
+      if (!d.videos) d.videos = [];
+      if (d.sections) {
+        d.sections.forEach(sec => {
+          if (sec.timelines) {
+            sec.timelines.forEach(t => {
+              if (t.highlight === undefined) t.highlight = "";
+              if (t.bossItem === undefined) t.bossItem = false;
+              if (t.bossCount === undefined) t.bossCount = 0;
+            });
+          }
+        });
+      }
+    });
+  }
+});
 
+CHONG_EPS.forEach(e => {
+  if (!e.tabs || e.tabs.length === 0) {
+    e.tabs = [{
+      tabTitle: "본편",
+      customTitle: "",
+      desc: e.desc || "",
+      sections: e.sections || [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }]
+    }];
+  }
+});
+
+function saveData() {
   const payload = {
     setsData: setsData,
     MC_SERVERS: MC_SERVERS,
     CHONG_EPS: CHONG_EPS,
     SCRIM_CARDS: SCRIM_CARDS
   };
+  localStorage.setItem("local_setsData", JSON.stringify(setsData));
+  localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
+  localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
+  localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS));
 
   if (window.dbRef && window.firebaseRef && window.firebaseSet) {
     window.firebaseSet(window.firebaseRef(window.dbRef, 'archiveData'), payload).catch(err => console.error("Firebase 저장 실패:", err));
@@ -528,6 +545,39 @@ let isAdmin = false;
 let S = { game: "발로란트", year: "전체", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", globalMonthSort: "desc", monthOrder: {}, openRows: {} };
 let initializedMonths = false;
 
+window.initAppAfterFirebase = function() {
+  if (window.dbRef && window.firebaseRef && window.firebaseOnValue) {
+    window.firebaseOnValue(window.firebaseRef(window.dbRef, 'archiveData'), (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        if (data.setsData && data.setsData.length > 0) setsData = data.setsData;
+        if (data.MC_SERVERS && data.MC_SERVERS.length > 0) {
+          MC_SERVERS = data.MC_SERVERS;
+          MC_SERVERS.forEach(s => {
+            if (s.days) {
+              s.days.forEach(d => {
+                if (!d.videos) d.videos = [];
+              });
+            }
+          });
+        }
+        if (data.CHONG_EPS && data.CHONG_EPS.length > 0) {
+          CHONG_EPS = data.CHONG_EPS;
+          CHONG_EPS.forEach(e => {
+            if (!e.tabs || e.tabs.length === 0) {
+              e.tabs = [{ tabTitle: "본편", customTitle: "", desc: e.desc || "", sections: e.sections || [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }] }];
+            }
+          });
+        }
+        if (data.SCRIM_CARDS && data.SCRIM_CARDS.length > 0) SCRIM_CARDS = data.SCRIM_CARDS;
+      }
+      render();
+    });
+  } else {
+    render();
+  }
+};
+
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
     e.preventDefault();
@@ -544,12 +594,6 @@ window.addEventListener("DOMContentLoaded", () => {
     sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
-  
-  if (!location.hash) {
-    location.hash = "#record";
-  }
-  
-  // 페이지 로드 직후 즉시 렌더링을 1회 먼저 수행 (빈 화면 방지)
   render();
 });
 
@@ -787,7 +831,14 @@ function handleAdminFormSubmit(e) {
         ep: epNo,
         title: title,
         dateStr: dateStr,
-        tabs: [{ tabTitle: "본편", customTitle: "", desc: desc, sections: [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }] }]
+        tabs: [
+          {
+            tabTitle: "본편",
+            customTitle: "",
+            desc: desc,
+            sections: [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }]
+          }
+        ]
       });
     }
   } else if (target === "mc") {
@@ -1441,7 +1492,7 @@ function renderRecords() {
   const winRate = (winCount + lossCount) ? Math.round((winCount / (winCount + lossCount)) * 100) : 0;
   
   const gameFilteredRows = setsData.filter(r => r.game === S.game);
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(y.replace("년", "")));
 
   const gameTabsHtml = games.map(g => `<button class="game-tab-btn" onclick="setGame('${g}')" aria-pressed="${S.game === g}">${g}</button>`).join("");
   const yearTabsHtml = years.map(y => {
@@ -1590,43 +1641,65 @@ function renderRecords() {
     if (S.game === "배그") theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>목표킬</th><th>도현 순수킬</th><th>스코어</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
 
     return `
-      <div class="block">
-        <div>
-          <div class="game-tabs">${gameTabsHtml}</div>
-          <div style="font-size:11.5px; color:var(--page-muted); margin-top:6px; line-height:1.4;">
-            모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다<br>
-            하나의 ${noticeModeText}의 최종 승/패 결과에 따라 계산되지 않습니다
+      <details class="month" ${isOpen ? 'open' : ''} ontoggle="handleMonthToggle('${k}', this.open)">
+        <summary>
+          <span class="m-title">v ${k.replace('-', '.')}</span>
+          <span class="m-meta">${sorted.length}경기 · ${mWin}승 ${mLoss}패</span>
+          <span class="seg">
+            <button type="button" onclick="event.stopPropagation(); setMonthOrd('${k}','asc')" aria-pressed="${!desc}">오래된순</button>
+            <button type="button" onclick="event.stopPropagation(); setMonthOrd('${k}','desc')" aria-pressed="${desc}">최신순</button>
+          </span>
+          <div class="rate-box">
+            <span class="mono">승률 <b>${mRate}%</b></span>
+            <div class="bar"><b style="width:${mRate}%"></b></div>
           </div>
+        </summary>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>${theaders}</tr></thead>
+            <tbody>${trs}</tbody>
+          </table>
         </div>
-        <div style="border-top: 1px dashed var(--line); margin: 2px 0;"></div>
-        <div class="toolbar" style="align-items:center;">
-          <div class="subnav" style="margin:0;">${yearTabsHtml}</div>
-          <div class="seg" style="display:inline-flex; border:1px solid #cbd5e0; border-radius:999px; overflow:hidden; background:var(--surface);">
-            <button type="button" onclick="setGlobalMonthSort('asc')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.globalMonthSort==='asc'?'var(--accent)':'transparent'}; color:${S.globalMonthSort==='asc'?'#fff':'var(--page-fg)'}; font-weight:bold; cursor:pointer;">오래된순</button>
-            <button type="button" onclick="setGlobalMonthSort('desc')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.globalMonthSort==='desc'?'var(--accent)':'transparent'}; color:${S.globalMonthSort==='desc'?'#fff':'var(--page-fg)'}; font-weight:bold; cursor:pointer;">최신순</button>
-          </div>
+      </details>`;
+  }).join("");
+
+  return `
+    <div class="block">
+      <div>
+        <div class="game-tabs">${gameTabsHtml}</div>
+        <div style="font-size:11.5px; color:var(--page-muted); margin-top:6px; line-height:1.4;">
+          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다<br>
+          하나의 ${noticeModeText}의 최종 승/패 결과에 따라 계산되지 않습니다
         </div>
-        <div class="subnav" style="margin-top:-6px;">${subnavHtml}</div>
-        <div class="stats" style="margin-top:10px;">
-          <div class="stat"><span class="k">경기</span><span class="v">${total}</span></div>
-          <div class="stat"><span class="k">승 / 패</span><span class="v">${winCount} / ${lossCount}</span></div>
-          <div class="stat">
-            <span class="k">승률</span>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span class="v">${winRate}%</span>
-              <div class="bar" style="width:110px; height:8px; border-radius:4px; background:var(--loss-bg); overflow:hidden;">
-                <b style="display:block; height:100%; width:${winRate}%; background:var(--win);"></b>
-              </div>
+      </div>
+      <div style="border-top: 1px dashed var(--line); margin: 2px 0;"></div>
+      <div class="toolbar" style="align-items:center;">
+        <div class="subnav" style="margin:0;">${yearTabsHtml}</div>
+        <div class="seg" style="display:inline-flex; border:1px solid #cbd5e0; border-radius:999px; overflow:hidden; background:var(--surface);">
+          <button type="button" onclick="setGlobalMonthSort('asc')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.globalMonthSort==='asc'?'var(--accent)':'transparent'}; color:${S.globalMonthSort==='asc'?'#fff':'var(--page-fg)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+          <button type="button" onclick="setGlobalMonthSort('desc')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.globalMonthSort==='desc'?'var(--accent)':'transparent'}; color:${S.globalMonthSort==='desc'?'#fff':'var(--page-fg)'}; font-weight:bold; cursor:pointer;">최신순</button>
+        </div>
+      </div>
+      <div class="subnav" style="margin-top:-6px;">${subnavHtml}</div>
+      <div class="stats" style="margin-top:10px;">
+        <div class="stat"><span class="k">경기</span><span class="v">${total}</span></div>
+        <div class="stat"><span class="k">승 / 패</span><span class="v">${winCount} / ${lossCount}</span></div>
+        <div class="stat">
+          <span class="k">승률</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="v">${winRate}%</span>
+            <div class="bar" style="width:110px; height:8px; border-radius:4px; background:var(--loss-bg); overflow:hidden;">
+              <b style="display:block; height:100%; width:${winRate}%; background:var(--win);"></b>
             </div>
           </div>
         </div>
-        <div class="toolbar">
-          <div></div>
-          ${isAdmin ? `<button class="btn-accent" onclick="openAdminModal('record')">+ 새 전적 추가</button>` : ''}
-        </div>
-        ${monthsHtml || '<div style="padding:40px;text-align:center;color:#888;">전적 기록이 없습니다.</div>'}
-      </div>`;
-  }).join("");
+      </div>
+      <div class="toolbar">
+        <div></div>
+        ${isAdmin ? `<button class="btn-accent" onclick="openAdminModal('record')">+ 새 전적 추가</button>` : ''}
+      </div>
+      ${monthsHtml || '<div style="padding:40px;text-align:center;color:#888;">전적 기록이 없습니다.</div>'}
+    </div>`;
 }
 
 function handleMonthToggle(k, isOpen) {
@@ -1867,6 +1940,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
         <div class="toolbar" style="align-items:center; margin-bottom:-10px;">
           <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
             <h2>${card.no} 상세 전적</h2>
+            <!-- 스크림/대회 모아보기 필터 버튼 (연한 노란색 톤 적용) -->
             <div class="seg" style="display:inline-flex; border:1.5px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
               <button type="button" onclick="setScrimFilter('전체')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='전체'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimFilter==='전체'?'bold':'normal'}; cursor:pointer;">전체</button>
               <button type="button" onclick="setScrimFilter('스크림')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='스크림'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimFilter==='스크림'?'bold':'normal'}; cursor:pointer;">스크림</button>
@@ -1981,7 +2055,8 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                 ${(curSet.positions || []).map(pos => {
                   const formatName = (name) => {
                     if (!name) return '';
-                    return name.replace(/도현/g, '<span style="color:var(--yellow-bright); font-weight:900;">도현</span>');
+                    // 도현 이름 강조 색상을 진노랑(var(--yellow-dark) 또는 #b45309)으로 변경
+                    return name.replace(/도현/g, '<span style="color:var(--yellow-dark); font-weight:900;">도현</span>');
                   };
                   return `
                   <tr>
@@ -2021,6 +2096,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     <div class="block">
       <div class="toolbar" style="align-items:center;">
         <h2>롤 멸망전</h2>
+        <!-- 오래된순/최신순 버튼 (연한 노란색 톤 적용) -->
         <div class="seg" style="display:inline-flex; border:1.5px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
           <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimSort==='old'?'bold':'normal'}; cursor:pointer;">오래된순</button>
           <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimSort==='latest'?'bold':'normal'}; cursor:pointer;">최신순</button>
