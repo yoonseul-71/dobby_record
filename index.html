@@ -204,16 +204,22 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .timeline-clean a:hover { text-decoration: underline; }
 .timeline-clean .arrow { color: var(--violet-ink); font-weight: bold; }
 
-/* 마크서버 일차 가로 스크롤 탭 컨테이너 */
-.day-tabs-container {
-  display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; padding-bottom: 6px;
-  -ms-overflow-style: auto; scrollbar-width: thin;
+/* 마크서버 일차 탭 8개씩 줄바꿈 구조 그리드 */
+.day-tabs-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 15px;
 }
-.day-tabs-container::-webkit-scrollbar { height: 6px; }
-.day-tabs-container::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+@media (max-width: 900px) {
+  .day-tabs-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 500px) {
+  .day-tabs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 .day-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-.day-tab-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; }
+.day-tab-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; width: 100%; text-align: center; }
 .day-tab-btn[aria-selected="true"] { background: var(--violet-bg); border-color: var(--violet); color: var(--violet-ink); }
 
 footer.bottom-footer {
@@ -404,7 +410,7 @@ const DEFAULT_MC = [
           {
             title: "",
             timelines: [
-              { text: "코창서버 접속 및 북해빙궁 정착", url: "", spacing: 0, highlight: false }
+              { text: "코창서버 접속 및 북해빙궁 정착", url: "", spacing: 0, highlight: "", bossItem: false, bossCount: 0 }
             ]
           }
         ]
@@ -460,11 +466,22 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || JSON.pars
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || JSON.parse(JSON.stringify(DEFAULT_SCRIM));
 let setsData = JSON.parse(localStorage.getItem("local_setsData")) || JSON.parse(JSON.stringify(DEFAULT_SETS));
 
-// 기존 마크서버 데이터에 videos 배열이 없으면 자동 추가
+// 데이터 구조 보완 (마크서버 일차별 고유 분리 및 데이터 유지)
 MC_SERVERS.forEach(s => {
   if (s.days) {
     s.days.forEach(d => {
       if (!d.videos) d.videos = [];
+      if (d.sections) {
+        d.sections.forEach(sec => {
+          if (sec.timelines) {
+            sec.timelines.forEach(t => {
+              if (t.highlight === undefined) t.highlight = "";
+              if (t.bossItem === undefined) t.bossItem = false;
+              if (t.bossCount === undefined) t.bossCount = 0;
+            });
+          }
+        });
+      }
     });
   }
 });
@@ -524,7 +541,13 @@ window.initAppAfterFirebase = function() {
         if (data.setsData && data.setsData.length > 0) setsData = data.setsData;
         if (data.MC_SERVERS && data.MC_SERVERS.length > 0) {
           MC_SERVERS = data.MC_SERVERS;
-          MC_SERVERS.forEach(s => { if (s.days) s.days.forEach(d => { if (!d.videos) d.videos = []; }); });
+          MC_SERVERS.forEach(s => {
+            if (s.days) {
+              s.days.forEach(d => {
+                if (!d.videos) d.videos = [];
+              });
+            }
+          });
         }
         if (data.CHONG_EPS && data.CHONG_EPS.length > 0) {
           CHONG_EPS = data.CHONG_EPS;
@@ -812,7 +835,7 @@ function handleAdminFormSubmit(e) {
       serverName: document.getElementById("afMcServer").value,
       guildName: document.getElementById("afMcGuild").value,
       dateRange: document.getElementById("afMcDateRange").value,
-      days: [{ dayTitle: "1일차", dateStr: "2026-05-20", videos: [], sections: [{ title: "", timelines: [{text: "서버 접속", url: "", spacing: 0, highlight: false}] }] }]
+      days: [{ dayTitle: "1일차", dateStr: "2026-05-20", videos: [], sections: [{ title: "", timelines: [{text: "서버 접속", url: "", spacing: 0, highlight: "", bossItem: false, bossCount: 0}] }] }]
     };
     if (idx >= 0) MC_SERVERS[idx] = { ...MC_SERVERS[idx], serverName: item.serverName, guildName: item.guildName, dateRange: item.dateRange };
     else MC_SERVERS.push(item);
@@ -863,8 +886,42 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     document.getElementById("asTitle").textContent = "시간대 수정";
     container.innerHTML = `<label>시간대 이름</label><input type="text" id="asDateStr" value="${card.groups[ex1].dates[ex2].dateStr}">`;
   } else if (type === "scrim-time-add") {
-    document.getElementById("asTitle").textContent = "세트 추가";
-    container.innerHTML = `<label>세트 표기</label><input type="text" id="asTimeLabel" value="1세트">`;
+    const card = SCRIM_CARDS.find(c => c.id === parentId);
+    const prevTimeObj = card.groups[ex1].dates[ex2].times.slice(-1)[0];
+    let defaultPositions = [
+      { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+      { pos: "정글", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+      { pos: "미드", p1: "도현", t1: "", c1: "", p2: "", t2: "", c2: "" },
+      { pos: "원딜", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+      { pos: "서포터", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" }
+    ];
+    let defaultSide = "레드";
+    let defaultLeft = "도현 팀";
+    let defaultRight = "상대 팀";
+
+    if (prevTimeObj && prevTimeObj.sets && prevTimeObj.sets[0]) {
+      const ps = prevTimeObj.sets[0];
+      defaultSide = ps.side || "레드";
+      defaultLeft = ps.leftTeamName || "도현 팀";
+      defaultRight = ps.rightTeamName || "상대 팀";
+      if (ps.positions) {
+        defaultPositions = JSON.parse(JSON.stringify(ps.positions)).map(p => {
+          p.c1 = "";
+          p.c2 = "";
+          return p;
+        });
+      }
+    }
+
+    document.getElementById("asTitle").textContent = "세트 추가 (이전 멤버·티어 복사됨)";
+    container.innerHTML = `
+      <label>세트 표기</label><input type="text" id="asTimeLabel" value="2세트" style="margin-bottom:8px;">
+      <input type="hidden" id="asCopiedSide" value="${defaultSide}">
+      <input type="hidden" id="asCopiedLeft" value="${defaultLeft}">
+      <input type="hidden" id="asCopiedRight" value="${defaultRight}">
+      <div style="font-size:12px; color:var(--page-muted); background:var(--neutral-bg); padding:8px; border-radius:6px;">이전 세트의 멤버와 티어가 기본 세팅되었습니다.</div>
+    `;
+    window._tempCopiedPositions = defaultPositions;
   } else if (type === "scrim-time-edit") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
     document.getElementById("asTitle").textContent = "세트 탭 수정";
@@ -954,7 +1011,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>영상 이름</label><input type="text" id="asVidName" value="${vObj.name}"><label>링크 URL</label><input type="text" id="asVidUrl" value="${vObj.url||''}">`;
   } else if (type === "mc-section-add") {
     document.getElementById("asTitle").textContent = "마크서버 섹션 추가";
-    container.innerHTML = `<label>섹션 제목 (비워두면 밑줄 없음)</label><input type="text" id="asSecTitle" placeholder="예: 주요 모험">`;
+    container.innerHTML = `<label>섹션 제목 (비워두면 밑줄 없음)</label><input type="text" id="asSecTitle" placeholder="예: 주요 모험 또는 보스">`;
   } else if (type === "mc-section-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const secObj = srv.days[ex1].sections[ex2];
@@ -965,9 +1022,20 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `
       <label>내용</label><textarea id="asTimelineText" rows="3"></textarea>
       <label>링크</label><input type="text" id="asTimelineUrl">
-      <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
-        <input type="checkbox" id="asTimelineHighlight" style="width:auto;">
-        <label for="asTimelineHighlight" style="margin:0; display:inline; cursor:pointer;">글자 길이만큼만 배경색 칠하기 (인라인 하이라이트)</label>
+      <label>인라인 배경색 (형광펜)</label>
+      <select id="asTimelineHighlight" style="margin-bottom:10px;">
+        <option value="">없음</option>
+        <option value="green">연두색 (하이라이트)</option>
+        <option value="yellow">연노란색 (루팅)</option>
+      </select>
+      <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <input type="checkbox" id="asBossItem" style="width:auto;" onchange="document.getElementById('bossCountWrap').style.display=this.checked?'block':'none';">
+          <label for="asBossItem" style="margin:0; display:inline; cursor:pointer; font-weight:bold; color:var(--accent);">보스 템 획득 표시 (섹션 제목이 '보스'일 때 작동)</label>
+        </div>
+        <div id="bossCountWrap" style="display:none;">
+          <label>상자 개수</label><input type="number" id="asBossCount" value="1" min="1" max="10">
+        </div>
       </div>
     `;
   } else if (type === "mc-timeline-edit") {
@@ -977,9 +1045,20 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `
       <label>내용</label><textarea id="asTimelineText" rows="3">${item.text}</textarea>
       <label>링크</label><input type="text" id="asTimelineUrl" value="${item.url||''}">
-      <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
-        <input type="checkbox" id="asTimelineHighlight" style="width:auto;" ${item.highlight?'checked':''}>
-        <label for="asTimelineHighlight" style="margin:0; display:inline; cursor:pointer;">글자 길이만큼만 배경색 칠하기 (인라인 하이라이트)</label>
+      <label>인라인 배경색 (형광펜)</label>
+      <select id="asTimelineHighlight" style="margin-bottom:10px;">
+        <option value="" ${!item.highlight?'selected':''}>없음</option>
+        <option value="green" ${item.highlight==='green'?'selected':''}>연두색 (하이라이트)</option>
+        <option value="yellow" ${item.highlight==='yellow'?'selected':''}>연노란색 (루팅)</option>
+      </select>
+      <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <input type="checkbox" id="asBossItem" style="width:auto;" ${item.bossItem?'checked':''} onchange="document.getElementById('bossCountWrap').style.display=this.checked?'block':'none';">
+          <label for="asBossItem" style="margin:0; display:inline; cursor:pointer; font-weight:bold; color:var(--accent);">보스 템 획득 표시 (섹션 제목이 '보스'일 때 작동)</label>
+        </div>
+        <div id="bossCountWrap" style="display:${item.bossItem?'block':'none'};">
+          <label>상자 개수</label><input type="number" id="asBossCount" value="${item.bossCount||1}" min="1" max="10">
+        </div>
       </div>
     `;
   }
@@ -1029,8 +1108,11 @@ function handleSubFormSubmit(e) {
       timesArr.push({
         timeLabel: document.getElementById("asTimeLabel").value,
         sets: [{
-          side: "레드", result: "승", leftTeamName: "도현 팀", rightTeamName: "상대 팀",
-          positions: [
+          side: document.getElementById("asCopiedSide") ? document.getElementById("asCopiedSide").value : "레드",
+          result: "승",
+          leftTeamName: document.getElementById("asCopiedLeft") ? document.getElementById("asCopiedLeft").value : "도현 팀",
+          rightTeamName: document.getElementById("asCopiedRight") ? document.getElementById("asCopiedRight").value : "상대 팀",
+          positions: window._tempCopiedPositions || [
             { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
             { pos: "정글", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
             { pos: "미드", p1: "도현", t1: "", c1: "", p2: "", t2: "", c2: "" },
@@ -1039,6 +1121,7 @@ function handleSubFormSubmit(e) {
           ]
         }]
       });
+      window._tempCopiedPositions = null;
       saveData();
     }
   } else if (type === "scrim-time-edit") {
@@ -1130,7 +1213,7 @@ function handleSubFormSubmit(e) {
   } else if (type === "mc-day") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     if (srv) {
-      srv.days.push({ dayTitle: document.getElementById("asDayTitle").value, dateStr: document.getElementById("asDateStr").value, videos: [], sections: [{ title: "", timelines: [{text: "서버 접속", url: "", spacing: 0, highlight: false}] }] });
+      srv.days.push({ dayTitle: document.getElementById("asDayTitle").value, dateStr: document.getElementById("asDateStr").value, videos: [], sections: [{ title: "", timelines: [{text: "서버 접속", url: "", spacing: 0, highlight: "", bossItem: false, bossCount: 0}] }] });
       saveData();
     }
   } else if (type === "mc-day-edit") {
@@ -1178,9 +1261,12 @@ function handleSubFormSubmit(e) {
     if (srv && srv.days[dayIdx] && srv.days[dayIdx].sections[secIdx]) {
       const text = document.getElementById("asTimelineText").value;
       const url = document.getElementById("asTimelineUrl").value;
-      const highlight = document.getElementById("asTimelineHighlight").checked;
+      const highlight = document.getElementById("asTimelineHighlight").value;
+      const bossItem = document.getElementById("asBossItem") ? document.getElementById("asBossItem").checked : false;
+      const bossCount = document.getElementById("asBossCount") ? parseInt(document.getElementById("asBossCount").value, 10) || 1 : 0;
+
       if (!srv.days[dayIdx].sections[secIdx].timelines) srv.days[dayIdx].sections[secIdx].timelines = [];
-      srv.days[dayIdx].sections[secIdx].timelines.push({ text, url, spacing: 0, highlight });
+      srv.days[dayIdx].sections[secIdx].timelines.push({ text, url, spacing: 0, highlight, bossItem, bossCount });
       saveData();
     }
   } else if (type === "mc-timeline-edit") {
@@ -1192,7 +1278,9 @@ function handleSubFormSubmit(e) {
       const item = srv.days[dayIdx].sections[secIdx].timelines[timeIdx];
       item.text = document.getElementById("asTimelineText").value;
       item.url = document.getElementById("asTimelineUrl").value;
-      item.highlight = document.getElementById("asTimelineHighlight").checked;
+      item.highlight = document.getElementById("asTimelineHighlight").value;
+      item.bossItem = document.getElementById("asBossItem") ? document.getElementById("asBossItem").checked : false;
+      item.bossCount = document.getElementById("asBossCount") ? parseInt(document.getElementById("asBossCount").value, 10) || 1 : 0;
       saveData();
     }
   }
@@ -1693,7 +1781,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
 
       <div class="day-tabs" style="margin-top:10px;">
         ${epObj.tabs.map((t, idx) => `
-          <button class="day-tab-btn" style="border:1.5px solid ${idx===tabIdx?'var(--violet)':'var(--line)'}; background:${idx===tabIdx?'var(--violet-bg)':'transparent'}; color:${idx===tabIdx?'var(--violet-ink)':'inherit'};" onclick="location.hash='#chong-${epObj.ep}-t${idx}'" ${idx === tabIdx ? 'aria-selected="true"' : ''}>
+          <button class="day-tab-btn" style="width:auto; border:1.5px solid ${idx===tabIdx?'var(--violet)':'var(--line)'}; background:${idx===tabIdx?'var(--violet-bg)':'transparent'}; color:${idx===tabIdx?'var(--violet-ink)':'inherit'};" onclick="location.hash='#chong-${epObj.ep}-t${idx}'" ${idx === tabIdx ? 'aria-selected="true"' : ''}>
             ${t.tabTitle}
           </button>
         `).join('')}
@@ -2040,34 +2128,33 @@ function renderMinecraft(subId, dayIndex = 0) {
           ` : ''}
         </div>
 
-        <!-- 일차 탭 가로 스크롤 영역 -->
-        <div class="day-tabs-container">
-          <div class="day-tabs" style="margin-bottom:0; flex-wrap:nowrap;">
+        <!-- 일차 탭 8개씩 줄바꿈 그리드 구조 -->
+        <div>
+          <div class="day-tabs-grid">
             ${srv.days.map((d, idx) => `
-              <div style="display:inline-flex; align-items:center; background:#fff; border:1.5px solid ${idx===dayIndex?'var(--sky)':'var(--line)'}; border-radius:8px; white-space:nowrap;">
-                <button class="day-tab-btn" style="border:0; background:${idx===dayIndex?'var(--sky-bg)':'transparent'}; color:${idx===dayIndex?'var(--sky-ink)':'inherit'};" onclick="location.hash='#mc-${srv.id}-d${idx}'" ${idx === dayIndex ? 'aria-selected="true"' : ''}>
+              <div style="display:inline-flex; align-items:center; background:#fff; border:1.5px solid ${idx===dayIndex?'var(--sky)':'var(--line)'}; border-radius:8px;">
+                <button class="day-tab-btn" style="background:${idx===dayIndex?'var(--sky-bg)':'transparent'}; color:${idx===dayIndex?'var(--sky-ink)':'inherit'}; border:0;" onclick="location.hash='#mc-${srv.id}-d${idx}'" ${idx === dayIndex ? 'aria-selected="true"' : ''}>
                   ${d.dayTitle} <span style="font-size:11px; opacity:0.7;">(${d.dateStr})</span>
                 </button>
                 ${isAdmin ? `
-                  <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${srv.id}', 'mc-day-edit', ${idx})">✏️</button>
-                  <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('mc-day', '${srv.id}', ${idx})">✕</button>
+                  <button class="btn-btn" style="background:transparent; border:0; padding:2px;" onclick="openSubAdminModal('${srv.id}', 'mc-day-edit', ${idx})">✏️</button>
+                  <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px;" onclick="deleteSubItem('mc-day', '${srv.id}', ${idx})">✕</button>
                 ` : ''}
               </div>
             `).join('')}
           </div>
-          ${isAdmin ? `<button class="btn-accent" style="white-space:nowrap; height:36px;" onclick="openSubAdminModal('${srv.id}', 'mc-day')">+ 일자 추가</button>` : ''}
+          ${isAdmin ? `<button class="btn-accent" style="margin-top:4px;" onclick="openSubAdminModal('${srv.id}', 'mc-day')">+ 일자 추가</button>` : ''}
         </div>
 
-        <!-- 각 일차 상단 풀영상 링크 목록 (클립 아이콘 적용) -->
+        <!-- 각 일차 상단 풀영상 링크 목록 (클립 아이콘 삭제, 단순 네모 작은 박스) -->
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:4px;">
           <span style="font-size:13px; font-weight:bold; color:var(--page-muted);">풀영상:</span>
           ${videos.map((v, vIdx) => `
-            <div style="display:inline-flex; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:4px 10px; gap:6px; font-size:13px; font-weight:bold;">
-              <span>📎</span>
+            <div style="display:inline-flex; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:3px 8px; gap:6px; font-size:12.5px; font-weight:bold;">
               <a href="${v.url || '#'}" target="_blank" style="color:var(--accent); text-decoration:none;">${v.name}</a>
               ${isAdmin ? `
-                <button class="btn-btn" style="padding:1px 4px; font-size:10px;" onclick="openSubAdminModal('${srv.id}', 'mc-video-edit', ${dayIndex}, ${vIdx})">수정</button>
-                <button class="btn-btn" style="padding:1px 4px; font-size:10px; color:red;" onclick="deleteSubItem('mc-video', '${srv.id}', ${dayIndex}, ${vIdx})">✕</button>
+                <button class="btn-btn" style="padding:1px 3px; font-size:10px;" onclick="openSubAdminModal('${srv.id}', 'mc-video-edit', ${dayIndex}, ${vIdx})">수정</button>
+                <button class="btn-btn" style="padding:1px 3px; font-size:10px; color:red;" onclick="deleteSubItem('mc-video', '${srv.id}', ${dayIndex}, ${vIdx})">✕</button>
               ` : ''}
             </div>
           `).join('')}
@@ -2077,18 +2164,31 @@ function renderMinecraft(subId, dayIndex = 0) {
         <div class="ep-detail-wrap">
           ${(curDay.sections || []).map((sec, sIdx) => {
             const hasTitle = sec.title && sec.title.trim() !== "";
+            const isBossSection = sec.title && sec.title.trim() === "보스";
+
             const timelinesHtml = `
               <ul class="timeline-clean">
                 ${(sec.timelines || []).map((item, tIdx) => {
                   const spacingVal = item.spacing || 0;
                   const spacingStyles = Array(spacingVal).fill('<div style="height:12px;"></div>').join('');
-                  const bgStyle = item.highlight ? 'background-color: var(--sky-bg); padding: 2px 6px; border-radius: 4px;' : '';
+                  
+                  let bgStyle = '';
+                  if (item.highlight === 'green') bgStyle = 'background-color: #bbf7d0; padding: 2px 6px; border-radius: 4px;';
+                  else if (item.highlight === 'yellow') bgStyle = 'background-color: #fef08a; padding: 2px 6px; border-radius: 4px;';
+
+                  let bossBoxesHtml = '';
+                  if (isBossSection && item.bossItem && item.bossCount > 0) {
+                    const count = item.bossCount;
+                    const boxIconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:4px;"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.27 6.96 12.01 6.86"/><path d="M12 22.08V12"/></svg>`;
+                    bossBoxesHtml = `<span style="display:inline-flex; gap:2px; margin-left:6px; align-items:center;">` + Array(count).fill(boxIconSvg).join('') + `</span>`;
+                  }
                   
                   return `
                   <li style="flex-direction:column; align-items:stretch;">
                     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                       <div>
                         ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre" style="${bgStyle}">${item.text}</span></a>` : `<span class="text-pre" style="${bgStyle}">${item.text}</span>`}
+                        ${bossBoxesHtml}
                       </div>
                       <div style="display:flex; align-items:center; gap:4px;">
                         ${isAdmin ? `
