@@ -204,22 +204,22 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .timeline-clean a:hover { text-decoration: underline; }
 .timeline-clean .arrow { color: var(--violet-ink); font-weight: bold; }
 
-/* 마크서버 일차 탭 8개씩 줄바꿈 구조 그리드 (크기 완전 통일, 날짜 잘림 방지) */
+/* 마크서버 일차 탭 8개씩 줄바꿈 구조 그리드 (세부 날짜가 잘리지 않도록 충분한 너비와 패딩 확보) */
 .day-tabs-grid {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 15px;
 }
-@media (max-width: 1000px) {
+@media (max-width: 1100px) {
   .day-tabs-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
-@media (max-width: 550px) {
+@media (max-width: 600px) {
   .day-tabs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .day-tab-btn {
-  padding: 6px 4px;
+  padding: 6px 8px;
   border-radius: 8px;
   border: 1.5px solid var(--line);
   background: var(--surface);
@@ -2142,7 +2142,7 @@ function renderMinecraft(subId, dayIndex = 0) {
           ` : ''}
         </div>
 
-        <!-- 일차 탭 8개씩 줄바꿈 그리드 구조 (날짜 잘림 방지 스타일) -->
+        <!-- 일차 탭 8개씩 줄바꿈 그리드 구조 (세부 날짜 잘림 방지 수정됨) -->
         <div>
           <div class="day-tabs-grid">
             ${srv.days.map((d, idx) => `
