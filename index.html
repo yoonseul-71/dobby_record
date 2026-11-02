@@ -359,6 +359,34 @@ footer.bottom-footer {
   </div>
 </div>
 
+<!-- Firebase SDK 스크립트 로드 (캘린더 사이트와 동일한 실시간 연동 설정) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD...",
+    authDomain: "yoonseul-71.firebaseapp.com",
+    databaseURL: "https://yoonseul-71-default-rtdb.firebaseio.com",
+    projectId: "yoonseul-71",
+    storageBucket: "yoonseul-71.appspot.com",
+    messagingSenderId: "...",
+    appId: "..."
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.dbRef = db;
+  window.firebaseRef = ref;
+  window.firebaseSet = set;
+  window.firebaseOnValue = onValue;
+
+  if (window.initAppAfterFirebase) {
+    window.initAppAfterFirebase();
+  }
+</script>
+
 <script>
 const GAME_MODES = {
   "발로란트": ["전체", "내전", "랜드", "CK"],
@@ -475,7 +503,6 @@ const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
   };
 });
 
-// 데이터 연동 보장: 로컬스토리지 최우선 로드 및 동기화
 let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || JSON.parse(JSON.stringify(DEFAULT_MC));
 let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || JSON.parse(JSON.stringify(DEFAULT_CHONG));
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || JSON.parse(JSON.stringify(DEFAULT_SCRIM));
@@ -597,7 +624,9 @@ window.addEventListener("DOMContentLoaded", () => {
     sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
-  render();
+  if (!window.dbRef) {
+    render();
+  }
 });
 
 function promptAdminLogin() {
@@ -2057,7 +2086,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                 ${(curSet.positions || []).map(pos => {
                   const formatName = (name) => {
                     if (!name) return '';
-                    // 멸망전 상세페이지 도현 이름 강조 색상을 가독성 좋은 밝은 노랑(--yellow-bright)으로 지정
                     return name.replace(/도현/g, '<span style="color:var(--yellow-bright); font-weight:900;">도현</span>');
                   };
                   return `
