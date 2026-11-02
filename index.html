@@ -100,10 +100,6 @@ nav.bar a[aria-current="page"] {
 h2 { margin: 0; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
 
-.stats { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; }
-.stat .k { font-size: 12px; color: var(--page-muted); display: block; }
-.stat .v { font-weight: 800; font-size: 22px; }
-
 .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .month { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); margin-bottom: 16px; }
 .month summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: #eef3fc; color: #1a365d; font-weight: bold; flex-wrap: wrap; }
@@ -204,7 +200,7 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .timeline-clean a:hover { text-decoration: underline; }
 .timeline-clean .arrow { color: var(--violet-ink); font-weight: bold; }
 
-/* 2번 사진 레이아웃 스타일 적용: 넉넉한 2단/3단 카드형 버튼 레이아웃 구조 */
+/* 2번 사진 레이아웃 스타일 적용: 넉넉한 카드형 버튼 레이아웃 구조 */
 .day-tabs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -213,7 +209,7 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 }
 
 .day-tab-btn {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 10px;
   border: 1.5px solid #2563eb;
   background: var(--surface);
@@ -226,7 +222,7 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: 2px;
   box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   color: #1e3a8a;
@@ -413,7 +409,7 @@ const DEFAULT_MC = [
     days: [
       {
         dayTitle: "1일차",
-        dateStr: "2024.11.04",
+        dateStr: "2024.11.04 월",
         videos: [
           { name: "1일차 풀영상", url: "" }
         ],
@@ -845,7 +841,7 @@ function handleAdminFormSubmit(e) {
       serverName: document.getElementById("afMcServer").value,
       guildName: document.getElementById("afMcGuild").value,
       dateRange: document.getElementById("afMcDateRange").value,
-      days: [{ dayTitle: "1일차", dateStr: "2026-05-20", videos: [], sections: [{ title: "", timelines: [{text: "서버 접속", url: "", spacing: 0, highlight: "", bossItem: false, bossCount: 0}] }] }]
+      days: [{ dayTitle: "1일차", dateStr: "2024-11-04 월", videos: [], sections: [{ title: "", timelines: [{text: "서버 접속", url: "", spacing: 0, highlight: "", bossItem: false, bossCount: 0}] }] }]
     };
     if (idx >= 0) MC_SERVERS[idx] = { ...MC_SERVERS[idx], serverName: item.serverName, guildName: item.guildName, dateRange: item.dateRange };
     else MC_SERVERS.push(item);
@@ -1005,12 +1001,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3">${item.text}</textarea><label>링크</label><input type="text" id="asChongUrl" value="${item.url||''}">`;
   } else if (type === "mc-day") {
     document.getElementById("asTitle").textContent = "마크서버 일차 추가";
-    container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="2일차"><label>날짜</label><input type="text" id="asDateStr" value="2026-05-21">`;
+    container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="2일차"><label>날짜 및 요일 (예: 24.11.05 화)</label><input type="text" id="asDateStr" value="24.11.05 화">`;
   } else if (type === "mc-day-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const dObj = srv.days[ex1];
     document.getElementById("asTitle").textContent = "마크서버 일차 수정";
-    container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="${dObj.dayTitle}"><label>날짜</label><input type="text" id="asDateStr" value="${dObj.dateStr}">`;
+    container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="${dObj.dayTitle}"><label>날짜 및 요일 (예: 24.11.04 월)</label><input type="text" id="asDateStr" value="${dObj.dateStr}">`;
   } else if (type === "mc-video-add") {
     document.getElementById("asTitle").textContent = "풀영상 링크 추가";
     container.innerHTML = `<label>영상 이름 (예: 1일차 1부 풀영상)</label><input type="text" id="asVidName" value="1일차 풀영상"><label>링크 URL</label><input type="text" id="asVidUrl" placeholder="https://...">`;
@@ -2138,17 +2134,17 @@ function renderMinecraft(subId, dayIndex = 0) {
           ` : ''}
         </div>
 
-        <!-- 2번 사진 레이아웃 구조 (파란톤 카드형 버튼 그리드) -->
+        <!-- 2번 사진 레이아웃 구조 적용 (상단 태그 + 아래쪽 전체 날짜/요일) -->
         <div>
           <div class="day-tabs-grid">
             ${srv.days.map((d, idx) => `
               <div style="display:inline-flex; align-items:center; background:#fff; border:1.5px solid ${idx===dayIndex?'#1d4ed8':'#2563eb'}; border-radius:10px; width:100%; overflow:hidden;">
                 <button class="day-tab-btn" style="background:${idx===dayIndex?'#2563eb':'transparent'}; color:${idx===dayIndex?'#ffffff':'#1e3a8a'}; border:0;" onclick="location.hash='#mc-${srv.id}-d${idx}'" ${idx === dayIndex ? 'aria-selected="true"' : ''}>
-                  <span style="font-size:11px; opacity:0.85; font-weight:bold; background:${idx===dayIndex?'rgba(255,255,255,0.2)':'#dbeafe'}; padding:1px 6px; border-radius:4px; color:${idx===dayIndex?'#fff':'#1e40af'};">${d.dayTitle}</span>
-                  <span style="font-size:13px; font-weight:bold; margin-top:2px;">${d.dateStr.slice(5)}</span>
+                  <span style="font-size:10px; font-weight:bold; background:${idx===dayIndex?'rgba(255,255,255,0.7)':'#dbeafe'}; padding:1px 6px; border-radius:4px; color:${idx===dayIndex?'#1e40af':'#1e40af'};">${d.dayTitle}</span>
+                  <span style="font-size:13px; font-weight:bold; margin-top:1px; white-space:nowrap;">${d.dateStr}</span>
                 </button>
                 ${isAdmin ? `
-                  <div style="display:flex; flex-direction:column;">
+                  <div style="display:flex; flex-direction:column; background:${idx===dayIndex?'#2563eb':'#fff'};">
                     <button class="btn-btn" style="background:transparent; border:0; padding:2px;" onclick="openSubAdminModal('${srv.id}', 'mc-day-edit', ${idx})">✏️</button>
                     <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px;" onclick="deleteSubItem('mc-day', '${srv.id}', ${idx})">✕</button>
                   </div>
