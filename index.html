@@ -182,7 +182,6 @@ td.mono { font-weight: 500; }
 .mc-day-btn.active { background: var(--sky-bg); border-color: var(--sky); color: var(--sky-ink); }
 
 /* 총겜동 상세 탭 및 버튼 */
-.chong-top-toolbar { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 10px; }
 .chong-subtabs { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; }
 .chong-tab-btn { font: inherit; font-size: 13px; font-weight: bold; padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--violet-line); background: var(--surface); color: var(--violet-ink); cursor: pointer; }
 .chong-tab-btn[aria-pressed="true"] { background: var(--violet-bg); }
@@ -219,7 +218,7 @@ footer.bottom-footer { margin-top: 40px; padding-top: 20px; border-top: 1px soli
 </div>
 
 <div id="admin-bar">
-  <span>⚡ 관리자 모드 활성화됨</span>
+  <span>⚡ 관리자 모드 활성화됨 (하단바 또는 Alt+A로 종료 가능)</span>
   <div style="display:flex; gap:8px;">
     <button onclick="backupJsonData()" style="background:#3b82f6; color:#fff; border:0; padding:6px 12px; border-radius:6px; cursor:pointer;">데이터 백업(저장)</button>
     <button onclick="logoutAdmin()">관리자 종료</button>
@@ -282,7 +281,7 @@ window.addEventListener("DOMContentLoaded", () => {
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
 
-  // Alt + A 단축키 관리자 모드 토글
+  // Alt + A 단축키로 관리자 모드 토글 활성화
   window.addEventListener("keydown", (e) => {
     if (e.altKey && e.code === "KeyA") {
       e.preventDefault();
@@ -304,8 +303,16 @@ function promptAdminLogin() {
     render();
   }
 }
-function logoutAdmin() { isAdmin = false; document.getElementById("admin-bar").style.display = "none"; render(); }
-function toggleRowDetail(idx) { S.openRows[idx] = !S.openRows[idx]; render(); }
+function logoutAdmin() { 
+  isAdmin = false; 
+  document.getElementById("admin-bar").style.display = "none"; 
+  render(); 
+}
+
+function toggleRowDetail(idx) { 
+  S.openRows[idx] = !S.openRows[idx]; 
+  render(); 
+}
 
 function backupJsonData() {
   if (!window.firebaseSet || !window.dbRef || !window.firebaseRef) {
@@ -462,7 +469,7 @@ function renderRecords() {
     </div>`;
 }
 
-// 롤 멸망전 상세 페이지 (질문자님 스크린샷 100% 반영)[cite: 7, 9]
+// 롤 멸망전 상세 페이지 (스크린샷 레이아웃 100% 반영)[cite: 7, 9]
 function renderScrim() {
   const hash = location.hash;
   const match = hash.match(/^#scrim-detail-(\d+)$/);
@@ -574,7 +581,7 @@ function renderScrim() {
   `;
 }
 
-// 마크서버 상세 페이지 (질문자님 스크린샷 100% 반영)[cite: 4, 10]
+// 마크서버 상세 페이지 (스크린샷 레이아웃 100% 반영)[cite: 4, 10]
 function renderMC() {
   const hash = location.hash;
   const match = hash.match(/^#mc-detail-(\d+)$/);
@@ -641,7 +648,7 @@ function renderMC() {
   `;
 }
 
-// 총겜동 상세 페이지 (질문자님 스크린샷 100% 반영)[cite: 2, 5, 8]
+// 총겜동 상세 페이지 (스크린샷 레이아웃 100% 반영)[cite: 5, 8]
 function renderChong() {
   const hash = location.hash;
   const match = hash.match(/^#chong-detail-(\d+)$/);
