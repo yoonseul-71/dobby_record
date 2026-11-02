@@ -475,7 +475,7 @@ const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
   };
 });
 
-// 데이터 로드 우선순위: 로컬스토리지 최신 데이터를 가장 먼저 반영
+// 데이터 연동 보장: 로컬스토리지 최우선 로드 및 동기화
 let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || JSON.parse(JSON.stringify(DEFAULT_MC));
 let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || JSON.parse(JSON.stringify(DEFAULT_CHONG));
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || JSON.parse(JSON.stringify(DEFAULT_SCRIM));
@@ -512,16 +512,17 @@ CHONG_EPS.forEach(e => {
 });
 
 function saveData() {
+  localStorage.setItem("local_setsData", JSON.stringify(setsData));
+  localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
+  localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
+  localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS));
+
   const payload = {
     setsData: setsData,
     MC_SERVERS: MC_SERVERS,
     CHONG_EPS: CHONG_EPS,
     SCRIM_CARDS: SCRIM_CARDS
   };
-  localStorage.setItem("local_setsData", JSON.stringify(setsData));
-  localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
-  localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
-  localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS));
 
   if (window.dbRef && window.firebaseRef && window.firebaseSet) {
     window.firebaseSet(window.firebaseRef(window.dbRef, 'archiveData'), payload).catch(err => console.error("Firebase 저장 실패:", err));
@@ -552,26 +553,26 @@ window.initAppAfterFirebase = function() {
     window.firebaseOnValue(window.firebaseRef(window.dbRef, 'archiveData'), (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        if (data.setsData && data.setsData.length > 0) setsData = data.setsData;
+        if (data.setsData && data.setsData.length > 0) { setsData = data.setsData; localStorage.setItem("local_setsData", JSON.stringify(setsData)); }
         if (data.MC_SERVERS && data.MC_SERVERS.length > 0) {
           MC_SERVERS = data.MC_SERVERS;
+          localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
           MC_SERVERS.forEach(s => {
             if (s.days) {
-              s.days.forEach(d => {
-                if (!d.videos) d.videos = [];
-              });
+              s.days.forEach(d => { if (!d.videos) d.videos = []; });
             }
           });
         }
         if (data.CHONG_EPS && data.CHONG_EPS.length > 0) {
           CHONG_EPS = data.CHONG_EPS;
+          localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
           CHONG_EPS.forEach(e => {
             if (!e.tabs || e.tabs.length === 0) {
               e.tabs = [{ tabTitle: "본편", customTitle: "", desc: e.desc || "", sections: e.sections || [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }] }];
             }
           });
         }
-        if (data.SCRIM_CARDS && data.SCRIM_CARDS.length > 0) SCRIM_CARDS = data.SCRIM_CARDS;
+        if (data.SCRIM_CARDS && data.SCRIM_CARDS.length > 0) { SCRIM_CARDS = data.SCRIM_CARDS; localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS)); }
       }
       render();
     });
@@ -1494,7 +1495,7 @@ function renderRecords() {
   const winRate = (winCount + lossCount) ? Math.round((winCount / (winCount + lossCount)) * 100) : 0;
   
   const gameFilteredRows = setsData.filter(r => r.game === S.game);
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(y.replace("년", "")));
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
 
   const gameTabsHtml = games.map(g => `<button class="game-tab-btn" onclick="setGame('${g}')" aria-pressed="${S.game === g}">${g}</button>`).join("");
   const yearTabsHtml = years.map(y => {
