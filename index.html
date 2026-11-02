@@ -157,6 +157,7 @@ td.mono { font-weight: 500; }
 .card-title { font-size: 20px; font-weight: 800; color: #12161c; margin-bottom: 4px; }
 .card-sub { font-size: 13px; color: var(--page-muted); }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; color: var(--accent); }
+.card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
 .lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
@@ -168,6 +169,7 @@ footer.bottom-footer { margin-top: 40px; padding-top: 20px; border-top: 1px soli
 .footer-signature { font-weight: 700; color: #8c95a1; cursor: pointer; user-select: none; }
 #admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #18181b; color: #fff; padding: 10px 24px; display: none; justify-content: space-between; align-items: center; z-index: 999; font-weight: bold; }
 .btn-btn { font: inherit; font-size: 12px; padding: 3px 8px; border-radius: 6px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); }
+.btn-accent { background: var(--accent); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -271,6 +273,42 @@ function promptAdminLogin() {
 }
 function logoutAdmin() { isAdmin = false; document.getElementById("admin-bar").style.display = "none"; render(); }
 function toggleRowDetail(idx) { S.openRows[idx] = !S.openRows[idx]; render(); }
+
+// 백업 기능
+function backupJsonData() {
+  if (!window.firebaseSet || !window.dbRef || !window.firebaseRef) {
+    alert("Firebase가 연결되지 않았습니다.");
+    return;
+  }
+  const fullData = {
+    setsData: setsData,
+    MC_SERVERS: MC_SERVERS,
+    CHONG_EPS: CHONG_EPS,
+    SCRIM_CARDS: SCRIM_CARDS
+  };
+  window.firebaseSet(window.firebaseRef(window.dbRef, 'archiveData'), fullData)
+    .then(() => alert("데이터가 성공적으로 백업(저장)되었습니다!"))
+    .catch(err => alert("백업 실패: " + err.message));
+}
+
+// 아이템 삭제 기능
+function deleteItem(type, idx) {
+  if (!confirm("정말 삭제하시겠습니까?")) return;
+  if (type === 'record') {
+    setsData.splice(idx, 1);
+    localStorage.setItem("local_setsData", JSON.stringify(setsData));
+  } else if (type === 'scrim') {
+    SCRIM_CARDS.splice(idx, 1);
+    localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS));
+  } else if (type === 'mc') {
+    MC_SERVERS.splice(idx, 1);
+    localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
+  } else if (type === 'chong') {
+    CHONG_EPS.splice(idx, 1);
+    localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
+  }
+  render();
+}
 
 // 전적 렌더링 함수
 function renderRecords() {
@@ -453,8 +491,29 @@ function renderRecords() {
     </div>`;
 }
 
-// 롤 멸망전(#scrim) 렌더링
+// 롤 멸망전(#scrim) 목록 및 상세 페이지 렌더링[cite: 1, 7]
 function renderScrim() {
+  const hash = location.hash;
+  const match = hash.match(/^#scrim-detail-(\d+)$/);
+
+  if (match) {
+    const idx = parseInt(match[1], 10);
+    const c = SCRIM_CARDS[idx];
+    if (!c) return `<div>해당 멸망전 정보를 찾을 수 없습니다. <a href="#scrim">← 목록으로</a></div>`;
+
+    return `
+      <div class="block">
+        <div><a href="#scrim" style="font-weight:bold; color:var(--accent);">← 멸망전 목록으로</a></div>
+        <h2>${c.title || '멸망전'} 상세 전적</h2>
+        <div style="padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;">
+          <p><b>날짜:</b> ${c.dateStr || ''}</p>
+          <p><b>태그:</b> ${c.tag || ''}</p>
+          <div style="margin-top:20px; color:var(--page-muted);">상세 경기가 여기에 표시됩니다.</div>
+        </div>
+      </div>
+    `;
+  }
+
   const cards = Array.isArray(SCRIM_CARDS) ? SCRIM_CARDS : [];
   const cardsHtml = cards.map((c, idx) => `
     <div class="card" style="--tag-bg:var(--yellow-bg); --tag-ink:var(--yellow-ink); --tag-border:var(--yellow);" onclick="location.hash='#scrim-detail-${idx}'">
@@ -464,6 +523,7 @@ function renderScrim() {
         <div class="card-sub">${c.dateStr || '2025.11.'}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
+      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" style="color:red;" onclick="event.stopPropagation(); deleteItem('scrim', ${idx})">삭제</button></div>` : ''}
     </div>
   `).join("");
 
@@ -477,8 +537,28 @@ function renderScrim() {
   `;
 }
 
-// 마크서버(#mc) 렌더링
+// 마크서버(#mc) 목록 및 상세 페이지 렌더링[cite: 3, 4]
 function renderMC() {
+  const hash = location.hash;
+  const match = hash.match(/^#mc-detail-(\d+)$/);
+
+  if (match) {
+    const idx = parseInt(match[1], 10);
+    const s = MC_SERVERS[idx];
+    if (!s) return `<div>해당 서버 정보를 찾을 수 없습니다. <a href="#mc">← 목록으로</a></div>`;
+
+    return `
+      <div class="block">
+        <div><a href="#mc" style="font-weight:bold; color:var(--accent);">← 마크서버 목록으로</a></div>
+        <h2>${s.serverName || '서버'} - ${s.guildName || ''} 상세 정보</h2>
+        <div style="padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;">
+          <p><b>기간:</b> ${s.dateRange || ''}</p>
+          <div style="margin-top:20px; color:var(--page-muted);">서버 일차별 타임라인 및 상세 기록 영역입니다.</div>
+        </div>
+      </div>
+    `;
+  }
+
   const servers = Array.isArray(MC_SERVERS) ? MC_SERVERS : [];
   const listHtml = servers.map((s, idx) => `
     <div class="card" style="--tag-bg:var(--sky-bg); --tag-ink:var(--sky-ink); --tag-border:var(--sky);" onclick="location.hash='#mc-detail-${idx}'">
@@ -488,6 +568,7 @@ function renderMC() {
         <div class="card-sub">${s.dateRange || ''}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
+      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" style="color:red;" onclick="event.stopPropagation(); deleteItem('mc', ${idx})">삭제</button></div>` : ''}
     </div>
   `).join("");
 
@@ -501,8 +582,28 @@ function renderMC() {
   `;
 }
 
-// 총겜동(#chong) 렌더링
+// 총겜동(#chong) 목록 및 상세 페이지 렌더링[cite: 2, 5, 6]
 function renderChong() {
+  const hash = location.hash;
+  const match = hash.match(/^#chong-detail-(\d+)$/);
+
+  if (match) {
+    const idx = parseInt(match[1], 10);
+    const e = CHONG_EPS[idx];
+    if (!e) return `<div>해당 에피소드 정보를 찾을 수 없습니다. <a href="#chong">← 목록으로</a></div>`;
+
+    return `
+      <div class="block">
+        <div><a href="#chong" style="font-weight:bold; color:var(--accent);">← 총겜동 목록으로</a></div>
+        <h2>Ep.${e.ep || 0} ${e.title || ''}</h2>
+        <div style="padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;">
+          <p><b>날짜:</b> ${e.dateStr || ''}</p>
+          <div style="margin-top:20px; background:var(--box-pastel-violet); padding:15px; border-radius:8px; white-space:pre-wrap;">${e.tabs && e.tabs[0] ? e.tabs[0].desc : ''}</div>
+        </div>
+      </div>
+    `;
+  }
+
   const eps = Array.isArray(CHONG_EPS) ? CHONG_EPS : [];
   const listHtml = eps.map((e, idx) => `
     <div class="card" style="--tag-bg:var(--violet-bg); --tag-ink:var(--violet-ink); --tag-border:var(--violet-line);" onclick="location.hash='#chong-detail-${idx}'">
@@ -512,6 +613,7 @@ function renderChong() {
         <div class="card-sub">${e.dateStr || ''}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
+      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" style="color:red;" onclick="event.stopPropagation(); deleteItem('chong', ${idx})">삭제</button></div>` : ''}
     </div>
   `).join("");
 
@@ -555,7 +657,7 @@ function render() {
     }
   });
 
-  // 해시에 따른 화면 분기 처리
+  // 해시에 따른 화면 분기 처리 (상세 페이지 포함)
   if (hash.startsWith("#record")) {
     view.innerHTML = renderRecords();
   } else if (hash.startsWith("#scrim")) {
