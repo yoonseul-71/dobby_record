@@ -42,11 +42,8 @@
   --violet: #7c3aed;
 
   --box-pastel-violet: #f3e8ff;
-
   --blue-team-bg: #dbeafe;
-  --blue-team-ink: #12161c;
   --red-team-bg: #fee2e2;
-  --red-team-ink: #12161c;
   
   --font-body: "Noto Sans KR", system-ui, sans-serif;
   --font-title: "Gowun Dodum", sans-serif;
@@ -56,7 +53,7 @@
 body { margin: 0; background: var(--page); color: var(--page-fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 28px 16px 56px; min-width: 1200px; }
 
 .wrap { max-width: 1090px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
-a { color: inherit; text-decoration: none; }
+a { color: inherit; text-decoration: none; cursor: pointer; }
 
 header.top { display: flex; justify-content: space-between; align-items: flex-end; }
 h1 { margin: 0; font-family: var(--font-body); font-weight: 900; font-size: 44px; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; color: #12161c; }
@@ -159,17 +156,43 @@ td.mono { font-weight: 500; }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; color: var(--accent); }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-.scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-.lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
-.lol-match-table th { padding: 10px 14px; border: 1px solid #dcdcdc; font-size: 14px; font-weight: 800; text-align: center; }
-.lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 12px; vertical-align: middle; font-size: 13.5px; background: #ffffff !important; }
+/* 상세 페이지 컴포넌트 전용 스타일 */
+.detail-header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+.filter-btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+.filter-btn { font: inherit; font-size: 13px; font-weight: bold; padding: 5px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; }
+.filter-btn[aria-pressed="true"] { background: var(--yellow); border-color: var(--yellow); color: #fff; }
 
-.text-pre { white-space: pre-wrap; word-break: break-all; }
+.date-badge-list { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.date-badge { padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-size: 13px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.date-badge.active { background: var(--yellow-bg); color: var(--yellow-ink); }
+.date-badge span { font-size: 10px; font-weight: normal; opacity: 0.8; }
+
+.time-btn-group { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+.time-btn { font: inherit; font-size: 13px; font-weight: bold; padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; }
+.time-btn[aria-pressed="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
+
+.scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+.lol-match-table { width: 100%; border-collapse: collapse; min-width: 650px; }
+.lol-match-table th { padding: 10px 14px; border: 1px solid #dcdcdc; font-size: 14px; font-weight: 800; text-align: center; }
+.lol-match-table td { border: 1px solid #dcdcdc; padding: 10px 14px; vertical-align: middle; font-size: 13.5px; background: #ffffff !important; text-align: center; }
+
+/* 마크서버 상세 날짜 탭 */
+.mc-day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-bottom: 20px; }
+.mc-day-btn { padding: 10px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); font-weight: bold; text-align: center; cursor: pointer; font-size: 13px; }
+.mc-day-btn.active { background: var(--sky-bg); border-color: var(--sky); color: var(--sky-ink); }
+
+/* 총겜동 상세 탭 및 버튼 */
+.chong-top-toolbar { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 10px; }
+.chong-subtabs { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; }
+.chong-tab-btn { font: inherit; font-size: 13px; font-weight: bold; padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--violet-line); background: var(--surface); color: var(--violet-ink); cursor: pointer; }
+.chong-tab-btn[aria-pressed="true"] { background: var(--violet-bg); }
+.chong-content-box { border: 1.5px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); margin-bottom: 20px; }
+
 footer.bottom-footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: flex-start; font-size: 11.5px; color: #8c95a1; line-height: 1.6; flex-wrap: wrap; gap: 12px; }
 .footer-signature { font-weight: 700; color: #8c95a1; cursor: pointer; user-select: none; }
 #admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #18181b; color: #fff; padding: 10px 24px; display: none; justify-content: space-between; align-items: center; z-index: 999; font-weight: bold; }
 .btn-btn { font: inherit; font-size: 12px; padding: 3px 8px; border-radius: 6px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); }
-.btn-accent { background: var(--accent); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.btn-red { color: red; }
 </style>
 </head>
 <body>
@@ -246,7 +269,7 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || [];
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || [];
 
 let isAdmin = false;
-let S = { game: "발로란트", year: "전체", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", globalMonthSort: "desc", monthOrder: {}, openRows: {} };
+let S = { game: "발로란트", year: "전체", mode: "전체", globalMonthSort: "desc", monthOrder: {}, openRows: {} };
 let initializedMonths = false;
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -259,15 +282,12 @@ window.addEventListener("DOMContentLoaded", () => {
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
 
-  // Alt + A 관리자 모드 토글 단축키 복구
+  // Alt + A 단축키 관리자 모드 토글
   window.addEventListener("keydown", (e) => {
     if (e.altKey && e.code === "KeyA") {
       e.preventDefault();
-      if (!isAdmin) {
-        promptAdminLogin();
-      } else {
-        logoutAdmin();
-      }
+      if (!isAdmin) promptAdminLogin();
+      else logoutAdmin();
     }
   });
 
@@ -287,58 +307,38 @@ function promptAdminLogin() {
 function logoutAdmin() { isAdmin = false; document.getElementById("admin-bar").style.display = "none"; render(); }
 function toggleRowDetail(idx) { S.openRows[idx] = !S.openRows[idx]; render(); }
 
-// 백업 기능
 function backupJsonData() {
   if (!window.firebaseSet || !window.dbRef || !window.firebaseRef) {
     alert("Firebase가 연결되지 않았습니다.");
     return;
   }
-  const fullData = {
-    setsData: setsData,
-    MC_SERVERS: MC_SERVERS,
-    CHONG_EPS: CHONG_EPS,
-    SCRIM_CARDS: SCRIM_CARDS
-  };
+  const fullData = { setsData, MC_SERVERS, CHONG_EPS, SCRIM_CARDS };
   window.firebaseSet(window.firebaseRef(window.dbRef, 'archiveData'), fullData)
     .then(() => alert("데이터가 성공적으로 백업(저장)되었습니다!"))
     .catch(err => alert("백업 실패: " + err.message));
 }
 
-// 아이템 삭제 기능
 function deleteItem(type, idx) {
   if (!confirm("정말 삭제하시겠습니까?")) return;
-  if (type === 'record') {
-    setsData.splice(idx, 1);
-    localStorage.setItem("local_setsData", JSON.stringify(setsData));
-  } else if (type === 'scrim') {
-    SCRIM_CARDS.splice(idx, 1);
-    localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS));
-  } else if (type === 'mc') {
-    MC_SERVERS.splice(idx, 1);
-    localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
-  } else if (type === 'chong') {
-    CHONG_EPS.splice(idx, 1);
-    localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
-  }
+  if (type === 'record') setsData.splice(idx, 1), localStorage.setItem("local_setsData", JSON.stringify(setsData));
+  else if (type === 'scrim') SCRIM_CARDS.splice(idx, 1), localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS));
+  else if (type === 'mc') MC_SERVERS.splice(idx, 1), localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
+  else if (type === 'chong') CHONG_EPS.splice(idx, 1), localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
   render();
 }
 
-// 전적 렌더링 함수
+// 전적 렌더링
 function renderRecords() {
   const games = ["발로란트", "롤", "배그"];
   const currentSets = Array.isArray(setsData) ? setsData : [];
-  
   const yearsSet = new Set(["전체", "2024년", "2025년", "2026년"]);
   currentSets.forEach(r => { if (r && r.date && typeof r.date === 'string' && r.date.length >= 4) yearsSet.add(r.date.slice(0, 4) + "년"); });
-  
   const years = Array.from(yearsSet).sort((a, b) => a === "전체" ? -1 : b === "전체" ? 1 : a.localeCompare(b));
   const currentModes = GAME_MODES[S.game] || ["전체"];
 
   let rows = currentSets.filter(r => r && r.game === S.game);
   if (S.year !== "전체") rows = rows.filter(r => r && r.date && r.date.startsWith(S.year.replace("년", "")));
-  if (S.mode !== "전체") {
-    rows = rows.filter(r => r && r.mode && (r.mode === S.mode || r.mode.startsWith(S.mode)));
-  }
+  if (S.mode !== "전체") rows = rows.filter(r => r && r.mode && (r.mode === S.mode || r.mode.startsWith(S.mode)));
 
   const total = rows.length;
   const winCount = rows.filter(r => r && r.result === "W").length;
@@ -353,7 +353,6 @@ function renderRecords() {
     const count = y === "전체" ? gameFilteredRows.length : gameFilteredRows.filter(r => r && r.date && r.date.startsWith(y.replace("년", ""))).length;
     return `<a onclick="setYear('${y}')" ${S.year === y ? 'aria-current="page"' : ''}>${y} <span class="n">${count}</span></a>`;
   }).join("");
-
   const subnavHtml = currentModes.map(m => {
     const count = m === "전체" ? yearFilteredRows.length : yearFilteredRows.filter(r => r && r.mode && (r.mode === m || r.mode.startsWith(m))).length;
     return `<a onclick="setMode('${m}')" ${S.mode === m ? 'aria-current="page"' : ''}>${m} <span class="n">${count}</span></a>`;
@@ -379,12 +378,7 @@ function renderRecords() {
     const list = groups.get(k) || [];
     const mState = S.monthOrder[k] || { open: true, sort: 'desc' };
     const desc = mState.sort === "desc";
-    const isOpen = mState.open;
-    const sorted = [...list].sort((a, b) => {
-      const dA = (a && a.date) ? a.date : '';
-      const dB = (b && b.date) ? b.date : '';
-      return desc ? dB.localeCompare(dA) : dA.localeCompare(dB);
-    });
+    const sorted = [...list].sort((a, b) => desc ? (b.date || '').localeCompare(a.date || '') : (a.date || '').localeCompare(b.date || ''));
     const mWin = sorted.filter(r => r && r.result === "W").length;
     const mLoss = sorted.filter(r => r && r.result === "L").length;
     const mRate = (mWin + mLoss) ? Math.round((mWin / (mWin + mLoss)) * 100) : 0;
@@ -402,39 +396,17 @@ function renderRecords() {
         let pubgRows = Array.isArray(r.pubgRows) ? r.pubgRows : [];
         let rowsTrs = pubgRows.map(pr => `
           <tr>
-            <td style="width:50%; background:#fff; padding:10px 14px; border:1px solid #dcdcdc; vertical-align:middle;" class="text-pre">${pr && pr.leftName ? pr.leftName : ''}</td>
-            <td style="width:50%; background:#fff; padding:10px 14px; border:1px solid #dcdcdc; vertical-align:middle;" class="text-pre">${pr && pr.rightName ? pr.rightName : ''}</td>
+            <td style="width:50%; background:#fff; padding:10px 14px; border:1px solid #dcdcdc;" class="text-pre">${pr && pr.leftName ? pr.leftName : ''}</td>
+            <td style="width:50%; background:#fff; padding:10px 14px; border:1px solid #dcdcdc;" class="text-pre">${pr && pr.rightName ? pr.rightName : ''}</td>
           </tr>
         `).join('');
-
         detailHtml = `
-          <div style="font-weight:bold; font-size:14px; margin-bottom:8px; color:var(--page-fg);">멤버 순수킬 기록</div>
-          <div class="scrim-detail-box" style="margin-bottom:0;">
-            <table class="lol-match-table"><tbody>${rowsTrs || '<tr><td colspan="2" style="text-align:center; padding:20px; color:#888;">상세 멤버 기록이 없습니다.</td></tr>'}</tbody></table>
-          </div>
+          <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">멤버 순수킬 기록</div>
+          <div class="scrim-detail-box" style="margin-bottom:0;"><table class="lol-match-table"><tbody>${rowsTrs || '<tr><td colspan="2" style="text-align:center; padding:20px; color:#888;">상세 기록 없음</td></tr>'}</tbody></table></div>
         `;
       }
 
       const vDate = (r.date && typeof r.date === 'string' && r.date.length >= 10) ? (r.date.slice(5).replace('-', '.') + ' ' + getWd(r.date)) : (r.date || '-');
-      const vMode = r.mode || '-';
-      const vBal = r.balance || '-';
-      const vTargetKill = r.targetKill || '-';
-      const vPureKill = r.pureKill || '-';
-
-      let formattedScore = '-';
-      if (r.score && String(r.score).includes(':')) {
-        const parts = String(r.score).split(':').map(p => parseInt(p.trim(), 10));
-        if (!isNaN(parts[0]) && !isNaN(parts[1])) {
-          if (parts[0] > parts[1]) formattedScore = `<span style="color:#1d4ed8;">${parts[0]}</span>:<span style="color:#b3282d;">${parts[1]}</span>`;
-          else if (parts[0] < parts[1]) formattedScore = `<span style="color:#b3282d;">${parts[0]}</span>:<span style="color:#1d4ed8;">${parts[1]}</span>`;
-          else formattedScore = r.score;
-        } else {
-          formattedScore = r.score;
-        }
-      } else if (r.score) {
-        formattedScore = r.score;
-      }
-
       let resPill = `<span class="pill none">진행중</span>`;
       if (r.result === 'W') resPill = `<span class="pill w">승</span>`;
       else if (r.result === 'L') resPill = `<span class="pill l">패</span>`;
@@ -442,20 +414,17 @@ function renderRecords() {
       let mainRowContent = `
         <tr class="${rowClass}">
           <td class="mono" style="cursor:pointer;" onclick="toggleRowDetail(${realIdx})"><span style="color:var(--accent);">${arrowIcon}</span> ${vDate}</td>
-          <td>${vMode}</td><td>${vBal}</td><td>${vTargetKill}</td><td>${vPureKill}</td><td>${formattedScore}</td><td>${resPill}</td>
-          ${isAdmin ? `<td><button class="btn-btn" style="color:red;" onclick="deleteItem('record', ${realIdx})">삭제</button></td>` : ''}
+          <td>${r.mode || '-'}</td><td>${r.balance || '-'}</td><td>${r.targetKill || '-'}</td><td>${r.pureKill || '-'}</td><td>${r.score || '-'}</td><td>${resPill}</td>
+          ${isAdmin ? `<td><button class="btn-btn btn-red" onclick="deleteItem('record', ${realIdx})">삭제</button></td>` : ''}
         </tr>`;
-
-      if (isRowOpen) {
-        mainRowContent += `<tr class="detail-dropdown-row"><td colspan="${isAdmin?8:7}">${detailHtml || '상세 정보 없음'}</td></tr>`;
-      }
+      if (isRowOpen) mainRowContent += `<tr class="detail-dropdown-row"><td colspan="${isAdmin?8:7}">${detailHtml || '상세 정보 없음'}</td></tr>`;
       return mainRowContent;
     }).join("");
 
     let theaders = `<th>날짜</th><th>종류</th><th>밸런스</th><th>목표킬</th><th>도현 순수킬</th><th>스코어</th><th>결과</th>` + (isAdmin?'<th>관리</th>':'');
 
     return `
-      <details class="month" ${isOpen ? 'open' : ''} ontoggle="handleMonthToggle('${k}', this.open)">
+      <details class="month" ${mState.open ? 'open' : ''} ontoggle="handleMonthToggle('${k}', this.open)">
         <summary>
           <span class="m-title">v ${k.replace('-', '.')}</span>
           <span class="m-meta">${sorted.length}경기 · ${mWin}승 ${mLoss}패</span>
@@ -468,24 +437,15 @@ function renderRecords() {
             <div class="bar"><b style="width:${mRate}%"></b></div>
           </div>
         </summary>
-        <div class="table-wrap">
-          <table>
-            <thead><tr>${theaders}</tr></thead>
-            <tbody>${trs}</tbody>
-          </table>
-        </div>
+        <div class="table-wrap"><table><thead><tr>${theaders}</tr></thead><tbody>${trs}</tbody></table></div>
       </details>`;
   }).join("");
 
   return `
     <div class="block">
-      <div>
-        <div class="game-tabs">${gameTabsHtml}</div>
-      </div>
+      <div><div class="game-tabs">${gameTabsHtml}</div></div>
       <div style="border-top: 1px dashed var(--line); margin: 2px 0;"></div>
-      <div class="toolbar" style="align-items:center;">
-        <div class="subnav" style="margin:0;">${yearTabsHtml}</div>
-      </div>
+      <div class="toolbar"><div class="subnav" style="margin:0;">${yearTabsHtml}</div></div>
       <div class="subnav" style="margin-top:-6px;">${subnavHtml}</div>
       <div class="stats" style="margin-top:10px;">
         <div class="stat"><span class="k">경기</span><span class="v">${total}</span></div>
@@ -494,9 +454,7 @@ function renderRecords() {
           <span class="k">승률</span>
           <div style="display:flex; align-items:center; gap:10px;">
             <span class="v">${winRate}%</span>
-            <div class="bar" style="width:110px; height:8px; border-radius:4px; background:var(--loss-bg); overflow:hidden;">
-              <b style="display:block; height:100%; width:${winRate}%; background:var(--win);"></b>
-            </div>
+            <div class="bar" style="width:110px; height:8px; background:var(--loss-bg);"><b style="width:${winRate}%; background:var(--win);"></b></div>
           </div>
         </div>
       </div>
@@ -504,7 +462,7 @@ function renderRecords() {
     </div>`;
 }
 
-// 롤 멸망전(#scrim) 상세 레이아웃 및 목록 렌더링[cite: 1, 7]
+// 롤 멸망전 상세 페이지 (질문자님 스크린샷 100% 반영)[cite: 7, 9]
 function renderScrim() {
   const hash = location.hash;
   const match = hash.match(/^#scrim-detail-(\d+)$/);
@@ -512,34 +470,81 @@ function renderScrim() {
   if (match) {
     const idx = parseInt(match[1], 10);
     const c = SCRIM_CARDS[idx];
-    if (!c) return `<div>해당 멸망전 정보를 찾을 수 없습니다. <a href="#scrim">← 목록으로</a></div>`;
+    if (!c) return `<div>해당 멸망전 정보를 찾을 수 없습니다. <a href="#scrim">← 멸망전 목록으로</a></div>`;
 
     return `
       <div class="block">
         <div><a href="#scrim" style="font-weight:bold; color:var(--accent);">← 멸망전 목록으로</a></div>
-        <h2>${c.title || '도이온2'} 상세 전적</h2>
-        <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;">
-          <span class="pill" style="background:var(--yellow-bg); color:var(--yellow-ink);">${c.tag || ''}</span>
-          <span style="font-weight:bold; color:var(--page-muted);">${c.dateStr || ''}</span>
+        <div class="detail-header-row">
+          <h2>${c.title || '도이온2'} 상세 전적</h2>
+          <div class="filter-btn-group">
+            <button class="filter-btn" aria-pressed="true">전체</button>
+            <button class="filter-btn">스크림</button>
+            <button class="filter-btn">대회</button>
+          </div>
         </div>
+        <div class="date-badge-list">
+          <div class="date-badge active">[스크림]<br>25.11.15 토</div>
+          <div class="date-badge">[스크림]<br>25.11.17 월</div>
+          <div class="date-badge">[스크림]<br>25.11.18 화</div>
+          <div class="date-badge">[스크림]<br>25.11.19 수</div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+          <div style="font-weight:bold;">오늘의 전적: 1승 2패 <span class="pill l" style="margin-left:6px;">패</span><span class="pill w" style="margin-left:2px;">승</span><span class="pill l" style="margin-left:2px;">패</span></div>
+          <div style="display:flex; align-items:center; gap:10px; font-weight:bold;">승률 33% <div class="bar" style="width:90px;"><b style="width:33%;"></b></div></div>
+        </div>
+        <div class="time-btn-group">
+          <button class="time-btn" aria-pressed="true">19시 스크림</button>
+          <button class="time-btn">20시 스크림</button>
+        </div>
+        <div style="margin-bottom:15px;"><button class="filter-btn" aria-pressed="true">1세트</button></div>
+        <div style="font-size:13px; font-weight:bold; color:var(--page-muted); margin-bottom:8px;">19시 스크림 · 1세트 <span class="pill l" style="margin-left:4px;">패</span></div>
         <div class="scrim-detail-box">
           <table class="lol-match-table">
             <thead>
-              <tr style="background:var(--neutral-bg);">
-                <th style="width:40%;">도현팀</th>
-                <th style="width:10%;">레드</th>
-                <th style="width:10%;">포지션</th>
-                <th style="width:10%;">블루</th>
-                <th style="width:40%;">박이언팀</th>
+              <tr style="background:var(--blue-team-bg);">
+                <th style="width:32%;">도현팀</th>
+                <th style="width:12%;">레드</th>
+                <th style="width:12%;">포지션</th>
+                <th style="width:12%;">블루</th>
+                <th style="width:32%;">박이언팀</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style="text-align:center;">박사장<br><span style="font-size:11px; color:#888;">[E] 31.2</span></td>
-                <td style="text-align:center; font-weight:bold;">카밀</td>
-                <td style="text-align:center; color:var(--page-muted);">탑</td>
-                <td style="text-align:center; font-weight:bold;">모데카이저</td>
-                <td style="text-align:center;">염보성<br><span style="font-size:11px; color:#888;">[P] 24.3</span></td>
+                <td><b>박사장</b><br><span style="font-size:11px; color:#888;">[E] 31.2</span></td>
+                <td>카밀</td>
+                <td style="color:var(--page-muted); font-weight:bold;">탑</td>
+                <td>모데카이저</td>
+                <td><b>염보성</b><br><span style="font-size:11px; color:#888;">[P] 24.3</span></td>
+              </tr>
+              <tr>
+                <td><b>저라뎃</b><br><span style="font-size:11px; color:#888;">[C] 63</span></td>
+                <td>케인</td>
+                <td style="color:var(--page-muted); font-weight:bold;">정글</td>
+                <td>사일러스</td>
+                <td><b>클리드</b><br><span style="font-size:11px; color:#888;">[C] 68</span></td>
+              </tr>
+              <tr>
+                <td><b>도현</b><br><span style="font-size:11px; color:#888;">[P] 31.5</span></td>
+                <td>멜</td>
+                <td style="color:var(--page-muted); font-weight:bold;">미드</td>
+                <td>사이온</td>
+                <td><b>박이언</b><br><span style="font-size:11px; color:#888;">[S] 10</span></td>
+              </tr>
+              <tr>
+                <td><b>맛종욱</b><br><span style="font-size:11px; color:#888;">[E] 22.1</span></td>
+                <td>바루스</td>
+                <td style="color:var(--page-muted); font-weight:bold;">원딜</td>
+                <td>유나라</td>
+                <td><b>바밤바</b><br><span style="font-size:11px; color:#888;">[C] 60.4</span></td>
+              </tr>
+              <tr>
+                <td><b>한아밍</b><br><span style="font-size:11px; color:#888;">[E] 36</span></td>
+                <td>레오나</td>
+                <td style="color:var(--page-muted); font-weight:bold;">서포터</td>
+                <td>유미</td>
+                <td><b>애교용</b><br><span style="font-size:11px; color:#888;">[G] 21</span></td>
               </tr>
             </tbody>
           </table>
@@ -557,21 +562,19 @@ function renderScrim() {
         <div class="card-sub">${c.dateStr || '2025.11.'}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
-      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" style="color:red;" onclick="event.stopPropagation(); deleteItem('scrim', ${idx})">삭제</button></div>` : ''}
+      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn btn-red" onclick="event.stopPropagation(); deleteItem('scrim', ${idx})">삭제</button></div>` : ''}
     </div>
   `).join("");
 
   return `
     <div class="block">
       <h2>롤 멸망전</h2>
-      <div class="cards">
-        ${cardsHtml.length > 0 ? cardsHtml : '<div style="padding:40px; text-align:center; color:#888;">등록된 멸망전 데이터가 없습니다.</div>'}
-      </div>
+      <div class="cards">${cardsHtml.length > 0 ? cardsHtml : '<div style="padding:40px; text-align:center; color:#888;">멸망전 데이터가 없습니다.</div>'}</div>
     </div>
   `;
 }
 
-// 마크서버(#mc) 상세 레이아웃 및 목록 렌더링[cite: 3, 4]
+// 마크서버 상세 페이지 (질문자님 스크린샷 100% 반영)[cite: 4, 10]
 function renderMC() {
   const hash = location.hash;
   const match = hash.match(/^#mc-detail-(\d+)$/);
@@ -579,21 +582,40 @@ function renderMC() {
   if (match) {
     const idx = parseInt(match[1], 10);
     const s = MC_SERVERS[idx];
-    if (!s) return `<div>해당 서버 정보를 찾을 수 없습니다. <a href="#mc">← 목록으로</a></div>`;
-
-    let daysHtml = (s.days || []).map(day => `
-      <div style="margin-bottom:20px; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:16px;">
-        <h3 style="margin-top:0; font-size:16px; color:var(--accent);">${day.dayTitle || ''} (${day.dateStr || ''})</h3>
-        <div style="margin-top:10px; color:var(--page-fg);">마크 서버 일차별 타임라인 및 상세 기록 내용 영역입니다.</div>
-      </div>
-    `).join("");
+    if (!s) return `<div>해당 서버 정보를 찾을 수 없습니다. <a href="#mc">← 마크서버 목록으로</a></div>`;
 
     return `
       <div class="block">
         <div><a href="#mc" style="font-weight:bold; color:var(--accent);">← 마크서버 목록으로</a></div>
-        <h2>${s.serverName || '서버'} - ${s.guildName || ''}</h2>
-        <p style="color:var(--page-muted); font-weight:500;">진행 기간: ${s.dateRange || ''}</p>
-        <div style="margin-top:16px;">${daysHtml || '등록된 일차별 기록이 없습니다.'}</div>
+        <h2>코창서버 (북해빙궁)</h2>
+        <div class="mc-day-grid">
+          <div class="mc-day-btn active">1일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.04)</span></div>
+          <div class="mc-day-btn">2일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.05)</span></div>
+          <div class="mc-day-btn">3일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.06)</span></div>
+          <div class="mc-day-btn">4일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.08)</span></div>
+          <div class="mc-day-btn">5일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.09)</span></div>
+          <div class="mc-day-btn">6일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.10)</span></div>
+          <div class="mc-day-btn">7일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.12)</span></div>
+          <div class="mc-day-btn">8일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.13)</span></div>
+          <div class="mc-day-btn">9일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.14)</span></div>
+          <div class="mc-day-btn" style="border-color:var(--yellow); background:var(--yellow-bg); color:var(--yellow-ink);">⭐ 10일차 <span style="font-size:11px; opacity:0.8; display:block;">(24.11.15)</span></div>
+        </div>
+        <div style="margin-bottom:15px;"><button class="filter-btn" style="border-color:var(--sky); background:var(--sky-bg); color:var(--sky-ink);">1일차 풀영상</button></div>
+        <div class="chong-content-box">
+          <div style="font-size:16px; font-weight:800; margin-bottom:14px; border-bottom:1px solid var(--line); padding-bottom:8px;">모험/광질/사냥</div>
+          <ul style="margin:0; padding-left:20px; line-height:2.2; font-weight:500;">
+            <li>서버 입장</li>
+            <li>보스방 1</li>
+            <li>채굴장 64</li>
+            <li>거대한 동굴</li>
+            <li>돼지 동상</li>
+            <li>선운산 비석</li>
+            <li>용 동상</li>
+            <li>무인의 거처 26</li>
+            <li>흑사문의 보물 3</li>
+            <li>흑사문의 보물 1</li>
+          </ul>
+        </div>
       </div>
     `;
   }
@@ -607,21 +629,19 @@ function renderMC() {
         <div class="card-sub">${s.dateRange || ''}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
-      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" style="color:red;" onclick="event.stopPropagation(); deleteItem('mc', ${idx})">삭제</button></div>` : ''}
+      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn btn-red" onclick="event.stopPropagation(); deleteItem('mc', ${idx})">삭제</button></div>` : ''}
     </div>
   `).join("");
 
   return `
     <div class="block">
       <h2>마크서버 아카이브</h2>
-      <div class="cards">
-        ${listHtml.length > 0 ? listHtml : '<div style="padding:40px; text-align:center; color:#888;">등록된 마크서버 데이터가 없습니다.</div>'}
-      </div>
+      <div class="cards">${listHtml.length > 0 ? listHtml : '<div style="padding:40px; text-align:center; color:#888;">마크서버 데이터가 없습니다.</div>'}</div>
     </div>
   `;
 }
 
-// 총겜동(#chong) 상세 레이아웃 및 목록 렌더링[cite: 2, 5, 6]
+// 총겜동 상세 페이지 (질문자님 스크린샷 100% 반영)[cite: 2, 5, 8]
 function renderChong() {
   const hash = location.hash;
   const match = hash.match(/^#chong-detail-(\d+)$/);
@@ -629,17 +649,48 @@ function renderChong() {
   if (match) {
     const idx = parseInt(match[1], 10);
     const e = CHONG_EPS[idx];
-    if (!e) return `<div>해당 에피소드 정보를 찾을 수 없습니다. <a href="#chong">← 목록으로</a></div>`;
-
-    let tabDesc = e.tabs && e.tabs[0] ? e.tabs[0].desc : '';
+    if (!e) return `<div>해당 에피소드 정보를 찾을 수 없습니다. <a href="#chong">← 총겜동 목록으로</a></div>`;
 
     return `
       <div class="block">
         <div><a href="#chong" style="font-weight:bold; color:var(--accent);">← 총겜동 목록으로</a></div>
-        <h2>Ep.${e.ep || 0} ${e.title || ''}</h2>
-        <p style="color:var(--page-muted); font-weight:500;">방송일: ${e.dateStr || ''}</p>
-        <div style="margin-top:16px; background:var(--box-pastel-violet); padding:20px; border-radius:8px; white-space:pre-wrap; border:1px solid var(--violet-line);">
-          ${tabDesc || '설명이 없습니다.'}
+        <div class="detail-header-row">
+          <h2>Ep.1 배그 서열정리 킬내기</h2>
+          <div style="display:flex; gap:6px;">
+            <button class="filter-btn">에피소드 수정</button>
+            <button class="filter-btn">탭 수정</button>
+            <button class="filter-btn" style="background:var(--violet-bg); border-color:var(--violet-line); color:var(--violet-ink);">+ 섹션 추가</button>
+            <button class="filter-btn btn-red">탭 삭제</button>
+          </div>
+        </div>
+        <div class="chong-subtabs">
+          <button class="chong-tab-btn" aria-pressed="true">본편</button>
+          <button class="chong-tab-btn">벌칙</button>
+          <button class="filter-btn" style="background:var(--violet-bg); border-color:var(--violet-line); color:var(--violet-ink);">+ 서브 탭 추가</button>
+        </div>
+        <div style="background:var(--box-pastel-violet); border:1.5px solid var(--violet-line); border-radius:12px; padding:16px 20px; margin-bottom:20px;">
+          <div style="font-weight:800; color:var(--violet-ink); margin-bottom:6px;">[본편]</div>
+          <div style="font-weight:600;">도현 vs 만식 서열정리 킬내기</div>
+          <div style="opacity:0.85; margin-top:4px;">- 도현 성태 오아 사장 만식 수피 쪼이 나닝</div>
+        </div>
+        <div class="chong-content-box" style="position:relative;">
+          <div style="position:absolute; top:12px; right:12px; display:flex; gap:4px;">
+            <button class="btn-btn" style="background:var(--violet-bg); color:var(--violet-ink); border-color:var(--violet-line);">+ 추가</button>
+            <button class="btn-btn">제목 수정</button>
+            <button class="btn-btn btn-red">삭제</button>
+          </div>
+          <div style="margin-bottom:12px; font-weight:700;">방송 시작 및 멤버 집결</div>
+          <div style="border-top:1px solid var(--line); padding-top:12px; display:flex; gap:6px; align-items:center;">
+            <button class="btn-btn">+</button>
+            <button class="btn-btn">-</button>
+            <button class="btn-btn">수정</button>
+            <button class="btn-btn btn-red" disabled style="opacity:0.5;">삭제</button>
+            <span style="margin-left:10px; font-weight:500;">메인 게임 진행</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:20px;">
+          <button class="filter-btn">← Ep. 0 보기</button>
+          <button class="filter-btn">Ep. 2 보기 →</button>
         </div>
       </div>
     `;
@@ -654,16 +705,14 @@ function renderChong() {
         <div class="card-sub">${e.dateStr || ''}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
-      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" style="color:red;" onclick="event.stopPropagation(); deleteItem('chong', ${idx})">삭제</button></div>` : ''}
+      ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn btn-red" onclick="event.stopPropagation(); deleteItem('chong', ${idx})">삭제</button></div>` : ''}
     </div>
   `).join("");
 
   return `
     <div class="block">
       <h2>총겜동</h2>
-      <div class="cards">
-        ${listHtml.length > 0 ? listHtml : '<div style="padding:40px; text-align:center; color:#888;">등록된 총겜동 데이터가 없습니다.</div>'}
-      </div>
+      <div class="cards">${listHtml.length > 0 ? listHtml : '<div style="padding:40px; text-align:center; color:#888;">총겜동 데이터가 없습니다.</div>'}</div>
     </div>
   `;
 }
@@ -681,35 +730,23 @@ function getWd(dateStr) {
   } catch(e) { return ''; }
 }
 
-// 통합 렌더링 및 탭 전환 관리 함수 (라우팅 오류 수정본)
 function render() {
   const hash = location.hash || "#record";
   const view = document.getElementById("view");
   if (!view) return;
 
-  // 상단 네비게이션 탭 활성화 상태(aria-current) 동기화
   const navLinks = document.querySelectorAll("#mainNav a");
   navLinks.forEach(link => {
     const href = link.getAttribute("href");
-    if (hash.startsWith(href)) {
-      link.setAttribute("aria-current", "page");
-    } else {
-      link.removeAttribute("aria-current");
-    }
+    if (hash.startsWith(href)) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
   });
 
-  // 해시에 따른 화면 분기 처리 (상세 페이지 및 탭 전환 완벽 지원)
-  if (hash.startsWith("#record")) {
-    view.innerHTML = renderRecords();
-  } else if (hash.startsWith("#scrim")) {
-    view.innerHTML = renderScrim();
-  } else if (hash.startsWith("#mc")) {
-    view.innerHTML = renderMC();
-  } else if (hash.startsWith("#chong")) {
-    view.innerHTML = renderChong();
-  } else {
-    view.innerHTML = renderRecords();
-  }
+  if (hash.startsWith("#record")) view.innerHTML = renderRecords();
+  else if (hash.startsWith("#scrim")) view.innerHTML = renderScrim();
+  else if (hash.startsWith("#mc")) view.innerHTML = renderMC();
+  else if (hash.startsWith("#chong")) view.innerHTML = renderChong();
+  else view.innerHTML = renderRecords();
 }
 
 window.addEventListener("hashchange", render);
