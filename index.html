@@ -136,7 +136,6 @@ td.mono { font-weight: 500; }
 .pill.d { background: #e2e8f0; color: #475569; }
 .pill.none { background: var(--neutral-bg); color: var(--page-muted); }
 
-/* 카드 디자인 스타일 복구 */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 15px; }
 .card {
   background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
@@ -454,15 +453,15 @@ function renderRecords() {
     </div>`;
 }
 
-// 롤 멸망전(#scrim) 카드 디자인 복구[cite: 1]
+// 롤 멸망전(#scrim) 렌더링
 function renderScrim() {
   const cards = Array.isArray(SCRIM_CARDS) ? SCRIM_CARDS : [];
   const cardsHtml = cards.map((c, idx) => `
-    <div class="card" style="--tag-bg:var(--yellow-bg); --tag-ink:var(--yellow-ink); --tag-border:var(--yellow);">
-      <div class="card-corner-tag">${c.tag || '멸망전'}</div>
+    <div class="card" style="--tag-bg:var(--yellow-bg); --tag-ink:var(--yellow-ink); --tag-border:var(--yellow);" onclick="location.hash='#scrim-detail-${idx}'">
+      <div class="card-corner-tag">${c.tag || '2025 시즌2 멸망전'}</div>
       <div class="card-content-area">
         <div class="card-title">${c.title || '도이온2'}</div>
-        <div class="card-sub">${c.dateStr || ''}</div>
+        <div class="card-sub">${c.dateStr || '2025.11.'}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
     </div>
@@ -478,14 +477,14 @@ function renderScrim() {
   `;
 }
 
-// 마크서버(#mc) 카드 디자인 복구[cite: 3]
+// 마크서버(#mc) 렌더링
 function renderMC() {
   const servers = Array.isArray(MC_SERVERS) ? MC_SERVERS : [];
   const listHtml = servers.map((s, idx) => `
-    <div class="card" style="--tag-bg:var(--sky-bg); --tag-ink:var(--sky-ink); --tag-border:var(--sky);">
-      <div class="card-corner-tag">${s.serverName || '서버'}</div>
+    <div class="card" style="--tag-bg:var(--sky-bg); --tag-ink:var(--sky-ink); --tag-border:var(--sky);" onclick="location.hash='#mc-detail-${idx}'">
+      <div class="card-corner-tag">${s.serverName || '코창서버'}</div>
       <div class="card-content-area">
-        <div class="card-title">${s.guildName || '길드명'}</div>
+        <div class="card-title">${s.guildName || '북해빙궁'}</div>
         <div class="card-sub">${s.dateRange || ''}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
@@ -502,14 +501,14 @@ function renderMC() {
   `;
 }
 
-// 총겜동(#chong) 카드 디자인 복구[cite: 2]
+// 총겜동(#chong) 렌더링
 function renderChong() {
   const eps = Array.isArray(CHONG_EPS) ? CHONG_EPS : [];
   const listHtml = eps.map((e, idx) => `
-    <div class="card" style="--tag-bg:var(--violet-bg); --tag-ink:var(--violet-ink); --tag-border:var(--violet-line);">
+    <div class="card" style="--tag-bg:var(--violet-bg); --tag-ink:var(--violet-ink); --tag-border:var(--violet-line);" onclick="location.hash='#chong-detail-${idx}'">
       <div class="card-corner-tag">Ep. ${e.ep || 0}</div>
       <div class="card-content-area">
-        <div class="card-title">${e.title || ''}</div>
+        <div class="card-title">${e.title || 'FPS 동아리: 총겜동'}</div>
         <div class="card-sub">${e.dateStr || ''}</div>
       </div>
       <div class="card-footer-link">상세보기 →</div>
@@ -548,21 +547,22 @@ function render() {
   // 상단 네비게이션 탭 활성화 상태(aria-current) 동기화
   const navLinks = document.querySelectorAll("#mainNav a");
   navLinks.forEach(link => {
-    if (link.getAttribute("href") === hash) {
+    const href = link.getAttribute("href");
+    if (hash.startsWith(href)) {
       link.setAttribute("aria-current", "page");
     } else {
       link.removeAttribute("aria-current");
     }
   });
 
-  // 해시에 따른 각 탭 화면 분기 처리
-  if (hash === "#record") {
+  // 해시에 따른 화면 분기 처리
+  if (hash.startsWith("#record")) {
     view.innerHTML = renderRecords();
-  } else if (hash === "#scrim") {
+  } else if (hash.startsWith("#scrim")) {
     view.innerHTML = renderScrim();
-  } else if (hash === "#mc") {
+  } else if (hash.startsWith("#mc")) {
     view.innerHTML = renderMC();
-  } else if (hash === "#chong") {
+  } else if (hash.startsWith("#chong")) {
     view.innerHTML = renderChong();
   } else {
     view.innerHTML = renderRecords();
