@@ -100,6 +100,10 @@ nav.bar a[aria-current="page"] {
 h2 { margin: 0; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
 
+.stats { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; }
+.stat .k { font-size: 12px; color: var(--page-muted); display: block; }
+.stat .v { font-weight: 800; font-size: 22px; }
+
 .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .month { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); margin-bottom: 16px; }
 .month summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: #eef3fc; color: #1a365d; font-weight: bold; flex-wrap: wrap; }
@@ -153,15 +157,45 @@ td.mono { font-weight: 500; }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
+/* 롤 멸망전 전용 노란색 테마 스타일 */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid #2563eb; background: #eff6ff; font-weight: bold; cursor: pointer; font-size: 13px; color: #1e3a8a; box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
-.scrim-top-date-btn[aria-selected="true"] { background: #2563eb; border-color: #1d4ed8; color: #ffffff; }
+.scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
 
-.scrim-time-btn { padding: 6px 16px; border-radius: 7px; border: 1.5px solid #2563eb; background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: #1e3a8a; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-.scrim-time-btn[aria-selected="true"] { border-color: #1d4ed8; background: #eff6ff; color: #1e3a8a; }
+.scrim-time-btn { padding: 6px 16px; border-radius: 7px; border: 1.5px solid var(--yellow); background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: var(--yellow-ink); white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.scrim-time-btn[aria-selected="true"] { border-color: var(--yellow); background: var(--yellow-bg); color: var(--yellow-ink); }
 .scrim-time-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 
-.today-scrim-bar { background: transparent; border: 1.5px solid #2563eb; border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: #1e3a8a; }
+.today-scrim-bar { background: transparent; border: 1.5px solid var(--yellow); border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: var(--yellow-ink); }
+
+/* 마크서버 상세페이지 날짜 버튼 스타일 (하늘색/파란색 테두리 적용) */
+.day-tabs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.day-tab-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #2563eb;
+  background: var(--surface);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 13.5px;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  color: #1e3a8a;
+}
+.day-tab-btn[aria-selected="true"] { background: #bfdbfe; border-color: #2563eb; color: #1e3a8a; }
 
 .scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
 .lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
@@ -199,35 +233,6 @@ th.header-red { background-color: var(--red-team-bg) !important; color: var(--re
 .timeline-clean a { color: #000; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
 .timeline-clean a:hover { text-decoration: underline; }
 .timeline-clean .arrow { color: var(--violet-ink); font-weight: bold; }
-
-/* 2번 사진 레이아웃 스타일 적용: 넉넉한 카드형 버튼 레이아웃 구조 */
-.day-tabs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.day-tab-btn {
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1.5px solid #2563eb;
-  background: var(--surface);
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 13.5px;
-  width: 100%;
-  height: 100%;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  box-sizing: border-box;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  color: #1e3a8a;
-}
-.day-tab-btn[aria-selected="true"] { background: #2563eb; border-color: #1d4ed8; color: #ffffff; }
 
 footer.bottom-footer {
   margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);
@@ -1929,10 +1934,10 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
         <div class="toolbar" style="align-items:center; margin-bottom:-10px;">
           <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
             <h2>${card.no} 상세 전적</h2>
-            <div class="seg" style="display:inline-flex; border:1px solid #2563eb; border-radius:999px; overflow:hidden; background:#ffffff;">
-              <button type="button" onclick="setScrimFilter('전체')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='전체'?'#2563eb':'transparent'}; color:${S.scrimFilter==='전체'?'#ffffff':'#1e3a8a'}; font-weight:bold; cursor:pointer;">전체</button>
-              <button type="button" onclick="setScrimFilter('스크림')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='스크림'?'#2563eb':'transparent'}; color:${S.scrimFilter==='스크림'?'#ffffff':'#1e3a8a'}; font-weight:bold; cursor:pointer;">스크림</button>
-              <button type="button" onclick="setScrimFilter('대회')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='대회'?'#2563eb':'transparent'}; color:${S.scrimFilter==='대회'?'#ffffff':'#1e3a8a'}; font-weight:bold; cursor:pointer;">대회</button>
+            <div class="seg" style="display:inline-flex; border:1px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
+              <button type="button" onclick="setScrimFilter('전체')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='전체'?'var(--yellow)':'transparent'}; color:${S.scrimFilter==='전체'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">전체</button>
+              <button type="button" onclick="setScrimFilter('스크림')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='스크림'?'var(--yellow)':'transparent'}; color:${S.scrimFilter==='스크림'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">스크림</button>
+              <button type="button" onclick="setScrimFilter('대회')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='대회'?'var(--yellow)':'transparent'}; color:${S.scrimFilter==='대회'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">대회</button>
             </div>
           </div>
         </div>
@@ -1944,9 +1949,9 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
             const catLabel = g.category || "스크림";
             const isSel = (idx === gI);
             return `
-              <div style="display:inline-flex; align-items:center; background:#ffffff; border-radius:8px; border:1.5px solid ${isSel?'#1d4ed8':'#2563eb'};">
-                <button class="scrim-top-date-btn" style="border:0; background:${isSel?'#eff6ff':'transparent'}; color:#1e3a8a;" ${isSel?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">
-                  <span style="font-size:10px; font-weight:bold; color:${isSel?'#1e40af':'#1d4ed8'}; background:${isSel?'rgba(255,255,255,0.7)':'#dbeafe'}; padding:1px 5px; border-radius:4px; margin-bottom:1px;">[${catLabel}]</span>
+              <div style="display:inline-flex; align-items:center; background:#ffffff; border-radius:8px; border:1.5px solid var(--yellow);">
+                <button class="scrim-top-date-btn" style="border:0; background:${isSel?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink);" ${isSel?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">
+                  <span style="font-size:10px; font-weight:bold; color:var(--yellow-ink); background:${isSel?'rgba(255,255,255,0.7)':'var(--yellow-bg)'}; padding:1px 5px; border-radius:4px; margin-bottom:1px;">[${catLabel}]</span>
                   <span>${g.groupTitle}</span>
                 </button>
                 ${isAdmin ? `
@@ -1956,7 +1961,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
               </div>
             `;
           }).join('')}
-          ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
+          ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink);" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
         </div>
 
         ${isScrimCategory ? `
@@ -1977,30 +1982,30 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
         ${curGroup ? `
           <div class="scrim-time-bar">
             ${dates.map((d, idx) => `
-              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid #2563eb; background:#ffffff;">
-                <button class="scrim-time-btn" style="border:0; background:${idx===dI?'#eff6ff':'transparent'}; color:#1e3a8a;" ${idx===dI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0'">${d.dateStr}</button>
+              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid var(--yellow); background:#ffffff;">
+                <button class="scrim-time-btn" style="border:0; background:${idx===dI?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink);" ${idx===dI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0'">${d.dateStr}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${card.id}', 'scrim-date-edit', ${gI}, ${idx})">✏️</button>
                   <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('scrim-date', '${card.id}', ${gI}, ${idx})">✕</button>
                 ` : ''}
               </div>
             `).join('')}
-            ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-date-add', ${gI})">+ 시간대 추가</button>` : ''}
+            ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink);" onclick="openSubAdminModal('${card.id}', 'scrim-date-add', ${gI})">+ 시간대 추가</button>` : ''}
           </div>
         ` : ''}
 
         ${curDateObj ? `
           <div class="scrim-time-bar" style="margin-bottom:16px;">
             ${times.map((t, idx) => `
-              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid #2563eb; background:${idx===tI?'#eff6ff':'#ffffff'}; padding:0;">
-                <button class="scrim-time-btn" style="border:0; background:transparent; color:#1e3a8a;" ${idx===tI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}'">${t.timeLabel}</button>
+              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid var(--yellow); background:${idx===tI?'var(--yellow-bg)':'#ffffff'}; padding:0;">
+                <button class="scrim-time-btn" style="border:0; background:transparent; color:var(--yellow-ink);" ${idx===tI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}'">${t.timeLabel}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:2px 4px;" onclick="openSubAdminModal('${card.id}', 'scrim-time-edit', ${gI}, ${dI}, ${idx})">✏️</button>
                   <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px 4px;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${idx})">✕</button>
                 ` : ''}
               </div>
             `).join('')}
-            ${isAdmin ? `<button class="btn-accent" onclick="openSubAdminModal('${card.id}', 'scrim-time-add', ${gI}, ${dI})">+ 세트 추가</button>` : ''}
+            ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink);" onclick="openSubAdminModal('${card.id}', 'scrim-time-add', ${gI}, ${dI})">+ 세트 추가</button>` : ''}
           </div>
         ` : ''}
 
@@ -2083,9 +2088,9 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     <div class="block">
       <div class="toolbar" style="align-items:center;">
         <h2>롤 멸망전</h2>
-        <div class="seg" style="display:inline-flex; border:1px solid #2563eb; border-radius:999px; overflow:hidden; background:#ffffff;">
-          <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'#2563eb':'transparent'}; color:${S.scrimSort==='old'?'#ffffff':'#1e3a8a'}; font-weight:bold; cursor:pointer;">오래된순</button>
-          <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'#2563eb':'transparent'}; color:${S.scrimSort==='latest'?'#ffffff':'#1e3a8a'}; font-weight:bold; cursor:pointer;">최신순</button>
+        <div class="seg" style="display:inline-flex; border:1px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
+          <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'var(--yellow)':'transparent'}; color:${S.scrimSort==='old'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
+          <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'var(--yellow)':'transparent'}; color:${S.scrimSort==='latest'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
         </div>
       </div>
 
@@ -2093,17 +2098,17 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
         ${sortedCards.map((c) => {
           const originalIdx = SCRIM_CARDS.indexOf(c);
           return `
-            <div class="card" style="border-top: 4px solid var(--sky);">
-              <div class="card-corner-tag" style="--tag-bg: var(--sky-bg); --tag-ink: var(--sky-ink); --tag-border: var(--sky);">${c.badge || '멸망전'}</div>
+            <div class="card" style="border-top: 4px solid var(--yellow);">
+              <div class="card-corner-tag" style="--tag-bg: var(--yellow-bg); --tag-ink: var(--yellow-ink); --tag-border: var(--yellow);">${c.badge || '멸망전'}</div>
               ${isAdmin ? `<div class="card-admin-btns"><button class="btn-btn" onclick="openAdminModal('scrim', ${originalIdx})">수정</button><button class="btn-btn" style="color:red;" onclick="deleteItem('scrim', ${originalIdx})">삭제</button></div>` : ''}
               <a href="#scrim-${c.id}-g0-d0-t0" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                 <div>
                   <div class="card-content-area">
-                    <div class="card-title" style="color: var(--sky-ink);">${c.no}</div>
+                    <div class="card-title" style="color: var(--yellow-ink);">${c.no}</div>
                     <div class="card-sub">${c.dateRange || ''}</div>
                   </div>
                 </div>
-                <div class="card-footer-link" style="color: var(--sky-ink); justify-content: flex-end;">
+                <div class="card-footer-link" style="color: var(--yellow-ink); justify-content: flex-end;">
                   <span>상세보기</span>
                   <span>→</span>
                 </div>
@@ -2134,17 +2139,17 @@ function renderMinecraft(subId, dayIndex = 0) {
           ` : ''}
         </div>
 
-        <!-- 2번 사진 레이아웃 구조 적용 (상단 태그 + 아래쪽 전체 날짜/요일) -->
+        <!-- 마크서버 상세페이지 날짜 버튼 그리드 구조 (선택 시 연한 하늘색 배경 및 파란색 테두리) -->
         <div>
           <div class="day-tabs-grid">
             ${srv.days.map((d, idx) => `
-              <div style="display:inline-flex; align-items:center; background:#fff; border:1.5px solid ${idx===dayIndex?'#1d4ed8':'#2563eb'}; border-radius:10px; width:100%; overflow:hidden;">
-                <button class="day-tab-btn" style="background:${idx===dayIndex?'#2563eb':'transparent'}; color:${idx===dayIndex?'#ffffff':'#1e3a8a'}; border:0;" onclick="location.hash='#mc-${srv.id}-d${idx}'" ${idx === dayIndex ? 'aria-selected="true"' : ''}>
-                  <span style="font-size:10px; font-weight:bold; background:${idx===dayIndex?'rgba(255,255,255,0.7)':'#dbeafe'}; padding:1px 6px; border-radius:4px; color:${idx===dayIndex?'#1e40af':'#1e40af'};">${d.dayTitle}</span>
+              <div style="display:inline-flex; align-items:center; background:#fff; border:1.5px solid #2563eb; border-radius:10px; width:100%; overflow:hidden;">
+                <button class="day-tab-btn" style="background:${idx===dayIndex?'#bfdbfe':'transparent'}; color:#1e3a8a; border:0;" onclick="location.hash='#mc-${srv.id}-d${idx}'" ${idx === dayIndex ? 'aria-selected="true"' : ''}>
+                  <span style="font-size:10px; font-weight:bold; background:${idx===dayIndex?'rgba(255,255,255,0.8)':'#dbeafe'}; padding:1px 6px; border-radius:4px; color:#1e40af;">${d.dayTitle}</span>
                   <span style="font-size:13px; font-weight:bold; margin-top:1px; white-space:nowrap;">${d.dateStr}</span>
                 </button>
                 ${isAdmin ? `
-                  <div style="display:flex; flex-direction:column; background:${idx===dayIndex?'#2563eb':'#fff'};">
+                  <div style="display:flex; flex-direction:column; background:${idx===dayIndex?'#bfdbfe':'#fff'};">
                     <button class="btn-btn" style="background:transparent; border:0; padding:2px;" onclick="openSubAdminModal('${srv.id}', 'mc-day-edit', ${idx})">✏️</button>
                     <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px;" onclick="deleteSubItem('mc-day', '${srv.id}', ${idx})">✕</button>
                   </div>
