@@ -159,7 +159,6 @@ td.mono { font-weight: 500; }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 전용 노란색 테마 스타일 */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
@@ -170,7 +169,6 @@ td.mono { font-weight: 500; }
 
 .today-scrim-bar { background: transparent; border: 1.5px solid var(--yellow); border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: var(--yellow-ink); }
 
-/* 마크서버 상세페이지 날짜 버튼 스타일 */
 .day-tabs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -269,7 +267,9 @@ footer.bottom-footer {
       </nav>
     </div>
     <div class="panel">
-      <main id="view"></main>
+      <main id="view">
+        <div style="padding: 40px; text-align: center; color: #64748b; font-weight: bold;">데이터를 불러오는 중입니다...</div>
+      </main>
     </div>
   </div>
 
@@ -359,17 +359,17 @@ footer.bottom-footer {
   </div>
 </div>
 
-<!-- Firebase SDK 스크립트 로드 (캘린더 사이트와 동일한 실시간 연동 설정) -->
+<!-- Firebase SDK 스크립트 로드 (올바른 주소 반영) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyD...",
-    authDomain: "yoonseul-71.firebaseapp.com",
-    databaseURL: "https://yoonseul-71-default-rtdb.firebaseio.com",
-    projectId: "yoonseul-71",
-    storageBucket: "yoonseul-71.appspot.com",
+    authDomain: "dohyeon-archive.firebaseapp.com",
+    databaseURL: "https://dohyeon-archive-default-rtdb.firebaseio.com",
+    projectId: "dohyeon-archive",
+    storageBucket: "dohyeon-archive.appspot.com",
     messagingSenderId: "...",
     appId: "..."
   };
@@ -574,6 +574,7 @@ function backupJsonData() {
 let isAdmin = false;
 let S = { game: "발로란트", year: "전체", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", globalMonthSort: "desc", monthOrder: {}, openRows: {} };
 let initializedMonths = false;
+let isDataLoaded = false;
 
 window.initAppAfterFirebase = function() {
   if (window.dbRef && window.firebaseRef && window.firebaseOnValue) {
@@ -601,9 +602,11 @@ window.initAppAfterFirebase = function() {
         }
         if (data.SCRIM_CARDS && data.SCRIM_CARDS.length > 0) { SCRIM_CARDS = data.SCRIM_CARDS; localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS)); }
       }
+      isDataLoaded = true;
       render();
     });
   } else {
+    isDataLoaded = true;
     render();
   }
 };
@@ -624,9 +627,16 @@ window.addEventListener("DOMContentLoaded", () => {
     sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
-  if (!window.dbRef) {
-    render();
+  
+  if (!location.hash) {
+    location.hash = "#record";
   }
+  
+  setTimeout(() => {
+    if (!isDataLoaded) {
+      render();
+    }
+  }, 300);
 });
 
 function promptAdminLogin() {
@@ -1062,26 +1072,20 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     document.getElementById("asTitle").textContent = "섹션 제목 수정";
     container.innerHTML = `<label>섹션 제목 (비워두면 밑줄 없음)</label><input type="text" id="asSecTitle" value="${secObj.title}">`;
   } else if (type === "mc-timeline-add") {
-    document.getElementById("asTitle").textContent = "타임라인 내용 추가";
-    container.innerHTML = `
-      <label>내용</label><textarea id="asTimelineText" rows="3"></textarea>
-      <label>링크</label><input type="text" id="asTimelineUrl">
-      <label>인라인 배경색 (형광펜)</label>
-      <select id="asTimelineHighlight" style="margin-bottom:10px;">
-        <option value="">없음</option>
-        <option value="green">연두색 (하이라이트)</option>
-        <option value="yellow">연노란색 (루팅)</option>
-      </select>
-      <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-          <input type="checkbox" id="asBossItem" style="width:auto;" onchange="document.getElementById('bossCountWrap').style.display=this.checked?'block':'none';">
-          <label for="asBossItem" style="margin:0; display:inline; cursor:pointer; font-weight:bold; color:var(--accent);">보스 템 획득 표시 (섹션 제목이 '보스'일 때 작동)</label>
-        </div>
-        <div id="bossCountWrap" style="display:none;">
-          <label>상자 개수</label><input type="number" id="asBossCount" value="1" min="1" max="10">
-        </div>
-      </div>
-    `;
+    const srv = MC_SERVERS.find(s => s.id === parentId);
+    const dayIdx = parseInt(ex1, 10);
+    const secIdx = parseInt(ex2, 10);
+    if (srv && srv.days[dayIdx] && srv.days[dayIdx].sections[secIdx]) {
+      const text = document.getElementById("asTimelineText").value;
+      const url = document.getElementById("asTimelineUrl").value;
+      const highlight = document.getElementById("asTimelineHighlight").value;
+      const bossItem = document.getElementById("asBossItem") ? document.getElementById("asBossItem").checked : false;
+      const bossCount = document.getElementById("asBossCount") ? parseInt(document.getElementById("asBossCount").value, 10) || 1 : 0;
+
+      if (!srv.days[dayIdx].sections[secIdx].timelines) srv.days[dayIdx].sections[secIdx].timelines = [];
+      srv.days[dayIdx].sections[secIdx].timelines.push({ text, url, spacing: 0, highlight, bossItem, bossCount });
+      saveData();
+    }
   } else if (type === "mc-timeline-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const dayIdx = parseInt(ex1, 10);
@@ -1089,26 +1093,8 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     const timeIdx = parseInt(ex3, 10);
     if (srv && srv.days[dayIdx] && srv.days[dayIdx].sections[secIdx]) {
       const item = srv.days[dayIdx].sections[secIdx].timelines[timeIdx];
-      document.getElementById("asTitle").textContent = "타임라인 수정";
-      container.innerHTML = `
-        <label>내용</label><textarea id="asTimelineText" rows="3">${item.text}</textarea>
-        <label>링크</label><input type="text" id="asTimelineUrl" value="${item.url||''}">
-        <label>인라인 배경색 (형광펜)</label>
-        <select id="asTimelineHighlight" style="margin-bottom:10px;">
-          <option value="" ${!item.highlight?'selected':''}>없음</option>
-          <option value="green" ${item.highlight==='green'?'selected':''}>연두색 (하이라이트)</option>
-          <option value="yellow" ${item.highlight==='yellow'?'selected':''}>연노란색 (루팅)</option>
-        </select>
-        <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-            <input type="checkbox" id="asBossItem" style="width:auto;" ${item.bossItem?'checked':''} onchange="document.getElementById('bossCountWrap').style.display=this.checked?'block':'none';">
-            <label for="asBossItem" style="margin:0; display:inline; cursor:pointer; font-weight:bold; color:var(--accent);">보스 템 획득 표시 (섹션 제목이 '보스'일 때 작동)</label>
-          </div>
-          <div id="bossCountWrap" style="display:${item.bossItem?'block':'none'};">
-            <label>상자 개수</label><input type="number" id="asBossCount" value="${item.bossCount||1}" min="1" max="10">
-          </div>
-        </div>
-      `;
+      document.getElementById("asTimelineText").value = item.text;
+      document.getElementById("asTimelineUrl").value = item.url || '';
     }
   }
   document.getElementById("adminSubModal").style.display = "flex";
@@ -1163,7 +1149,7 @@ function handleSubFormSubmit(e) {
           rightTeamName: document.getElementById("asCopiedRight") ? document.getElementById("asCopiedRight").value : "상대 팀",
           positions: window._tempCopiedPositions || [
             { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
-            { pos: "정글", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+            { pos: "정글", p1: "", t1: "", c1: "", c1: "", p2: "", t2: "", c2: "" },
             { pos: "미드", p1: "도현", t1: "", c1: "", p2: "", t2: "", c2: "" },
             { pos: "원딜", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
             { pos: "서포터", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" }
