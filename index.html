@@ -29,6 +29,7 @@
   --yellow-bg: #fef08a;
   --yellow-ink: #713f12;
   --yellow: #ca8a04;
+  --yellow-dark: #b45309;
 
   --sky-bg: #bfdbfe;
   --sky-ink: #1e3a8a;
@@ -157,7 +158,7 @@ td.mono { font-weight: 500; }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 전용 노란색 테마 스타일 (선택되지 않은 버튼도 1, 4번처럼 동일한 스타일 적용) */
+/* 롤 멸망전 전용 노란색 테마 스타일 */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
@@ -168,7 +169,7 @@ td.mono { font-weight: 500; }
 
 .today-scrim-bar { background: transparent; border: 1.5px solid var(--yellow); border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: var(--yellow-ink); }
 
-/* 마크서버 상세페이지 날짜 버튼 스타일 (하늘색/파란색 테두리 적용) */
+/* 마크서버 상세페이지 날짜 버튼 스타일 */
 .day-tabs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -1051,27 +1052,32 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     `;
   } else if (type === "mc-timeline-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
-    const item = srv.days[ex1].sections[ex2].timelines[ex3];
-    document.getElementById("asTitle").textContent = "타임라인 수정";
-    container.innerHTML = `
-      <label>내용</label><textarea id="asTimelineText" rows="3">${item.text}</textarea>
-      <label>링크</label><input type="text" id="asTimelineUrl" value="${item.url||''}">
-      <label>인라인 배경색 (형광펜)</label>
-      <select id="asTimelineHighlight" style="margin-bottom:10px;">
-        <option value="" ${!item.highlight?'selected':''}>없음</option>
-        <option value="green" ${item.highlight==='green'?'selected':''}>연두색 (하이라이트)</option>
-        <option value="yellow" ${item.highlight==='yellow'?'selected':''}>연노란색 (루팅)</option>
-      </select>
-      <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-          <input type="checkbox" id="asBossItem" style="width:auto;" ${item.bossItem?'checked':''} onchange="document.getElementById('bossCountWrap').style.display=this.checked?'block':'none';">
-          <label for="asBossItem" style="margin:0; display:inline; cursor:pointer; font-weight:bold; color:var(--accent);">보스 템 획득 표시 (섹션 제목이 '보스'일 때 작동)</label>
+    const dayIdx = parseInt(ex1, 10);
+    const secIdx = parseInt(ex2, 10);
+    const timeIdx = parseInt(ex3, 10);
+    if (srv && srv.days[dayIdx] && srv.days[dayIdx].sections[secIdx]) {
+      const item = srv.days[dayIdx].sections[secIdx].timelines[timeIdx];
+      document.getElementById("asTitle").textContent = "타임라인 수정";
+      container.innerHTML = `
+        <label>내용</label><textarea id="asTimelineText" rows="3">${item.text}</textarea>
+        <label>링크</label><input type="text" id="asTimelineUrl" value="${item.url||''}">
+        <label>인라인 배경색 (형광펜)</label>
+        <select id="asTimelineHighlight" style="margin-bottom:10px;">
+          <option value="" ${!item.highlight?'selected':''}>없음</option>
+          <option value="green" ${item.highlight==='green'?'selected':''}>연두색 (하이라이트)</option>
+          <option value="yellow" ${item.highlight==='yellow'?'selected':''}>연노란색 (루팅)</option>
+        </select>
+        <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <input type="checkbox" id="asBossItem" style="width:auto;" ${item.bossItem?'checked':''} onchange="document.getElementById('bossCountWrap').style.display=this.checked?'block':'none';">
+            <label for="asBossItem" style="margin:0; display:inline; cursor:pointer; font-weight:bold; color:var(--accent);">보스 템 획득 표시 (섹션 제목이 '보스'일 때 작동)</label>
+          </div>
+          <div id="bossCountWrap" style="display:${item.bossItem?'block':'none'};">
+            <label>상자 개수</label><input type="number" id="asBossCount" value="${item.bossCount||1}" min="1" max="10">
+          </div>
         </div>
-        <div id="bossCountWrap" style="display:${item.bossItem?'block':'none'};">
-          <label>상자 개수</label><input type="number" id="asBossCount" value="${item.bossCount||1}" min="1" max="10">
-        </div>
-      </div>
-    `;
+      `;
+    }
   }
   document.getElementById("adminSubModal").style.display = "flex";
 }
@@ -1934,10 +1940,11 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
         <div class="toolbar" style="align-items:center; margin-bottom:-10px;">
           <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
             <h2>${card.no} 상세 전적</h2>
-            <div class="seg" style="display:inline-flex; border:1px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
-              <button type="button" onclick="setScrimFilter('전체')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='전체'?'var(--yellow)':'transparent'}; color:${S.scrimFilter==='전체'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">전체</button>
-              <button type="button" onclick="setScrimFilter('스크림')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='스크림'?'var(--yellow)':'transparent'}; color:${S.scrimFilter==='스크림'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">스크림</button>
-              <button type="button" onclick="setScrimFilter('대회')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='대회'?'var(--yellow)':'transparent'}; color:${S.scrimFilter==='대회'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">대회</button>
+            <!-- 스크림/대회 모아보기 필터 버튼 (연한 노란색 톤 적용) -->
+            <div class="seg" style="display:inline-flex; border:1.5px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
+              <button type="button" onclick="setScrimFilter('전체')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='전체'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimFilter==='전체'?'bold':'normal'}; cursor:pointer;">전체</button>
+              <button type="button" onclick="setScrimFilter('스크림')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='스크림'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimFilter==='스크림'?'bold':'normal'}; cursor:pointer;">스크림</button>
+              <button type="button" onclick="setScrimFilter('대회')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='대회'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimFilter==='대회'?'bold':'normal'}; cursor:pointer;">대회</button>
             </div>
           </div>
         </div>
@@ -2048,7 +2055,8 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                 ${(curSet.positions || []).map(pos => {
                   const formatName = (name) => {
                     if (!name) return '';
-                    return name.replace(/도현/g, '<span style="color:#2563eb; font-weight:900;">도현</span>');
+                    // 도현 이름 강조 색상을 진노랑(var(--yellow-dark) 또는 #b45309)으로 변경
+                    return name.replace(/도현/g, '<span style="color:var(--yellow-dark); font-weight:900;">도현</span>');
                   };
                   return `
                   <tr>
@@ -2088,9 +2096,10 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     <div class="block">
       <div class="toolbar" style="align-items:center;">
         <h2>롤 멸망전</h2>
-        <div class="seg" style="display:inline-flex; border:1px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
-          <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'var(--yellow)':'transparent'}; color:${S.scrimSort==='old'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">오래된순</button>
-          <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'var(--yellow)':'transparent'}; color:${S.scrimSort==='latest'?'var(--yellow-ink)':'var(--yellow-ink)'}; font-weight:bold; cursor:pointer;">최신순</button>
+        <!-- 오래된순/최신순 버튼 (연한 노란색 톤 적용) -->
+        <div class="seg" style="display:inline-flex; border:1.5px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
+          <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimSort==='old'?'bold':'normal'}; cursor:pointer;">오래된순</button>
+          <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimSort==='latest'?'bold':'normal'}; cursor:pointer;">최신순</button>
         </div>
       </div>
 
