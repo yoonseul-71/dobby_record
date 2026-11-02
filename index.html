@@ -157,7 +157,7 @@ td.mono { font-weight: 500; }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 전용 노란색 테마 스타일 */
+/* 롤 멸망전 전용 노란색 테마 스타일 (선택되지 않은 버튼도 1, 4번처럼 동일한 스타일 적용) */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
@@ -1949,9 +1949,9 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
             const catLabel = g.category || "스크림";
             const isSel = (idx === gI);
             return `
-              <div style="display:inline-flex; align-items:center; background:#ffffff; border-radius:8px; border:1.5px solid var(--yellow);">
-                <button class="scrim-top-date-btn" style="border:0; background:${isSel?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink);" ${isSel?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">
-                  <span style="font-size:10px; font-weight:bold; color:var(--yellow-ink); background:${isSel?'rgba(255,255,255,0.7)':'var(--yellow-bg)'}; padding:1px 5px; border-radius:4px; margin-bottom:1px;">[${catLabel}]</span>
+              <div style="display:inline-flex; align-items:center; background:${isSel ? 'var(--yellow-bg)' : '#ffffff'}; border-radius:8px; border:1.5px solid var(--yellow);">
+                <button class="scrim-top-date-btn" style="border:0; background:transparent; color:var(--yellow-ink);" ${isSel?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">
+                  <span style="font-size:10px; font-weight:bold; color:var(--yellow-ink); background:var(--yellow-bg); padding:1px 5px; border-radius:4px; margin-bottom:1px;">[${catLabel}]</span>
                   <span>${g.groupTitle}</span>
                 </button>
                 ${isAdmin ? `
@@ -1982,8 +1982,8 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
         ${curGroup ? `
           <div class="scrim-time-bar">
             ${dates.map((d, idx) => `
-              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid var(--yellow); background:#ffffff;">
-                <button class="scrim-time-btn" style="border:0; background:${idx===dI?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink);" ${idx===dI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0'">${d.dateStr}</button>
+              <div style="display:inline-flex; align-items:center; border-radius:8px; border:1.5px solid var(--yellow); background:${idx===dI?'var(--yellow-bg)':'#ffffff'};">
+                <button class="scrim-time-btn" style="border:0; background:transparent; color:var(--yellow-ink);" ${idx===dI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${idx}-t0'">${d.dateStr}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:4px;" onclick="openSubAdminModal('${card.id}', 'scrim-date-edit', ${gI}, ${idx})">✏️</button>
                   <button class="btn-btn" style="background:transparent; border:0; color:red; padding:4px;" onclick="deleteSubItem('scrim-date', '${card.id}', ${gI}, ${idx})">✕</button>
@@ -2139,7 +2139,6 @@ function renderMinecraft(subId, dayIndex = 0) {
           ` : ''}
         </div>
 
-        <!-- 마크서버 상세페이지 날짜 버튼 그리드 구조 (선택 시 연한 하늘색 배경 및 파란색 테두리) -->
         <div>
           <div class="day-tabs-grid">
             ${srv.days.map((d, idx) => `
@@ -2160,7 +2159,6 @@ function renderMinecraft(subId, dayIndex = 0) {
           ${isAdmin ? `<button class="btn-accent" style="margin-top:4px;" onclick="openSubAdminModal('${srv.id}', 'mc-day')">+ 일자 추가</button>` : ''}
         </div>
 
-        <!-- 각 일차 상단 풀영상 링크 목록 -->
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:4px;">
           <span style="font-size:13px; font-weight:bold; color:var(--page-muted);">풀영상:</span>
           ${videos.map((v, vIdx) => `
