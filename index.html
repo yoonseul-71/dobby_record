@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<!-- 초기 스케일을 0.85로 주어 2번 사진처럼 한눈에 들어오게 하고, 사용자 확대/축소(user-scalable)를 전면 허용 -->
-<meta name="viewport" content="width=device-width, initial-scale=0.85, minimum-scale=0.2, maximum-scale=5.0, user-scalable=yes">
+<!-- 모바일에서 PC처럼 넓게 축소할 수 있고 자유로운 확대/축소가 가능하도록 설정된 viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes">
 <title>도현 아카이브</title>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -2006,7 +2006,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                 <button class="scrim-time-btn" style="border:0; background:transparent; color:var(--yellow-ink);" ${idx===tI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}'">${t.timeLabel}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:2px 4px;" onclick="openSubAdminModal('${card.id}', 'scrim-time-edit', ${gI}, ${dI}, ${idx})">✏️</button>
-                  <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px 4px;" onclick="deleteSubItem('scrim-time', '${card.id}', ${dI}, ${idx})">✕</button>
+                  <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px 4px;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${idx})">✕</button>
                 ` : ''}
               </div>
             `).join('')}
