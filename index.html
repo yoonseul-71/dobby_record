@@ -2,12 +2,12 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<!-- 모바일 화면 확대/축소 제한 삭제 -->
+<!-- 모바일 화면 확대/축소 자유 설정 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes">
 <title>도현 아카이브</title>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-<!-- PC-모바일 실시간 연동을 위한 Firebase 연동 스크립트 -->
+<!-- PC-모바일 실시간 연동을 위한 Firebase 스크립트 -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -30,9 +30,22 @@
   window.firebaseOnValue = onValue;
   window.firebaseSet = set;
 
-  if (window.initAppAfterFirebase) {
-    window.initAppAfterFirebase();
-  }
+  onValue(ref(db, 'archiveData'), (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      if (data.setsData) setsData = data.setsData;
+      if (data.MC_SERVERS) MC_SERVERS = data.MC_SERVERS;
+      if (data.CHONG_EPS) CHONG_EPS = data.CHONG_EPS;
+      if (data.SCRIM_CARDS) SCRIM_CARDS = data.SCRIM_CARDS;
+      
+      localStorage.setItem("local_setsData", JSON.stringify(setsData));
+      localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
+      localStorage.setItem("local_CHONG_EPS", JSON.stringify(CHONG_EPS));
+      localStorage.setItem("local_SCRIM_CARDS", JSON.stringify(SCRIM_CARDS));
+      
+      if (typeof render === "function") render();
+    }
+  });
 </script>
 
 <style>
@@ -575,39 +588,6 @@ let isAdmin = false;
 let S = { game: "발로란트", year: "전체", mode: "전체", chongSort: "old", mcSort: "old", scrimFilter: "전체", scrimSort: "old", globalMonthSort: "desc", monthOrder: {}, openRows: {} };
 let initializedMonths = false;
 
-window.initAppAfterFirebase = function() {
-  if (window.dbRef && window.firebaseRef && window.firebaseOnValue) {
-    window.firebaseOnValue(window.firebaseRef(window.dbRef, 'archiveData'), (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        if (data.setsData && data.setsData.length > 0) setsData = data.setsData;
-        if (data.MC_SERVERS && data.MC_SERVERS.length > 0) {
-          MC_SERVERS = data.MC_SERVERS;
-          MC_SERVERS.forEach(s => {
-            if (s.days) {
-              s.days.forEach(d => {
-                if (!d.videos) d.videos = [];
-              });
-            }
-          });
-        }
-        if (data.CHONG_EPS && data.CHONG_EPS.length > 0) {
-          CHONG_EPS = data.CHONG_EPS;
-          CHONG_EPS.forEach(e => {
-            if (!e.tabs || e.tabs.length === 0) {
-              e.tabs = [{ tabTitle: "본편", customTitle: "", desc: e.desc || "", sections: e.sections || [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }] }];
-            }
-          });
-        }
-        if (data.SCRIM_CARDS && data.SCRIM_CARDS.length > 0) SCRIM_CARDS = data.SCRIM_CARDS;
-      }
-      render();
-    });
-  } else {
-    render();
-  }
-};
-
 window.addEventListener("keydown", e => {
   if (e.altKey && e.code === "KeyA") {
     e.preventDefault();
@@ -903,7 +883,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
   if (type === "scrim-group-add") {
     document.getElementById("asTitle").textContent = "날짜 탭 추가";
     container.innerHTML = `
-      <label>날짜 이름</label><input type="text" id="asGroupTitle" value="25.11.15 토">
+      <label>날짜 이름 (예: 25.11.15 토)</label><input type="text" id="asGroupTitle" value="25.11.15 토">
       <label>분류</label>
       <select id="asGroupCategory">
         <option value="스크림">스크림</option>
@@ -915,7 +895,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     const grp = card.groups[ex1];
     document.getElementById("asTitle").textContent = "날짜 탭 수정";
     container.innerHTML = `
-      <label>날짜 이름</label><input type="text" id="asGroupTitle" value="${grp.groupTitle}">
+      <label>날짜 이름 (예: 25.11.15 토)</label><input type="text" id="asGroupTitle" value="${grp.groupTitle}">
       <label>분류</label>
       <select id="asGroupCategory">
         <option value="스크림" ${(grp.category||'스크림')==='스크림'?'selected':''}>스크림</option>
@@ -1913,6 +1893,12 @@ function renderChongDetail(epNo, tabIdx = 0) {
 function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
+    
+    // 롤 멸망전 날짜 탭 자동 정렬 (예: 25.11.15 토 등의 날짜 문자열 순서 정렬)
+    if (card.groups) {
+      card.groups.sort((a, b) => (a.groupTitle || "").localeCompare(b.groupTitle || ""));
+    }
+
     const groups = card.groups || [];
     
     const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
@@ -1972,7 +1958,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
         <div class="toolbar" style="align-items:center; margin-bottom:-10px;">
           <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
             <h2>${card.no} 상세 전적</h2>
-            <!-- 스크림/대회 모아보기 필터 버튼 (연한 노란색 톤 적용) -->
             <div class="seg" style="display:inline-flex; border:1.5px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
               <button type="button" onclick="setScrimFilter('전체')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='전체'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimFilter==='전체'?'bold':'normal'}; cursor:pointer;">전체</button>
               <button type="button" onclick="setScrimFilter('스크림')" style="font:inherit; font-size:12px; padding:4px 14px; border:0; background:${S.scrimFilter==='스크림'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimFilter==='스크림'?'bold':'normal'}; cursor:pointer;">스크림</button>
@@ -2163,7 +2148,6 @@ function renderMinecraft(subId, dayIndex = 0) {
   if (subId) {
     const srv = MC_SERVERS.find(s => s.id === subId) || MC_SERVERS[0];
     
-    // 마크서버 일차 순서 자동 정렬 (1일차, 2일차, 10일차 순서대로 번호 추출하여 정렬)
     if (srv.days) {
       srv.days.sort((a, b) => {
         const numA = parseInt((a.dayTitle || "").replace(/[^0-9]/g, ""), 10) || 0;
