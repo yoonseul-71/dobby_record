@@ -87,233 +87,151 @@ header.top { display: flex; justify-content: space-between; align-items: flex-en
 h1 { margin: 0; font-family: var(--font-body); font-weight: 900; font-size: 44px; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; color: #12161c; }
 
 .nav-bar-container { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--line); flex-wrap: nowrap; gap: 10px; overflow: hidden; }
-nav.bar { display: flex; align-items: flex-end; gap: 6px; padding-left: 10px; border-bottom: 0; width: 100%; overflow-x: auto; overflow-y: hidden; -ms-overflow-style: none; scrollbar-width: none; }
-nav.bar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+nav.bar { display: flex; align-items: flex-end; gap: 6px; padding-left: 0; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+nav.bar::-webkit-scrollbar { display: none; }
 
-nav.bar a {
-  position: relative; display: inline-flex; align-items: center; padding: 8px 22px;
-  border-radius: 8px 8px 0 0; font-weight: 700; font-size: 15px;
-  background: var(--note); color: var(--note-ink); border: 1.5px solid var(--note-edge); border-bottom: 0;
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.05); transform-origin: 50% 100%; transform: rotate(var(--tilt, 0deg)) translateY(2px);
-  white-space: nowrap;
-}
-nav.bar a::before {
-  content: ""; position: absolute; top: -5px; left: 50%; width: 26px; height: 8px; margin-left: -13px;
-  background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(0,0,0,0.08); border-radius: 2px; transform: rotate(-3deg);
-}
+nav.bar a { font-size: 16px; font-weight: 700; color: #64748b; padding: 12px 18px; border-bottom: 3px solid transparent; margin-bottom: -1px; text-decoration: none; display: inline-block; }
+nav.bar a[aria-current="page"] { color: #2563eb; border-bottom-color: #2563eb; }
 
-nav.bar a[data-cat="record"] { --note: var(--pink-bg); --note-ink: var(--pink-ink); --note-edge: var(--pink); --tilt: -1deg; }
-nav.bar a[data-cat="scrim"] { --note: var(--yellow-bg); --note-ink: var(--yellow-ink); --note-edge: var(--yellow); --tilt: 1deg; }
-nav.bar a[data-cat="mc"] { --note: var(--sky-bg); --note-ink: var(--sky-ink); --note-edge: var(--sky); --tilt: -0.8deg; }
-nav.bar a[data-cat="chong"] { --note: var(--violet-bg); --note-ink: var(--violet-ink); --note-edge: var(--violet-line); --tilt: 1.2deg; }
+.admin-trigger-btn { background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; font-size: 12px; color: var(--page-muted); cursor: pointer; margin-bottom: 10px; font-weight: bold; }
+.admin-bar { display: none; background: #1e293b; color: #fff; padding: 10px 16px; border-radius: 8px; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 13px; font-weight: bold; }
 
-nav.bar a[aria-current="page"] {
-  z-index: 1; transform: none; padding-top: 11px; padding-bottom: 9px; margin-bottom: -1px;
-  border-color: var(--line); border-bottom: 1px solid var(--panel); background: var(--panel); color: var(--page-fg);
-}
+.block { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.game-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.game-tab-btn { padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid var(--line); background: var(--surface); color: var(--page-muted); cursor: pointer; }
+.game-tab-btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
-.panel { background: var(--panel); border-radius: 0 0 12px 12px; padding: 24px; border: 1px solid var(--line); border-top: 0; }
-.block { display: flex; flex-direction: column; gap: 20px; }
+.subnav { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-top: 4px; }
+.subnav a { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; color: var(--page-muted); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+.subnav a[aria-current="page"] { background: var(--neutral-bg); color: var(--accent); font-weight: 700; }
+.subnav a .n { font-size: 11px; opacity: 0.7; }
 
-.game-tabs { display: flex; gap: 8px; margin-bottom: 2px; flex-wrap: wrap; }
-.game-tab-btn { font: inherit; font-size: 14px; font-weight: bold; padding: 6px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; }
-.game-tab-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.stats { display: flex; gap: 16px; flex-wrap: wrap; background: var(--neutral-bg); padding: 12px 16px; border-radius: 10px; align-items: center; }
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat .k { font-size: 11.5px; color: var(--page-muted); font-weight: 600; }
+.stat .v { font-size: 18px; font-weight: 900; }
+.bar { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; width: 80px; }
+.bar b { display: block; height: 100%; background: var(--win); border-radius: 999px; }
 
-.subnav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.subnav a { padding: 4px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); font-size: 13px; cursor: pointer; }
-.subnav a[aria-current="page"] { background: var(--neutral-bg); border-color: var(--accent); color: var(--page-fg); font-weight: 700; }
-.subnav .n { font-weight: 600; opacity: 0.7; margin-left: 4px; }
+details.month { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+details.month summary { padding: 14px 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 12px; background: #fafafa; user-select: none; }
+details.month summary::-webkit-details-marker { display: none; }
+.m-title { font-size: 15px; font-family: var(--font-title); }
+.m-meta { font-size: 12px; color: var(--page-muted); font-weight: 500; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); margin-left: auto; }
+.seg button { font: inherit; font-size: 11px; padding: 3px 10px; border: 0; background: transparent; color: var(--page-muted); cursor: pointer; font-weight: 600; }
+.seg button[aria-pressed="true"] { background: var(--page-fg); color: #fff; }
+.rate-box { display: flex; align-items: center; gap: 8px; font-size: 12px; }
 
-h2 { margin: 0; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.table-wrap { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
+th, td { padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-weight: 600; color: var(--page-muted); font-size: 12px; background: #ffffff; }
+.record-row:hover td { background: #fafafa; }
+.record-row-last-of-date td { border-bottom: 2px solid #cbd5e0; }
+.detail-dropdown-row td { background: #f8fafc; padding: 14px 20px; border-bottom: 2px solid #cbd5e0; }
 
-.stats { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; }
-.stat .k { font-size: 12px; color: var(--page-muted); display: block; }
-.stat .v { font-weight: 800; font-size: 22px; }
-
-.toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.month { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); margin-bottom: 16px; }
-.month summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: #eef3fc; color: #1a365d; font-weight: bold; flex-wrap: wrap; }
-.month summary::-webkit-details-marker { display: none; }
-.month .m-title { font-weight: 700; font-size: 16px; color: #2b6cb0; }
-.month .m-meta { font-size: 13px; opacity: 0.8; font-weight: normal; }
-.month .seg { margin-left: 10px; display: inline-flex; border: 1px solid #cbd5e0; border-radius: 999px; overflow: hidden; }
-.month .seg button { font: inherit; font-size: 11px; padding: 2px 10px; border: 0; background: transparent; cursor: pointer; }
-.month .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: bold; }
-.month .rate-box { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-.month .bar { width: 100px; height: 8px; border-radius: 4px; background: var(--loss-bg); overflow: hidden; }
-.month .bar b { display: block; height: 100%; background: var(--win); }
-
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table { border-collapse: collapse; width: 100%; min-width: 700px; }
-th, td { padding: 10px 14px; text-align: left; }
-th { font-size: 12px; color: var(--page-muted); font-weight: 500; border-bottom: 1px solid var(--line); }
-
-.record-row { border-bottom: 1px dashed #e2e8f0; }
-.record-row-last-of-date { border-bottom: 2px solid #cbd5e0; }
-tbody tr.detail-dropdown-row td { background: #f8fafc; border-bottom: 2px solid #cbd5e0; padding: 16px; }
-
-tbody tr:hover:not(.detail-dropdown-row) { background: rgba(0,0,0,0.02); }
-td.mono { font-weight: 500; }
-.pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; text-align: center; }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
-.pill.d { background: #e2e8f0; color: #475569; }
 .pill.none { background: var(--neutral-bg); color: var(--page-muted); }
 
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 15px; }
-.card {
-  background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
-  padding: 22px; text-decoration: none; color: var(--page-fg);
-  transition: all 0.15s ease; position: relative; overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-  display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;
-}
-.card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: transform 0.15s, box-shadow 0.15s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.card-corner-tag { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: bold; background: var(--tag-bg); color: var(--tag-ink); border: 1px solid var(--tag-border); padding: 2px 8px; border-radius: 999px; }
+.card-content-area { display: flex; flex-direction: column; gap: 4px; padding-right: 70px; }
+.card-title { font-size: 18px; font-weight: 900; font-family: var(--font-title); }
+.card-sub { font-size: 12.5px; color: var(--page-muted); }
+.card-footer-link { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; }
+.card-admin-btns { position: absolute; bottom: 12px; right: 12px; display: flex; gap: 4px; z-index: 2; }
 
-.card-corner-tag {
-  position: absolute; top: 0; right: 0;
-  font-size: 12px; font-weight: bold; padding: 5px 14px;
-  border-bottom-left-radius: 10px; border: 1.5px solid var(--tag-border, var(--line));
-  background: var(--tag-bg, #f5f5f5); color: var(--tag-ink, #333); border-top: 0; border-right: 0;
-}
+.back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--accent); cursor: pointer; text-decoration: none; margin-bottom: -6px; }
+.day-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.day-tab-btn { padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+.day-tabs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 6px; }
 
-.card-content-area { margin-top: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
-.card-title { font-size: 20px; font-weight: 800; color: #12161c; margin-bottom: 4px; }
-.card-sub { font-size: 13px; color: var(--page-muted); }
-.card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
-.card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
+.ep-detail-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 14px; }
+.ep-box { background: var(--neutral-bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.ep-box-title { font-size: 15px; font-weight: 900; color: var(--page-fg); display: flex; align-items: center; gap: 10px; }
+.ep-box-title-line { border-bottom: 1.5px solid var(--line); padding-bottom: 8px; }
 
-.scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
-.scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
-
-.scrim-time-btn { padding: 6px 16px; border-radius: 7px; border: 1.5px solid var(--yellow); background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: var(--yellow-ink); white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-.scrim-time-btn[aria-selected="true"] { border-color: var(--yellow); background: var(--yellow-bg); color: var(--yellow-ink); }
-.scrim-time-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-
-.today-scrim-bar { background: transparent; border: 1.5px solid var(--yellow); border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; font-size: 14px; font-weight: bold; flex-wrap: wrap; color: var(--yellow-ink); }
-
-.day-tabs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.day-tab-btn {
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1.5px solid #2563eb;
-  background: var(--surface);
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 13.5px;
-  width: 100%;
-  height: 100%;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  box-sizing: border-box;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  color: #1e3a8a;
-}
-.day-tab-btn[aria-selected="true"] { background: #bfdbfe; border-color: #2563eb; color: #1e3a8a; }
-
-.scrim-detail-box { border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-.lol-match-table { width: 100%; border-collapse: collapse; min-width: 550px; }
-.lol-match-table th { padding: 10px 14px; border: 1px solid #dcdcdc; font-size: 14px; font-weight: 800; text-align: center; }
-.lol-match-table td { border: 1px solid #dcdcdc; padding: 8px 12px; vertical-align: middle; font-size: 13.5px; background: #ffffff !important; }
-.lol-match-table .pos-col { width: 70px; text-align: center; background: #ffffff !important; font-weight: bold; color: #555; font-size: 13px; }
-
-th.header-blue { background-color: var(--blue-team-bg) !important; color: var(--blue-team-ink) !important; }
-th.header-red { background-color: var(--red-team-bg) !important; color: var(--red-team-ink) !important; }
-
-.player-info-left { text-align: left; }
-.player-info-right { text-align: right; }
-.player-name { font-weight: 800; font-size: 14px; color: #12161c; }
-.player-tier { font-size: 11px; color: var(--page-muted); font-family: var(--font-body); margin-top: 1px; letter-spacing: -0.02em; }
-.champ-name { font-weight: 800; font-size: 13.5px; color: #12161c; }
-
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-.light-modal { background: var(--panel); color: var(--page-fg); border-radius: 12px; width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; padding: 24px; border: 2px solid #12161c; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-.light-modal h3 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-.light-modal .close-btn { cursor: pointer; border: 0; background: transparent; font-size: 20px; }
-.light-modal label { display: block; font-size: 12px; font-weight: bold; color: var(--page-muted); margin-bottom: 4px; margin-top: 10px; }
-.light-modal input, .light-modal select, .light-modal textarea { width: 100%; font: inherit; padding: 9px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--page-fg); }
-.light-modal .btn-group { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
-.light-modal .btn-save { background: var(--accent); color: var(--accent-ink); border: 0; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-.light-modal .btn-cancel { background: var(--neutral-bg); color: var(--page-fg); border: 0; padding: 10px 16px; border-radius: 6px; cursor: pointer; }
-
+.timeline-clean { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.timeline-clean li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; }
+.timeline-clean a { color: var(--accent); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+.timeline-clean a:hover { text-decoration: underline; }
+.timeline-clean .arrow { font-size: 12px; opacity: 0.7; }
 .text-pre { white-space: pre-wrap; word-break: break-all; }
 
-.ep-detail-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
-.ep-box { border: 2px solid #12161c; border-radius: 12px; padding: 20px; background: var(--surface); position: relative; }
-.ep-box-title { font-size: 15px; font-weight: bold; color: var(--page-fg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-.ep-box-title-line { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
-.timeline-clean { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-.timeline-clean li { font-size: 14px; display: flex; align-items: center; justify-content: space-between; color: #000; flex-wrap: wrap; gap: 6px; }
-.timeline-clean a { color: #000; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
-.timeline-clean a:hover { text-decoration: underline; }
-.timeline-clean .arrow { color: var(--violet-ink); font-weight: bold; }
+.scrim-top-date-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.scrim-top-date-btn { padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; border: 1.5px solid var(--yellow); background: var(--surface); cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+.scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); color: var(--yellow-ink); }
 
-footer.bottom-footer {
-  margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);
-  display: flex; justify-content: space-between; align-items: flex-start;
-  font-size: 11.5px; color: #8c95a1; line-height: 1.6; flex-wrap: wrap; gap: 12px;
-}
-.footer-signature {
-  font-weight: 700; color: #8c95a1; cursor: pointer; user-select: none;
-  -webkit-user-select: none; touch-action: manipulation;
-}
+.today-scrim-bar { background: var(--yellow-bg); border: 1.5px solid var(--yellow); border-radius: 10px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-weight: bold; color: var(--yellow-ink); font-size: 13.5px; }
+.scrim-time-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+.scrim-time-btn { padding: 5px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 700; border: 1px solid var(--yellow); background: var(--surface); cursor: pointer; color: var(--yellow-ink); }
+.scrim-time-btn[aria-selected="true"] { background: var(--yellow-bg); }
 
-#admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #18181b; color: #fff; padding: 10px 24px; display: none; justify-content: space-between; align-items: center; z-index: 999; font-weight: bold; flex-wrap: wrap; gap: 8px; }
-#admin-bar button { background: #ef4444; color: #fff; border: 0; padding: 6px 14px; border-radius: 6px; cursor: pointer; }
-.btn-btn { font: inherit; font-size: 12px; padding: 3px 8px; border-radius: 6px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); }
-.btn-accent { background: var(--accent); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.scrim-detail-box { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 8px; }
+.lol-match-table { width: 100%; border-collapse: collapse; text-align: center; }
+.lol-match-table th, .lol-match-table td { padding: 10px 12px; border: 1px solid var(--line); font-size: 13px; }
+.lol-match-table th.header-red { background: var(--red-team-bg); color: var(--red-team-ink); }
+.lol-match-table th.header-blue { background: var(--blue-team-bg); color: var(--blue-team-ink); }
+.lol-match-table th.pos-col { width: 12%; background: var(--neutral-bg); color: var(--page-muted); }
+.lol-match-table td.pos-col { background: var(--neutral-bg); font-weight: bold; color: var(--page-muted); }
+.player-info-left { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; text-align: left; }
+.player-info-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; text-align: right; }
+.player-name { font-weight: bold; font-size: 13.5px; }
+.player-tier { font-size: 11px; color: var(--page-muted); }
+.champ-name { font-size: 12.5px; color: var(--page-muted); font-weight: 500; }
+
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 16px; }
+.light-modal { background: #ffffff; border-radius: 12px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 16px; }
+.light-modal h3 { margin: 0; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+.light-modal label { font-size: 12.5px; font-weight: bold; color: var(--page-muted); margin-bottom: 4px; display: block; }
+.light-modal input, .light-modal select, .light-modal textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 13.5px; margin-bottom: 12px; }
+.light-modal textarea { resize: vertical; }
+.btn-group { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.btn-cancel { background: var(--neutral-bg); border: 1px solid var(--line); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+.btn-save { background: var(--accent); color: #fff; border: 0; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+.close-btn { background: transparent; border: 0; font-size: 18px; cursor: pointer; color: var(--page-muted); }
+.btn-btn { background: var(--surface); border: 1px solid var(--line); padding: 3px 8px; border-radius: 4px; font-size: 11.5px; cursor: pointer; font-weight: bold; }
+.btn-accent { background: var(--accent); color: #fff; border: 0; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <div class="wrap">
   <header class="top">
-    <h1>DOHYEON ARCHIVE</h1>
+    <div>
+      <div style="font-size:12px; font-weight:bold; color:var(--page-muted); margin-bottom:4px; letter-spacing:0.05em;" id="signatureBtn">윤슬ツ ARCHIVE</div>
+      <h1>도현 아카이브</h1>
+    </div>
+    <button class="admin-trigger-btn" onclick="promptAdminLogin()">관리자 모드</button>
   </header>
 
-  <div class="sheet">
-    <div class="nav-bar-container">
-      <nav class="bar" id="mainNav">
-        <a href="#record" data-cat="record">전적</a>
-        <a href="#scrim" data-cat="scrim">롤 멸망전</a>
-        <a href="#mc" data-cat="mc">마크서버</a>
-        <a href="#chong" data-cat="chong">총겜동</a>
-      </nav>
-    </div>
-    <div class="panel">
-      <main id="view"></main>
+  <div class="admin-bar" id="admin-bar">
+    <span>🔒 관리자 모드가 활성화되어 있습니다.</span>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-btn" onclick="backupJsonData()">백업 JSON 다운로드</button>
+      <button class="btn-btn" style="background:#ef4444; color:#fff; border:0;" onclick="logoutAdmin()">나가기</button>
     </div>
   </div>
 
-  <footer class="bottom-footer">
-    <div class="footer-notice">
-      본 사이트는 비공식 기록으로 일부 누락이나 삭제되는 부분이 있을 수 있습니다.<br>
-      일부 타임라인은 정리되지 않거나 축약되어 정리될 수 있습니다.
-    </div>
-    <div class="footer-signature" id="signatureBtn">made by 윤슬ツ</div>
-  </footer>
-</div>
-
-<div id="admin-bar">
-  <span>⚡ 관리자 모드 활성화됨</span>
-  <div style="display:flex; gap:8px;">
-    <button onclick="backupJsonData()" style="background:#3b82f6; color:#fff; border:0; padding:6px 12px; border-radius:6px; cursor:pointer;">데이터 백업(저장)</button>
-    <button onclick="logoutAdmin()">관리자 종료</button>
+  <div class="nav-bar-container">
+    <nav class="bar" id="mainNav">
+      <a href="#record" data-cat="record" aria-current="page">전적 모음</a>
+      <a href="#scrim" data-cat="scrim">롤 멸망전</a>
+      <a href="#mc" data-cat="mc">마크서버</a>
+      <a href="#chong" data-cat="chong">총겜동</a>
+    </nav>
   </div>
+
+  <div id="view"></div>
 </div>
 
-<!-- 메인 항목 추가/수정 모달 -->
+<!-- 기본 항목 수정/추가 모달 -->
 <div class="modal-overlay" id="adminFormModal">
   <div class="light-modal">
     <h3><span id="adminFormTitle">항목 편집</span><button class="close-btn" onclick="closeModal('adminFormModal')">✕</button></h3>
@@ -503,6 +421,35 @@ let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || JSON.pars
 let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || JSON.parse(JSON.stringify(DEFAULT_SCRIM));
 let setsData = JSON.parse(localStorage.getItem("local_setsData")) || JSON.parse(JSON.stringify(DEFAULT_SETS));
 
+// 멸망전 날짜 자동 오름차순 정렬 함수
+function sortScrimGroups(card) {
+  if (!card.groups) return;
+  card.groups.sort((a, b) => {
+    const extractDate = (str) => {
+      const m = str.match(/(\d{2}[.-]\d{1,2}[.-]\d{1,2})/);
+      return m ? m[1].replace(/[.-]/g, '') : str;
+    };
+    return extractDate(a.groupTitle).localeCompare(extractDate(b.groupTitle));
+  });
+}
+
+function sortMcDays(srv) {
+  if (!srv.days) return;
+  srv.days.sort((a, b) => {
+    const getNum = (str) => {
+      const m = str.match(/(\d+)일차/);
+      return m ? parseInt(m[1], 10) : 0;
+    };
+    const numA = getNum(a.dayTitle);
+    const numB = getNum(b.dayTitle);
+    if (numA !== numB) return numA - numB;
+    return a.dayTitle.localeCompare(b.dayTitle);
+  });
+}
+
+SCRIM_CARDS.forEach(c => sortScrimGroups(c));
+MC_SERVERS.forEach(s => sortMcDays(s));
+
 MC_SERVERS.forEach(s => {
   if (s.days) {
     s.days.forEach(d => {
@@ -534,6 +481,9 @@ CHONG_EPS.forEach(e => {
 });
 
 function saveData() {
+  SCRIM_CARDS.forEach(c => sortScrimGroups(c));
+  MC_SERVERS.forEach(s => sortMcDays(s));
+
   const payload = {
     setsData: setsData,
     MC_SERVERS: MC_SERVERS,
@@ -578,6 +528,7 @@ window.initAppAfterFirebase = function() {
         if (data.MC_SERVERS && data.MC_SERVERS.length > 0) {
           MC_SERVERS = data.MC_SERVERS;
           MC_SERVERS.forEach(s => {
+            sortMcDays(s);
             if (s.days) {
               s.days.forEach(d => {
                 if (!d.videos) d.videos = [];
@@ -593,7 +544,10 @@ window.initAppAfterFirebase = function() {
             }
           });
         }
-        if (data.SCRIM_CARDS && data.SCRIM_CARDS.length > 0) SCRIM_CARDS = data.SCRIM_CARDS;
+        if (data.SCRIM_CARDS && data.SCRIM_CARDS.length > 0) {
+          SCRIM_CARDS = data.SCRIM_CARDS;
+          SCRIM_CARDS.forEach(c => sortScrimGroups(c));
+        }
       }
       render();
     });
@@ -735,7 +689,7 @@ function openAdminModal(target, idx = -1, copyIdx = -1) {
         <option value="롤" ${currentGame==='롤'?'selected':''}>롤</option>
         <option value="배그" ${currentGame==='배그'?'selected':''}>배그</option>
       </select>
-      <label>종류 (예: 랜드, CK, 랜드 (수피랜드), CK (VSL) 등)</label><input type="text" id="afMode" value="${r.mode||''}">
+      <label>종류 (예: 랜드, CK 등)</label><input type="text" id="afMode" value="${r.mode||''}">
       <label>밸런스</label><input type="text" id="afBalance" value="${r.balance||''}">
       <div id="recordGameFields"></div>
       <label>결과</label>
@@ -1333,34 +1287,6 @@ function handleSubFormSubmit(e) {
   render();
 }
 
-// 자동 정렬 헬퍼 함수들 (앞날짜 > 뒷날짜, 1일차~오름차순 정렬)
-function sortScrimGroups(card) {
-  if (!card.groups) return;
-  card.groups.sort((a, b) => {
-    // groupTitle에서 날짜 문자열 추출 (예: "25.11.15 토" -> "25.11.15")
-    const extractDate = (str) => {
-      const m = str.match(/(\d{2}[.-]\d{1,2}[.-]\d{1,2})/);
-      return m ? m[1].replace(/[.-]/g, '') : str;
-    };
-    return extractDate(a.groupTitle).localeCompare(extractDate(b.groupTitle));
-  });
-}
-
-function sortMcDays(srv) {
-  if (!srv.days) return;
-  srv.days.sort((a, b) => {
-    // "1일차", "2일차" 등 숫자 추출
-    const getNum = (str) => {
-      const m = str.match(/(\d+)일차/);
-      return m ? parseInt(m[1], 10) : 0;
-    };
-    const numA = getNum(a.dayTitle);
-    const numB = getNum(b.dayTitle);
-    if (numA !== numB) return numA - numB;
-    return a.dayTitle.localeCompare(b.dayTitle);
-  });
-}
-
 function adjustSpacing(targetType, parentId, idx1, idx2, idx3, delta) {
   if (targetType === "chong") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
@@ -1550,7 +1476,7 @@ function renderRecords() {
   const winRate = (winCount + lossCount) ? Math.round((winCount / (winCount + lossCount)) * 100) : 0;
   
   const gameFilteredRows = setsData.filter(r => r.game === S.game);
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(y.replace("년", "")));
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
 
   const gameTabsHtml = games.map(g => `<button class="game-tab-btn" onclick="setGame('${g}')" aria-pressed="${S.game === g}">${g}</button>`).join("");
   const yearTabsHtml = years.map(y => {
@@ -1939,10 +1865,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
 function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
-    
-    // 항상 날짜순으로 정렬 유지
     sortScrimGroups(card);
-
     const groups = card.groups || [];
     
     const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
@@ -2191,10 +2114,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
 function renderMinecraft(subId, dayIndex = 0) {
   if (subId) {
     const srv = MC_SERVERS.find(s => s.id === subId) || MC_SERVERS[0];
-    
-    // 항상 일차순(1일차, 2일차...)으로 정렬 유지
     sortMcDays(srv);
-
     const curDay = srv.days[dayIndex] || srv.days[0];
     const videos = curDay.videos || [];
 
