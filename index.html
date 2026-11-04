@@ -6,6 +6,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes">
 <title>도현 아카이브</title>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK 로드 (실시간 동기화용) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  const firebaseConfig = {
+    databaseURL: "https://dohyeon-calendar-default-rtdb.firebaseio.com/"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.dbRef = db;
+  window.firebaseRef = ref;
+  window.firebaseSet = set;
+  window.firebaseOnValue = onValue;
+
+  window.addEventListener("DOMContentLoaded", () => {
+    if (window.initAppAfterFirebase) {
+      window.initAppAfterFirebase();
+    }
+  });
+</script>
+
 <style>
 :root {
   --page: #f8fafc;
@@ -870,7 +895,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
   if (type === "scrim-group-add") {
     document.getElementById("asTitle").textContent = "날짜 탭 추가";
     container.innerHTML = `
-      <label>날짜 이름</label><input type="text" id="asGroupTitle" value="25.11.15 토">
+      <label>날짜 이름 (예: 25.11.15 토)</label><input type="text" id="asGroupTitle" value="25.11.15 토">
       <label>분류</label>
       <select id="asGroupCategory">
         <option value="스크림">스크림</option>
@@ -1006,7 +1031,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3">${item.text}</textarea><label>링크</label><input type="text" id="asChongUrl" value="${item.url||''}">`;
   } else if (type === "mc-day") {
     document.getElementById("asTitle").textContent = "마크서버 일차 추가";
-    container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="2일차"><label>날짜 및 요일 (예: 24.11.05 화)</label><input type="text" id="asDateStr" value="24.11.05 화">`;
+    container.innerHTML = `<label>일차 제목 (예: 2일차 또는 1일차)</label><input type="text" id="asDayTitle" value="2일차"><label>날짜 및 요일 (예: 24.11.05 화)</label><input type="text" id="asDateStr" value="24.11.05 화">`;
   } else if (type === "mc-day-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const dObj = srv.days[ex1];
@@ -1094,6 +1119,7 @@ function handleSubFormSubmit(e) {
     if (card) {
       if (!card.groups) card.groups = [];
       card.groups.push({ groupTitle: document.getElementById("asGroupTitle").value, category: document.getElementById("asGroupCategory").value, dates: [] });
+      sortScrimGroups(card);
       saveData();
     }
   } else if (type === "scrim-group-edit") {
@@ -1101,6 +1127,7 @@ function handleSubFormSubmit(e) {
     if (card && card.groups[ex1]) {
       card.groups[ex1].groupTitle = document.getElementById("asGroupTitle").value;
       card.groups[ex1].category = document.getElementById("asGroupCategory").value;
+      sortScrimGroups(card);
       saveData();
     }
   } else if (type === "scrim-date-add") {
@@ -1230,6 +1257,7 @@ function handleSubFormSubmit(e) {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     if (srv) {
       srv.days.push({ dayTitle: document.getElementById("asDayTitle").value, dateStr: document.getElementById("asDateStr").value, videos: [], sections: [{ title: "", timelines: [{text: "서버 접속", url: "", spacing: 0, highlight: "", bossItem: false, bossCount: 0}] }] });
+      sortMcDays(srv);
       saveData();
     }
   } else if (type === "mc-day-edit") {
@@ -1237,6 +1265,7 @@ function handleSubFormSubmit(e) {
     if (srv && srv.days[ex1]) {
       srv.days[ex1].dayTitle = document.getElementById("asDayTitle").value;
       srv.days[ex1].dateStr = document.getElementById("asDateStr").value;
+      sortMcDays(srv);
       saveData();
     }
   } else if (type === "mc-video-add") {
@@ -1302,6 +1331,34 @@ function handleSubFormSubmit(e) {
   }
   closeModal("adminSubModal");
   render();
+}
+
+// 자동 정렬 헬퍼 함수들 (앞날짜 > 뒷날짜, 1일차~오름차순 정렬)
+function sortScrimGroups(card) {
+  if (!card.groups) return;
+  card.groups.sort((a, b) => {
+    // groupTitle에서 날짜 문자열 추출 (예: "25.11.15 토" -> "25.11.15")
+    const extractDate = (str) => {
+      const m = str.match(/(\d{2}[.-]\d{1,2}[.-]\d{1,2})/);
+      return m ? m[1].replace(/[.-]/g, '') : str;
+    };
+    return extractDate(a.groupTitle).localeCompare(extractDate(b.groupTitle));
+  });
+}
+
+function sortMcDays(srv) {
+  if (!srv.days) return;
+  srv.days.sort((a, b) => {
+    // "1일차", "2일차" 등 숫자 추출
+    const getNum = (str) => {
+      const m = str.match(/(\d+)일차/);
+      return m ? parseInt(m[1], 10) : 0;
+    };
+    const numA = getNum(a.dayTitle);
+    const numB = getNum(b.dayTitle);
+    if (numA !== numB) return numA - numB;
+    return a.dayTitle.localeCompare(b.dayTitle);
+  });
 }
 
 function adjustSpacing(targetType, parentId, idx1, idx2, idx3, delta) {
@@ -1440,6 +1497,8 @@ function executeScrimCopy() {
     targetGroup = { groupTitle: targetGroupTitle, category: "스크림", dates: [] };
     card.groups.push(targetGroup);
   }
+
+  sortScrimGroups(card);
 
   let targetDateObj = targetGroup.dates.find(d => d.dateStr === targetDateStr);
   if (!targetDateObj) {
@@ -1880,6 +1939,10 @@ function renderChongDetail(epNo, tabIdx = 0) {
 function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
+    
+    // 항상 날짜순으로 정렬 유지
+    sortScrimGroups(card);
+
     const groups = card.groups || [];
     
     const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
@@ -2006,7 +2069,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                 <button class="scrim-time-btn" style="border:0; background:transparent; color:var(--yellow-ink);" ${idx===tI?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${gI}-d${dI}-t${idx}'">${t.timeLabel}</button>
                 ${isAdmin ? `
                   <button class="btn-btn" style="background:transparent; border:0; padding:2px 4px;" onclick="openSubAdminModal('${card.id}', 'scrim-time-edit', ${gI}, ${dI}, ${idx})">✏️</button>
-                  <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px 4px;" onclick="deleteSubItem('scrim-time', '${card.id}', ${gI}, ${dI}, ${idx})">✕</button>
+                  <button class="btn-btn" style="background:transparent; border:0; color:red; padding:2px 4px;" onclick="deleteSubItem('scrim-time', '${dI}', ${idx})">✕</button>
                 ` : ''}
               </div>
             `).join('')}
@@ -2128,6 +2191,10 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
 function renderMinecraft(subId, dayIndex = 0) {
   if (subId) {
     const srv = MC_SERVERS.find(s => s.id === subId) || MC_SERVERS[0];
+    
+    // 항상 일차순(1일차, 2일차...)으로 정렬 유지
+    sortMcDays(srv);
+
     const curDay = srv.days[dayIndex] || srv.days[0];
     const videos = curDay.videos || [];
 
