@@ -2,25 +2,24 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<!-- 1. 모바일 화면 축소 확대 제한 삭제 적용 -->
+<!-- 모바일 화면 확대/축소 제한 삭제 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes">
 <title>도현 아카이브</title>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-<!-- 2. PC-모바일 실시간 연동을 위한 Firebase Realtime Database SDK 적용 -->
+<!-- PC-모바일 실시간 연동을 위한 Firebase 연동 스크립트 -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  // 사용 중이신 Firebase 설정 정보를 여기에 입력해주세요.
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyB69_xyTaUSnzL30WnrLos3ZVPsvB61eCE",
+    authDomain: "dohyeon-archive.firebaseapp.com",
+    databaseURL: "https://dohyeon-archive-default-rtdb.firebaseio.com",
+    projectId: "dohyeon-archive",
+    storageBucket: "dohyeon-archive.firebasestorage.app",
+    messagingSenderId: "431411434964",
+    appId: "1:431411434964:web:b6fc9e3a169c593c72f241"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -625,7 +624,9 @@ window.addEventListener("DOMContentLoaded", () => {
     sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
-  render();
+  if (!window.dbRef) {
+    render();
+  }
 });
 
 function promptAdminLogin() {
@@ -1038,12 +1039,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3">${item.text}</textarea><label>링크</label><input type="text" id="asChongUrl" value="${item.url||''}">`;
   } else if (type === "mc-day") {
     document.getElementById("asTitle").textContent = "마크서버 일차 추가";
-    container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="2일차"><label>날짜 및 요일 (예: 24.11.05 화)</label><input type="text" id="asDateStr" value="24.11.05 화">`;
+    container.innerHTML = `<label>일차 제목 (예: 2일차)</label><input type="text" id="asDayTitle" value="2일차"><label>날짜 및 요일 (예: 24.11.05 화)</label><input type="text" id="asDateStr" value="24.11.05 화">`;
   } else if (type === "mc-day-edit") {
     const srv = MC_SERVERS.find(s => s.id === parentId);
     const dObj = srv.days[ex1];
     document.getElementById("asTitle").textContent = "마크서버 일차 수정";
-    container.innerHTML = `<label>일차 제목</label><input type="text" id="asDayTitle" value="${dObj.dayTitle}"><label>날짜 및 요일 (예: 24.11.04 월)</label><input type="text" id="asDateStr" value="${dObj.dateStr}">`;
+    container.innerHTML = `<label>일차 제목 (예: 2일차)</label><input type="text" id="asDayTitle" value="${dObj.dayTitle}"><label>날짜 및 요일 (예: 24.11.04 월)</label><input type="text" id="asDateStr" value="${dObj.dateStr}">`;
   } else if (type === "mc-video-add") {
     document.getElementById("asTitle").textContent = "풀영상 링크 추가";
     container.innerHTML = `<label>영상 이름 (예: 1일차 1부 풀영상)</label><input type="text" id="asVidName" value="1일차 풀영상"><label>링크 URL</label><input type="text" id="asVidUrl" placeholder="https://...">`;
@@ -2086,7 +2087,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                 ${(curSet.positions || []).map(pos => {
                   const formatName = (name) => {
                     if (!name) return '';
-                    // 도현 이름 강조 색상을 진노랑(var(--yellow-dark) 또는 #b45309)으로 변경
                     return name.replace(/도현/g, '<span style="color:var(--yellow-dark); font-weight:900;">도현</span>');
                   };
                   return `
@@ -2127,7 +2127,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     <div class="block">
       <div class="toolbar" style="align-items:center;">
         <h2>롤 멸망전</h2>
-        <!-- 오래된순/최신순 버튼 (연한 노란색 톤 적용) -->
         <div class="seg" style="display:inline-flex; border:1.5px solid var(--yellow); border-radius:999px; overflow:hidden; background:#ffffff;">
           <button type="button" onclick="setScrimSort('old')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='old'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimSort==='old'?'bold':'normal'}; cursor:pointer;">오래된순</button>
           <button type="button" onclick="setScrimSort('latest')" style="font:inherit; font-size:12px; padding:3px 12px; border:0; background:${S.scrimSort==='latest'?'var(--yellow-bg)':'transparent'}; color:var(--yellow-ink); font-weight:${S.scrimSort==='latest'?'bold':'normal'}; cursor:pointer;">최신순</button>
@@ -2163,6 +2162,16 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
 function renderMinecraft(subId, dayIndex = 0) {
   if (subId) {
     const srv = MC_SERVERS.find(s => s.id === subId) || MC_SERVERS[0];
+    
+    // 마크서버 일차 순서 자동 정렬 (1일차, 2일차, 10일차 순서대로 번호 추출하여 정렬)
+    if (srv.days) {
+      srv.days.sort((a, b) => {
+        const numA = parseInt((a.dayTitle || "").replace(/[^0-9]/g, ""), 10) || 0;
+        const numB = parseInt((b.dayTitle || "").replace(/[^0-9]/g, ""), 10) || 0;
+        return numA - numB;
+      });
+    }
+
     const curDay = srv.days[dayIndex] || srv.days[0];
     const videos = curDay.videos || [];
 
