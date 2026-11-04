@@ -923,7 +923,11 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>시간대 이름</label><input type="text" id="asDateStr" value="${card.groups[ex1].dates[ex2].dateStr}">`;
   } else if (type === "scrim-time-add") {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
-    const prevTimeObj = card.groups[ex1].dates[ex2].times.slice(-1)[0];
+    const gObj = card && card.groups ? card.groups[ex1] : null;
+    const dObj = gObj && gObj.dates ? gObj.dates[ex2] : null;
+    const timesArr = dObj && dObj.times ? dObj.times : [];
+    const prevTimeObj = timesArr.length > 0 ? timesArr[timesArr.length - 1] : null;
+
     let defaultPositions = [
       { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
       { pos: "정글", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
@@ -949,13 +953,14 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
       }
     }
 
-    document.getElementById("asTitle").textContent = "세트 추가 (이전 멤버·티어 복사됨)";
+    const nextSetNum = timesArr.length + 1;
+    document.getElementById("asTitle").textContent = "새 세트 추가";
     container.innerHTML = `
-      <label>세트 표기</label><input type="text" id="asTimeLabel" value="2세트" style="margin-bottom:8px;">
+      <label>세트 표기</label><input type="text" id="asTimeLabel" value="${nextSetNum}세트" style="margin-bottom:8px;">
       <input type="hidden" id="asCopiedSide" value="${defaultSide}">
       <input type="hidden" id="asCopiedLeft" value="${defaultLeft}">
       <input type="hidden" id="asCopiedRight" value="${defaultRight}">
-      <div style="font-size:12px; color:var(--page-muted); background:var(--neutral-bg); padding:8px; border-radius:6px;">이전 세트의 멤버와 티어가 기본 세팅되었습니다.</div>
+      <div style="font-size:12px; color:var(--page-muted); background:var(--neutral-bg); padding:8px; border-radius:6px;">이전 세트(또는 기본값)의 멤버와 티어가 세팅됩니다.</div>
     `;
     window._tempCopiedPositions = defaultPositions;
   } else if (type === "scrim-time-edit") {
@@ -1820,7 +1825,6 @@ function renderChongDetail(epNo, tabIdx = 0) {
         ` : ''}
       </div>
 
-      <!-- 총겜동 서브 탭 가로 나열 스타일 적용 -->
       <div class="day-tabs" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
         ${epObj.tabs.map((t, idx) => `
           <button class="day-tab-btn" style="width:auto; border:1.5px solid ${idx===tabIdx?'var(--violet)':'var(--line)'}; background:${idx===tabIdx?'var(--violet-bg)':'transparent'}; color:${idx===tabIdx?'var(--violet-ink)':'inherit'}; display:inline-flex; align-items:center; justify-content:center; padding:8px 18px; border-radius:999px;" onclick="location.hash='#chong-${epObj.ep}-t${idx}'" ${idx === tabIdx ? 'aria-selected="true"' : ''}>
@@ -2047,7 +2051,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                 ` : ''}
               </div>
             `).join('')}
-            <!-- [수정완료] 세트 추가 버튼 관리자 키(gI, dI) 정상 전달 -->
             ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink);" onclick="openSubAdminModal('${card.id}', 'scrim-time-add', ${gI}, ${dI})">+ 세트 추가</button>` : ''}
           </div>
         ` : ''}
@@ -2119,7 +2122,13 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
               </tbody>
             </table>
           </div>
-        ` : '<div style="padding:30px;text-align:center;color:#888;">세트 정보가 없습니다.</div>'}
+        ` : `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span style="font-size:14px; font-weight:bold; color:var(--page-muted);">${curDateObj.dateStr} · 세트 없음</span>
+            ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink);" onclick="openSubAdminModal('${card.id}', 'scrim-time-add', ${gI}, ${dI})">+ 세트 추가</button>` : ''}
+          </div>
+          <div style="padding:40px; text-align:center; color:#888; border:1px solid #dcdcdc; border-radius:8px; background:#fff;">세트 정보가 없습니다.</div>
+        `}
       </div>`;
   }
 
