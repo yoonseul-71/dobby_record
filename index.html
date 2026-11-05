@@ -515,7 +515,6 @@ const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
   };
 });
 
-// 안전한 기본 포지션 구조
 function createDefaultPositions() {
   return [
     { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
@@ -526,7 +525,6 @@ function createDefaultPositions() {
   ];
 }
 
-// 멸망전 데이터 방어 정화 함수
 function sanitizeScrimCards(cards) {
   if (!Array.isArray(cards)) return JSON.parse(JSON.stringify(DEFAULT_SCRIM));
   cards.forEach(card => {
@@ -564,7 +562,6 @@ function sanitizeScrimCards(cards) {
   return cards;
 }
 
-// 마크서버 일차 파싱 보조 함수 (누락되었던 함수 추가)
 function parseMcDay(dayTitle) {
   const match = dayTitle ? dayTitle.match(/(\d+)일차/) : null;
   return match ? parseInt(match[1], 10) : 0;
@@ -1585,13 +1582,14 @@ function renderRecords() {
   const winRate = (winCount + lossCount) ? Math.round((winCount / (winCount + lossCount)) * 100) : 0;
   
   const gameFilteredRows = setsData.filter(r => r.game === S.game);
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(y.replace("년", "")));
 
   const gameTabsHtml = games.map(g => `<button class="game-tab-btn" onclick="setGame('${g}')" aria-pressed="${S.game === g}">${g}</button>`).join("");
-  const yearTabsHtml = years.map(y => {
-    const count = y === "전체" ? gameFilteredRows.length : gameFilteredRows.filter(r => r.date && r.date.startsWith(y.replace("년", ""))).length;
-    return `<a onclick="setYear('${y}')" ${S.year === y ? 'aria-current="page"' : ''}>${y} <span class="n">${count}</span></a>`;
+  const yearTabsHtml = years.map(yVal => {
+    const count = yVal === "전체" ? gameFilteredRows.length : gameFilteredRows.filter(r => r.date && r.date.startsWith(yVal.replace("년", ""))).length;
+    return `<a onclick="setYear('${yVal}')" ${S.year === yVal ? 'aria-current="page"' : ''}>${yVal} <span class="n">${count}</span></a>`;
   }).join("");
+
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
 
   const subnavHtml = currentModes.map(m => {
     const count = m === "전체" ? yearFilteredRows.length : yearFilteredRows.filter(r => {
@@ -1761,7 +1759,7 @@ function renderRecords() {
       <div>
         <div class="game-tabs">${gameTabsHtml}</div>
         <div style="font-size:11.5px; color:var(--page-muted); margin-top:6px; line-height:1.4;">
-          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다 (후열 범인찾기 포함)<br>
+          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다<br>
           하나의 ${noticeModeText}의 최종 승/패 결과에 따라 계산되지 않습니다
         </div>
       </div>
@@ -2395,7 +2393,7 @@ function renderMinecraft(subId, dayIndex = 0) {
 }
 
 function setGame(g) { S.game = g; S.mode = "전체"; render(); }
-function setYear(y) { S.year = y; S.mode = "전체"; render(); }
+function setYear(yVal) { S.year = yVal; S.mode = "전체"; render(); }
 function setMode(m) { S.mode = m; render(); }
 function setChongSort(so) { S.chongSort = so; render(); }
 function setMcSort(so) { S.mcSort = so; render(); }
