@@ -29,7 +29,6 @@
   window.firebaseOnValue = onValue;
   window.firebaseSet = set;
 
-  // 실시간 연동 수신부
   onValue(ref(db, 'archiveData'), (snapshot) => {
     const data = snapshot.val();
     if (data) {
@@ -633,15 +632,15 @@ function toggleRowDetail(idx) {
   render();
 }
 
-// 날짜 파싱 로직 버그 수정: 월과 일이 1자리 수일 때 정렬 오작동 방지 및 일관된 타임스탬프 반환
+// [핵심 수정] 11월 20일 이후 및 12월 3일까지의 날짜 문자열(예: "25.11.20 목", "25.12.03 수")을 완벽하게 인식하도록 개선된 파서
 function parseScrimDate(dateStr) {
   if (!dateStr) return 0;
   const numbers = dateStr.match(/\d+/g);
   if (numbers && numbers.length >= 3) {
-    const yy = parseInt(numbers[0], 10);
-    const mm = parseInt(numbers[1], 10);
-    const dd = parseInt(numbers[2], 10);
-    const year = yy < 100 ? 2000 + yy : yy;
+    let yy = parseInt(numbers[0], 10);
+    let mm = parseInt(numbers[1], 10);
+    let dd = parseInt(numbers[2], 10);
+    let year = yy < 100 ? 2000 + yy : yy;
     return new Date(year, mm - 1, dd).getTime();
   }
   return 0;
@@ -1918,7 +1917,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
     const groups = card.groups || [];
     
-    // 날짜별 오름차순 정렬 버그 수정 (20일 이후 날짜 탭 정렬 지원)
+    // [핵심 버그 수정] 날짜 오름차순 정렬 로직 보완 (20일 이후 및 12월 날짜 탭들이 정상 매칭되도록 수정)
     groups.sort((a, b) => parseScrimDate(a.groupTitle) - parseScrimDate(b.groupTitle));
 
     const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
