@@ -29,6 +29,7 @@
   window.firebaseOnValue = onValue;
   window.firebaseSet = set;
 
+  // 실시간 연동 수신부
   onValue(ref(db, 'archiveData'), (snapshot) => {
     const data = snapshot.val();
     if (data) {
@@ -132,11 +133,11 @@ nav.bar a[aria-current="page"] {
 .block { display: flex; flex-direction: column; gap: 20px; }
 
 .game-tabs { display: flex; gap: 8px; margin-bottom: 2px; flex-wrap: wrap; }
-.game-tab-btn { font: inherit; font-size: 14px; font-weight: bold; padding: 6px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; touch-action: manipulation; }
+.game-tab-btn { font: inherit; font-size: 14px; font-weight: bold; padding: 6px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; }
 .game-tab-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 .subnav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.subnav a { padding: 4px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); font-size: 13px; cursor: pointer; touch-action: manipulation; }
+.subnav a { padding: 4px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--page-fg); font-size: 13px; cursor: pointer; }
 .subnav a[aria-current="page"] { background: var(--neutral-bg); border-color: var(--accent); color: var(--page-fg); font-weight: 700; }
 .subnav .n { font-weight: 600; opacity: 0.7; margin-left: 4px; }
 
@@ -154,7 +155,7 @@ h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; backgro
 .month .m-title { font-weight: 700; font-size: 16px; color: #2b6cb0; }
 .month .m-meta { font-size: 13px; opacity: 0.8; font-weight: normal; }
 .month .seg { margin-left: 10px; display: inline-flex; border: 1px solid #cbd5e0; border-radius: 999px; overflow: hidden; }
-.month .seg button { font: inherit; font-size: 11px; padding: 2px 10px; border: 0; background: transparent; cursor: pointer; touch-action: manipulation; }
+.month .seg button { font: inherit; font-size: 11px; padding: 2px 10px; border: 0; background: transparent; cursor: pointer; }
 .month .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: bold; }
 .month .rate-box { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .month .bar { width: 100px; height: 8px; border-radius: 4px; background: var(--loss-bg); overflow: hidden; }
@@ -200,12 +201,12 @@ td.mono { font-weight: 500; }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 전용 스타일 (날짜 버튼 영역 그리드 정렬 및 줄바꿈 적용) */
+/* 롤 멸망전 전용 스타일 */
 .scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
 
-.scrim-time-btn { padding: 6px 16px; border-radius: 7px; border: 1.5px solid var(--yellow); background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: var(--yellow-ink); white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.scrim-time-btn { padding: 6px 16px; border-radius: 7px; border: 1.5px solid var(--yellow); background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: var(--yellow-ink); white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
 .scrim-time-btn[aria-selected="true"] { border-color: var(--yellow); background: var(--yellow-bg); color: var(--yellow-ink); }
 .scrim-time-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 
@@ -236,8 +237,6 @@ td.mono { font-weight: 500; }
   box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   color: #1e3a8a;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 .day-tab-btn[aria-selected="true"] { background: #bfdbfe; border-color: #2563eb; color: #1e3a8a; }
 
@@ -290,8 +289,8 @@ footer.bottom-footer {
 
 #admin-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #18181b; color: #fff; padding: 10px 24px; display: none; justify-content: space-between; align-items: center; z-index: 999; font-weight: bold; flex-wrap: wrap; gap: 8px; }
 #admin-bar button { background: #ef4444; color: #fff; border: 0; padding: 6px 14px; border-radius: 6px; cursor: pointer; }
-.btn-btn { font: inherit; font-size: 12px; padding: 3px 8px; border-radius: 6px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); touch-action: manipulation; }
-.btn-accent { background: var(--accent); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; touch-action: manipulation; }
+.btn-btn { font: inherit; font-size: 12px; padding: 3px 8px; border-radius: 6px; cursor: pointer; border: 1.5px solid var(--line); background: var(--surface); }
+.btn-accent { background: var(--accent); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -599,8 +598,8 @@ let pressTimer = null;
 window.addEventListener("DOMContentLoaded", () => {
   const sigBtn = document.getElementById("signatureBtn");
   if (sigBtn) {
-    sigBtn.addEventListener("touchstart", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); }, {passive: true});
-    sigBtn.addEventListener("touchend", () => { clearTimeout(pressTimer); }, {passive: true});
+    sigBtn.addEventListener("touchstart", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
+    sigBtn.addEventListener("touchend", () => { clearTimeout(pressTimer); });
     sigBtn.addEventListener("mousedown", () => { pressTimer = setTimeout(() => { promptAdminLogin(); }, 1000); });
     sigBtn.addEventListener("mouseup", () => { clearTimeout(pressTimer); });
   }
@@ -1989,7 +1988,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
           </div>
         </div>
 
-        <!-- 날짜 탭 영역 (flex-wrap으로 줄바꿈 정상 적용) -->
         <div class="scrim-top-date-bar">
           ${filteredGroups.map(item => {
             const idx = item.originalIndex;
@@ -1997,7 +1995,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
             const catLabel = g.category || "스크림";
             const isSel = (idx === gI);
             return `
-              <div style="display:inline-flex; align-items:center; background:${isSel ? 'var(--yellow-bg)' : '#ffffff'}; border-radius:8px; border:1.5px solid var(--yellow); flex-shrink:0;">
+              <div style="display:inline-flex; align-items:center; background:${isSel ? 'var(--yellow-bg)' : '#ffffff'}; border-radius:8px; border:1.5px solid var(--yellow);">
                 <button class="scrim-top-date-btn" style="border:0; background:transparent; color:var(--yellow-ink);" ${isSel?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">
                   <span style="font-size:10px; font-weight:bold; color:var(--yellow-ink); background:var(--yellow-bg); padding:1px 5px; border-radius:4px; margin-bottom:1px;">[${catLabel}]</span>
                   <span>${g.groupTitle}</span>
@@ -2009,7 +2007,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
               </div>
             `;
           }).join('')}
-          ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink); flex-shrink:0;" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
+          ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink);" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
         </div>
 
         ${isScrimCategory ? `
