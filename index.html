@@ -35,7 +35,7 @@
       if (data.setsData) setsData = data.setsData;
       if (data.MC_SERVERS) MC_SERVERS = data.MC_SERVERS;
       if (data.CHONG_EPS) CHONG_EPS = data.CHONG_EPS;
-      if (data.SCRIM_CARDS) SCRIM_CARDS = data.SCRIM_CARDS;
+      if (data.SCRIM_CARDS) SCRIM_CARDS = sanitizeScrimCards(data.SCRIM_CARDS);
       
       localStorage.setItem("local_setsData", JSON.stringify(setsData));
       localStorage.setItem("local_MC_SERVERS", JSON.stringify(MC_SERVERS));
@@ -515,9 +515,55 @@ const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
   };
 });
 
+// 안전한 기본 포지션 구조
+function createDefaultPositions() {
+  return [
+    { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+    { pos: "정글", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+    { pos: "미드", p1: "도현", t1: "", c1: "", p2: "", t2: "", c2: "" },
+    { pos: "원딜", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
+    { pos: "서포터", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" }
+  ];
+}
+
+// 멸망전 데이터 자동 정화 (빈 날짜/시간대/세트/포지션 완전 보장)
+function sanitizeScrimCards(cards) {
+  if (!Array.isArray(cards)) return [];
+  cards.forEach(card => {
+    if (!card.groups) card.groups = [];
+    card.groups.forEach(g => {
+      if (!g.category) g.category = "스크림";
+      if (!g.dates) g.dates = [];
+      g.dates.forEach(d => {
+        if (!d.dateStr) d.dateStr = "19시 스크림";
+        if (!d.times) d.times = [];
+        d.times.forEach(t => {
+          if (!t.timeLabel) t.timeLabel = "1세트";
+          if (!t.sets || !Array.isArray(t.sets) || t.sets.length === 0) {
+            t.sets = [{
+              side: "레드",
+              result: "승",
+              leftTeamName: "도현 팀",
+              rightTeamName: "상대 팀",
+              positions: createDefaultPositions()
+            }];
+          } else {
+            t.sets.forEach(s => {
+              if (!s.positions || !Array.isArray(s.positions) || s.positions.length === 0) {
+                s.positions = createDefaultPositions();
+              }
+            });
+          }
+        });
+      });
+    });
+  });
+  return cards;
+}
+
 let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || JSON.parse(JSON.stringify(DEFAULT_MC));
 let CHONG_EPS = JSON.parse(localStorage.getItem("local_CHONG_EPS")) || JSON.parse(JSON.stringify(DEFAULT_CHONG));
-let SCRIM_CARDS = JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || JSON.parse(JSON.stringify(DEFAULT_SCRIM));
+let SCRIM_CARDS = sanitizeScrimCards(JSON.parse(localStorage.getItem("local_SCRIM_CARDS")) || JSON.parse(JSON.stringify(DEFAULT_SCRIM)));
 let setsData = JSON.parse(localStorage.getItem("local_setsData")) || JSON.parse(JSON.stringify(DEFAULT_SETS));
 
 MC_SERVERS.forEach(srv => {
@@ -551,6 +597,7 @@ CHONG_EPS.forEach(ep => {
 });
 
 function saveData() {
+  SCRIM_CARDS = sanitizeScrimCards(SCRIM_CARDS);
   const payload = {
     setsData: setsData,
     MC_SERVERS: MC_SERVERS,
@@ -919,13 +966,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     const timesArr = dObj && dObj.times ? dObj.times : [];
     const prevTimeObj = timesArr.length > 0 ? timesArr[timesArr.length - 1] : null;
 
-    let defaultPositions = [
-      { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
-      { pos: "정글", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
-      { pos: "미드", p1: "도현", t1: "", c1: "", p2: "", t2: "", c2: "" },
-      { pos: "원딜", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
-      { pos: "서포터", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" }
-    ];
+    let defaultPositions = createDefaultPositions();
     let defaultSide = "레드";
     let defaultLeft = "도현 팀";
     let defaultRight = "상대 팀";
@@ -978,7 +1019,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     const setObj = card.groups[ex1].dates[ex2].times[ex3].sets[0];
     document.getElementById("asTitle").textContent = "선수 및 챔피언 수정";
     let pHtml = "";
-    (setObj.positions || []).forEach((p, pIdx) => {
+    (setObj.positions || createDefaultPositions()).forEach((p, pIdx) => {
       pHtml += `
         <div style="border:1px solid var(--line); padding:10px; margin-bottom:8px; border-radius:6px;">
           <strong>[${p.pos}] 포지션</strong><br>
@@ -1114,7 +1155,27 @@ function handleSubFormSubmit(e) {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
     if (card) {
       if (!card.groups) card.groups = [];
-      card.groups.push({ groupTitle: document.getElementById("asGroupTitle").value, category: document.getElementById("asGroupCategory").value, dates: [] });
+      card.groups.push({
+        groupTitle: document.getElementById("asGroupTitle").value,
+        category: document.getElementById("asGroupCategory").value,
+        dates: [
+          {
+            dateStr: "19시 스크림",
+            times: [
+              {
+                timeLabel: "1세트",
+                sets: [{
+                  side: "레드",
+                  result: "승",
+                  leftTeamName: "도현 팀",
+                  rightTeamName: "상대 팀",
+                  positions: createDefaultPositions()
+                }]
+              }
+            ]
+          }
+        ]
+      });
       saveData();
     }
   } else if (type === "scrim-group-edit") {
@@ -1128,7 +1189,21 @@ function handleSubFormSubmit(e) {
     const card = SCRIM_CARDS.find(c => c.id === parentId);
     if (card && card.groups[ex1]) {
       if (!card.groups[ex1].dates) card.groups[ex1].dates = [];
-      card.groups[ex1].dates.push({ dateStr: document.getElementById("asDateStr").value, times: [] });
+      card.groups[ex1].dates.push({
+        dateStr: document.getElementById("asDateStr").value,
+        times: [
+          {
+            timeLabel: "1세트",
+            sets: [{
+              side: "레드",
+              result: "승",
+              leftTeamName: "도현 팀",
+              rightTeamName: "상대 팀",
+              positions: createDefaultPositions()
+            }]
+          }
+        ]
+      });
       saveData();
     }
   } else if (type === "scrim-date-edit") {
@@ -1149,13 +1224,7 @@ function handleSubFormSubmit(e) {
           result: "승",
           leftTeamName: document.getElementById("asCopiedLeft") ? document.getElementById("asCopiedLeft").value : "도현 팀",
           rightTeamName: document.getElementById("asCopiedRight") ? document.getElementById("asCopiedRight").value : "상대 팀",
-          positions: window._tempCopiedPositions || [
-            { pos: "탑", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
-            { pos: "정글", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
-            { pos: "미드", p1: "도현", t1: "", c1: "", p2: "", t2: "", c2: "" },
-            { pos: "원딜", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" },
-            { pos: "서포터", p1: "", t1: "", c1: "", p2: "", t2: "", c2: "" }
-          ]
+          positions: window._tempCopiedPositions || createDefaultPositions()
         }]
       });
       window._tempCopiedPositions = null;
@@ -1688,7 +1757,7 @@ function renderRecords() {
       <div>
         <div class="game-tabs">${gameTabsHtml}</div>
         <div style="font-size:11.5px; color:var(--page-muted); margin-top:6px; line-height:1.4;">
-          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다<br>
+          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다 (범찾 포함)<br>
           하나의 ${noticeModeText}의 최종 승/패 결과에 따라 계산되지 않습니다
         </div>
       </div>
@@ -1902,8 +1971,6 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
     const groups = card.groups || [];
-    
-    // [변경 완료] 자동 정렬(sort)을 완전히 제거하여 사용자가 추가/입력한 원래 순서 그대로 유지되도록 처리
 
     const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
       const cat = item.g.category || "스크림";
@@ -1945,7 +2012,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     const todayTotal = todayWins + todayLosses;
     const todayWinRate = todayTotal ? Math.round((todayWins / todayTotal) * 100) : 0;
 
-    const curSet = sets[0] || {};
+    const curSet = sets[0] || { side: "레드", result: "승", leftTeamName: "도현 팀", rightTeamName: "상대 팀", positions: createDefaultPositions() };
     const isDhRed = curSet.side === "레드";
     const leftHeaderClass = isDhRed ? "header-red" : "header-blue";
     const rightHeaderClass = isDhRed ? "header-blue" : "header-red";
@@ -2073,7 +2140,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
                 </tr>
               </thead>
               <tbody>
-                ${(curSet.positions || []).map(pos => {
+                ${(curSet.positions || createDefaultPositions()).map(pos => {
                   const formatName = (name) => {
                     if (!name) return '';
                     return name.replace(/도현/g, '<span style="color:var(--yellow-dark); font-weight:900;">도현</span>');
