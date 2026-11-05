@@ -633,12 +633,18 @@ function toggleRowDetail(idx) {
   render();
 }
 
+// 날짜 파싱 로직 버그 수정: 월과 일이 1자리 수일 때 정렬 오작동 방지 및 일관된 타임스탬프 반환
 function parseScrimDate(dateStr) {
-  const matches = dateStr.match(/(\d+)\.(\d+)\.(\d+)/);
-  if (matches) {
-    return matches.slice(1, 4).map(Number);
+  if (!dateStr) return 0;
+  const numbers = dateStr.match(/\d+/g);
+  if (numbers && numbers.length >= 3) {
+    const yy = parseInt(numbers[0], 10);
+    const mm = parseInt(numbers[1], 10);
+    const dd = parseInt(numbers[2], 10);
+    const year = yy < 100 ? 2000 + yy : yy;
+    return new Date(year, mm - 1, dd).getTime();
   }
-  return [0, 0, 0];
+  return 0;
 }
 
 function parseMcDay(dayTitle) {
@@ -1910,9 +1916,11 @@ function renderChongDetail(epNo, tabIdx = 0) {
 function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
   if (subId) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
-    
     const groups = card.groups || [];
     
+    // 날짜별 오름차순 정렬 버그 수정 (20일 이후 날짜 탭 정렬 지원)
+    groups.sort((a, b) => parseScrimDate(a.groupTitle) - parseScrimDate(b.groupTitle));
+
     const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
       const cat = item.g.category || "스크림";
       if (S.scrimFilter === "스크림") return cat === "스크림";
