@@ -526,17 +526,18 @@ function createDefaultPositions() {
   ];
 }
 
-// 멸망전 데이터 자동 정화 (빈 날짜/시간대/세트/포지션 완전 보장)
+// 멸망전 데이터 방어 정화 함수 (누락된 배열이 있으면 자동 생성하여 에러 원천 차단)
 function sanitizeScrimCards(cards) {
-  if (!Array.isArray(cards)) return [];
+  if (!Array.isArray(cards)) return JSON.parse(JSON.stringify(DEFAULT_SCRIM));
   cards.forEach(card => {
-    if (!card.groups) card.groups = [];
+    if (!card.groups || !Array.isArray(card.groups)) card.groups = [];
     card.groups.forEach(g => {
       if (!g.category) g.category = "스크림";
-      if (!g.dates) g.dates = [];
+      if (!g.groupTitle) g.groupTitle = "날짜 미정";
+      if (!g.dates || !Array.isArray(g.dates)) g.dates = [];
       g.dates.forEach(d => {
         if (!d.dateStr) d.dateStr = "19시 스크림";
-        if (!d.times) d.times = [];
+        if (!d.times || !Array.isArray(d.times)) d.times = [];
         d.times.forEach(t => {
           if (!t.timeLabel) t.timeLabel = "1세트";
           if (!t.sets || !Array.isArray(t.sets) || t.sets.length === 0) {
@@ -549,6 +550,8 @@ function sanitizeScrimCards(cards) {
             }];
           } else {
             t.sets.forEach(s => {
+              if (!s.side) s.side = "레드";
+              if (!s.result) s.result = "승";
               if (!s.positions || !Array.isArray(s.positions) || s.positions.length === 0) {
                 s.positions = createDefaultPositions();
               }
@@ -677,11 +680,6 @@ function closeModal(id) { document.getElementById(id).style.display = "none"; }
 function toggleRowDetail(idx) {
   S.openRows[idx] = !S.openRows[idx];
   render();
-}
-
-function parseMcDay(dayTitle) {
-  const match = dayTitle.match(/(\d+)일차/);
-  return match ? parseInt(match[1], 10) : 0;
 }
 
 function updateRecordFormFields(selectedGame, r = {}) {
@@ -1757,7 +1755,7 @@ function renderRecords() {
       <div>
         <div class="game-tabs">${gameTabsHtml}</div>
         <div style="font-size:11.5px; color:var(--page-muted); margin-top:6px; line-height:1.4;">
-          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다 (범찾 포함)<br>
+          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다<br>
           하나의 ${noticeModeText}의 최종 승/패 결과에 따라 계산되지 않습니다
         </div>
       </div>
@@ -1986,11 +1984,13 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     }
 
     const curGroup = groups[gI] || (filteredGroups[0] ? filteredGroups[0].g : groups[0]);
-    const dates = curGroup ? (curGroup.dates || []) : [];
-    const curDateObj = dates[dI] || dates[0];
-    const times = curDateObj ? (curDateObj.times || []) : [];
-    const curTimeObj = times[tI] || times[0];
-    const sets = curTimeObj ? (curTimeObj.sets || []) : [];
+    const dates = curGroup && curGroup.dates ? curGroup.dates : [];
+    if (dI >= dates.length) dI = 0;
+    const curDateObj = dates[dI] || { dateStr: "19시 스크림", times: [] };
+    const times = curDateObj && curDateObj.times ? curDateObj.times : [];
+    if (tI >= times.length) tI = 0;
+    const curTimeObj = times[tI] || { timeLabel: "1세트", sets: [] };
+    const sets = curTimeObj && curTimeObj.sets ? curTimeObj.sets : [];
     
     let todayWins = 0, todayLosses = 0;
     let allSetPills = [];
@@ -2104,7 +2104,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
           </div>
         ` : ''}
 
-        ${curTimeObj ? `
+        ${curTimeObj && curTimeObj.sets && curTimeObj.sets.length > 0 ? `
           <div style="font-size:14px; font-weight:bold; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <span>${curDateObj.dateStr} · ${curTimeObj.timeLabel}</span>
