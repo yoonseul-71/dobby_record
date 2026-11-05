@@ -632,20 +632,6 @@ function toggleRowDetail(idx) {
   render();
 }
 
-// [날짜 파서 오류 원천 차단] 11월 20일 이후 및 12월 3일까지의 날짜 문자열(예: "25.11.20 목", "25.12.03 수")을 완벽하게 인식하는 안전한 함수
-function parseScrimDate(dateStr) {
-  if (!dateStr || typeof dateStr !== 'string') return 0;
-  const numbers = dateStr.match(/\d+/g);
-  if (numbers && numbers.length >= 3) {
-    let yy = parseInt(numbers[0], 10);
-    let mm = parseInt(numbers[1], 10);
-    let dd = parseInt(numbers[2], 10);
-    let year = yy < 100 ? 2000 + yy : yy;
-    return new Date(year, mm - 1, dd).getTime();
-  }
-  return 0;
-}
-
 function parseMcDay(dayTitle) {
   const match = dayTitle.match(/(\d+)일차/);
   return match ? parseInt(match[1], 10) : 0;
@@ -1917,8 +1903,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
     const card = SCRIM_CARDS.find(c => c.id === subId) || SCRIM_CARDS[0];
     const groups = card.groups || [];
     
-    // [버그 수정 완료] 안전한 파서와 연동하여 날짜 정렬 시 에러나 멈춤 현상 차단
-    groups.sort((a, b) => parseScrimDate(a.groupTitle) - parseScrimDate(b.groupTitle));
+    // [변경 완료] 자동 정렬(sort)을 완전히 제거하여 사용자가 추가/입력한 원래 순서 그대로 유지되도록 처리
 
     const filteredGroups = groups.map((g, idx) => ({ g, originalIndex: idx })).filter(item => {
       const cat = item.g.category || "스크림";
