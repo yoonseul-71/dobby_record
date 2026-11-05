@@ -201,12 +201,13 @@ td.mono { font-weight: 500; }
 .card-footer-link { display: flex; justify-content: flex-end; align-items: center; gap: 6px; padding-top: 12px; font-size: 13px; font-weight: bold; }
 .card-admin-btns { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 4px; z-index: 2; }
 
-/* 롤 멸망전 전용 스타일 */
-.scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; touch-action: manipulation; }
+/* 롤 멸망전 전용 스타일 (모바일 터치 락 및 스크롤 최적화 적용) */
+.scrim-top-date-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+.scrim-top-date-bar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.scrim-top-date-btn { padding: 6px 14px 8px; border-radius: 8px; border: 1.5px solid var(--yellow); background: var(--surface); font-weight: bold; cursor: pointer; font-size: 13px; color: var(--yellow-ink); box-shadow: 0 2px 4px rgba(0,0,0,0.03); white-space: nowrap; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .scrim-top-date-btn[aria-selected="true"] { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow-ink); }
 
-.scrim-time-btn { padding: 6px 16px; border-radius: 7px; border: 1.5px solid var(--yellow); background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: var(--yellow-ink); white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; touch-action: manipulation; }
+.scrim-time-btn { padding: 6px 16px; border-radius: 7px; border: 1.5px solid var(--yellow); background: #ffffff; font-weight: bold; cursor: pointer; font-size: 14px; color: var(--yellow-ink); white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .scrim-time-btn[aria-selected="true"] { border-color: var(--yellow); background: var(--yellow-bg); color: var(--yellow-ink); }
 .scrim-time-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 
@@ -238,6 +239,7 @@ td.mono { font-weight: 500; }
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   color: #1e3a8a;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .day-tab-btn[aria-selected="true"] { background: #bfdbfe; border-color: #2563eb; color: #1e3a8a; }
 
@@ -1996,7 +1998,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
             const catLabel = g.category || "스크림";
             const isSel = (idx === gI);
             return `
-              <div style="display:inline-flex; align-items:center; background:${isSel ? 'var(--yellow-bg)' : '#ffffff'}; border-radius:8px; border:1.5px solid var(--yellow);">
+              <div style="display:inline-flex; align-items:center; background:${isSel ? 'var(--yellow-bg)' : '#ffffff'}; border-radius:8px; border:1.5px solid var(--yellow); flex-shrink:0;">
                 <button class="scrim-top-date-btn" style="border:0; background:transparent; color:var(--yellow-ink);" ${isSel?'aria-selected="true"':''} onclick="location.hash='#scrim-${card.id}-g${idx}-d0-t0'">
                   <span style="font-size:10px; font-weight:bold; color:var(--yellow-ink); background:var(--yellow-bg); padding:1px 5px; border-radius:4px; margin-bottom:1px;">[${catLabel}]</span>
                   <span>${g.groupTitle}</span>
@@ -2008,7 +2010,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
               </div>
             `;
           }).join('')}
-          ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink);" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
+          ${isAdmin ? `<button class="btn-accent" style="background:var(--yellow); color:var(--yellow-ink); flex-shrink:0;" onclick="openSubAdminModal('${card.id}', 'scrim-group-add')">+ 날짜 탭 추가</button>` : ''}
         </div>
 
         ${isScrimCategory ? `
