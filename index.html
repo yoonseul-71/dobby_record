@@ -526,7 +526,7 @@ function createDefaultPositions() {
   ];
 }
 
-// 멸망전 데이터 방어 정화 함수 (누락된 배열이 있으면 자동 생성하여 에러 원천 차단)
+// 멸망전 데이터 방어 정화 함수
 function sanitizeScrimCards(cards) {
   if (!Array.isArray(cards)) return JSON.parse(JSON.stringify(DEFAULT_SCRIM));
   cards.forEach(card => {
@@ -562,6 +562,12 @@ function sanitizeScrimCards(cards) {
     });
   });
   return cards;
+}
+
+// 마크서버 일차 파싱 보조 함수 (누락되었던 함수 추가)
+function parseMcDay(dayTitle) {
+  const match = dayTitle ? dayTitle.match(/(\d+)일차/) : null;
+  return match ? parseInt(match[1], 10) : 0;
 }
 
 let MC_SERVERS = JSON.parse(localStorage.getItem("local_MC_SERVERS")) || JSON.parse(JSON.stringify(DEFAULT_MC));
