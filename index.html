@@ -63,6 +63,8 @@
   --win-bg: #eff6ff;
   --loss: #dc2626;
   --loss-bg: #fef2f2;
+  --draw: #64748b;
+  --draw-bg: #f1f5f9;
 
   --pink-bg: #fbcfe8;
   --pink-ink: #831843;
@@ -174,7 +176,7 @@ td.mono { font-weight: 500; }
 .pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
 .pill.w { background: var(--win-bg); color: var(--win); }
 .pill.l { background: var(--loss-bg); color: var(--loss); }
-.pill.d { background: #e2e8f0; color: #475569; }
+.pill.d { background: var(--draw-bg); color: var(--draw); }
 .pill.none { background: var(--neutral-bg); color: var(--page-muted); }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 15px; }
@@ -782,6 +784,7 @@ function openAdminModal(target, idx = -1, copyIdx = -1) {
         <option value="" ${!r.result||r.result===''?'selected':''}>진행중 (미선택)</option>
         <option value="W" ${r.result==='W'?'selected':''}>승 (W)</option>
         <option value="L" ${r.result==='L'?'selected':''}>패 (L)</option>
+        <option value="D" ${r.result==='D'?'selected':''}>중단 (D)</option>
       </select>
       <label>참여 멤버</label><textarea id="afAllMembers" rows="3">${r.allMembersText||''}</textarea>
     `;
@@ -1694,6 +1697,7 @@ function renderRecords() {
       let resPill = `<span class="pill none">진행중</span>`;
       if (r.result === 'W') resPill = `<span class="pill w">승</span>`;
       else if (r.result === 'L') resPill = `<span class="pill l">패</span>`;
+      else if (r.result === 'D') resPill = `<span class="pill d">중단</span>`;
 
       if (S.game === "발로란트") {
         mainRowContent = `
@@ -1759,7 +1763,7 @@ function renderRecords() {
       <div>
         <div class="game-tabs">${gameTabsHtml}</div>
         <div style="font-size:11.5px; color:var(--page-muted); margin-top:6px; line-height:1.4;">
-          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다 (후열 포함)<br>
+          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다<br>
           하나의 ${noticeModeText}의 최종 승/패 결과에 따라 계산되지 않습니다
         </div>
       </div>
@@ -2007,7 +2011,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
             
             let pillClass = "l";
             if (s.result === "승") pillClass = "w";
-            else if (s.result === "무") pillClass = "d";
+            else if (s.result === "무" || s.result === "D") pillClass = "d";
             allSetPills.push(`<span class="pill ${pillClass}">${s.result}</span>`);
           });
         });
@@ -2024,7 +2028,7 @@ function renderScrims(subId, gI = 0, dI = 0, tI = 0) {
 
     let curSetPillClass = "l";
     if (curSet.result === "승") curSetPillClass = "w";
-    else if (curSet.result === "무") curSetPillClass = "d";
+    else if (curSet.result === "무" || curSet.result === "D") curSetPillClass = "d";
 
     return `
       <div class="block">
