@@ -486,7 +486,7 @@ const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
         {
           title: "",
           timelines: [
-            { text: "방송 시작 및 멤버 집결", url: "", spacing: 0 }
+            { text: "방송 시작 및 멤버 집결", url: "", spacing: 0, highlight: "" }
           ]
         }
       ]
@@ -502,7 +502,7 @@ const DEFAULT_CHONG = Array.from({length: 25}, (_, i) => {
         {
           title: "",
           timelines: [
-            { text: "벌칙 수행 및 토크 타임", url: "", spacing: 0 }
+            { text: "벌칙 수행 및 토크 타임", url: "", spacing: 0, highlight: "" }
           ]
         }
       ]
@@ -599,8 +599,20 @@ CHONG_EPS.forEach(ep => {
       tabTitle: "본편",
       customTitle: "",
       desc: ep.desc || "",
-      sections: ep.sections || [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }]
+      sections: ep.sections || [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0, highlight: "" }] }]
     }];
+  } else {
+    ep.tabs.forEach(t => {
+      if (t.sections) {
+        t.sections.forEach(sec => {
+          if (sec.timelines) {
+            sec.timelines.forEach(time => {
+              if (time.highlight === undefined) time.highlight = "";
+            });
+          }
+        });
+      }
+    });
   }
 });
 
@@ -902,7 +914,7 @@ function handleAdminFormSubmit(e) {
             tabTitle: "본편",
             customTitle: "",
             desc: desc,
-            sections: [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0 }] }]
+            sections: [{ title: "", timelines: [{ text: "방송 시작", url: "", spacing: 0, highlight: "" }] }]
           }
         ]
       });
@@ -1064,12 +1076,37 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `<label>섹션 제목 (비워두면 밑줄 없음)</label><input type="text" id="asSecTitle" value="${secObj.title||''}">`;
   } else if (type === "chong-timeline-add") {
     document.getElementById("asTitle").textContent = "타임라인 내용 추가";
-    container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3"></textarea><label>링크</label><input type="text" id="asChongUrl">`;
+    container.innerHTML = `
+      <label>내용</label><textarea id="asChongText" rows="3"></textarea>
+      <label>링크</label><input type="text" id="asChongUrl">
+      <label>인라인 배경색 (하이라이트)</label>
+      <select id="asChongHighlight" style="margin-bottom:10px;">
+        <option value="">없음</option>
+        <option value="green">연두색 (파스텔)</option>
+        <option value="yellow">연노란색 (파스텔)</option>
+        <option value="brown">아주 연한 갈색</option>
+      </select>
+    `;
   } else if (type === "chong-timeline-edit") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
-    const item = epObj.tabs[ex1].sections[ex2].timelines[ex3];
-    document.getElementById("asTitle").textContent = "타임라인 수정";
-    container.innerHTML = `<label>내용</label><textarea id="asChongText" rows="3">${item.text}</textarea><label>링크</label><input type="text" id="asChongUrl" value="${item.url||''}">`;
+    const tabIdx = parseInt(ex1, 10);
+    const secIdx = parseInt(ex2, 10);
+    const timeIdx = parseInt(ex3, 10);
+    if (epObj && epObj.tabs[tabIdx] && epObj.tabs[tabIdx].sections[secIdx]) {
+      const item = epObj.tabs[tabIdx].sections[secIdx].timelines[timeIdx];
+      document.getElementById("asTitle").textContent = "타임라인 수정";
+      container.innerHTML = `
+        <label>내용</label><textarea id="asChongText" rows="3">${item.text}</textarea>
+        <label>링크</label><input type="text" id="asChongUrl" value="${item.url||''}">
+        <label>인라인 배경색 (하이라이트)</label>
+        <select id="asChongHighlight" style="margin-bottom:10px;">
+          <option value="" ${!item.highlight?'selected':''}>없음</option>
+          <option value="green" ${item.highlight==='green'?'selected':''}>연두색 (파스텔)</option>
+          <option value="yellow" ${item.highlight==='yellow'?'selected':''}>연노란색 (파스텔)</option>
+          <option value="brown" ${item.highlight==='brown'?'selected':''}>아주 연한 갈색</option>
+        </select>
+      `;
+    }
   } else if (type === "mc-day") {
     document.getElementById("asTitle").textContent = "마크서버 일차 추가";
     container.innerHTML = `<label>일차 제목 (예: 2일차)</label><input type="text" id="asDayTitle" value="2일차"><label>날짜 및 요일 (예: 24.11.05 화)</label><input type="text" id="asDateStr" value="24.11.05 화">`;
@@ -1099,11 +1136,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
     container.innerHTML = `
       <label>내용</label><textarea id="asTimelineText" rows="3"></textarea>
       <label>링크</label><input type="text" id="asTimelineUrl">
-      <label>인라인 배경색 (형광펜)</label>
+      <label>인라인 배경색 (파스텔)</label>
       <select id="asTimelineHighlight" style="margin-bottom:10px;">
         <option value="">없음</option>
-        <option value="green">연두색 (하이라이트)</option>
-        <option value="yellow">연노란색 (루팅)</option>
+        <option value="green">연두색 (파스텔)</option>
+        <option value="yellow">연노란색 (파스텔)</option>
+        <option value="brown">아주 연한 갈색</option>
       </select>
       <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px;">
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
@@ -1126,11 +1164,12 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
       container.innerHTML = `
         <label>내용</label><textarea id="asTimelineText" rows="3">${item.text}</textarea>
         <label>링크</label><input type="text" id="asTimelineUrl" value="${item.url||''}">
-        <label>인라인 배경색 (형광펜)</label>
+        <label>인라인 배경색 (파스텔)</label>
         <select id="asTimelineHighlight" style="margin-bottom:10px;">
           <option value="" ${!item.highlight?'selected':''}>없음</option>
-          <option value="green" ${item.highlight==='green'?'selected':''}>연두색 (하이라이트)</option>
-          <option value="yellow" ${item.highlight==='yellow'?'selected':''}>연노란색 (루팅)</option>
+          <option value="green" ${item.highlight==='green'?'selected':''}>연두색 (파스텔)</option>
+          <option value="yellow" ${item.highlight==='yellow'?'selected':''}>연노란색 (파스텔)</option>
+          <option value="brown" ${item.highlight==='brown'?'selected':''}>아주 연한 갈색</option>
         </select>
         <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:6px;">
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
@@ -1272,7 +1311,7 @@ function handleSubFormSubmit(e) {
         tabTitle: document.getElementById("asTabTitle").value,
         customTitle: document.getElementById("asTabCustomTitle").value,
         desc: document.getElementById("asTabDesc").value,
-        sections: [{ title: "", timelines: [{ text: "시작", url: "", spacing: 0 }] }]
+        sections: [{ title: "", timelines: [{ text: "시작", url: "", spacing: 0, highlight: "" }] }]
       });
       saveData();
     }
@@ -1305,8 +1344,9 @@ function handleSubFormSubmit(e) {
     if (epObj && epObj.tabs[tabIdx] && epObj.tabs[tabIdx].sections[secIdx]) {
       const text = document.getElementById("asChongText").value;
       const url = document.getElementById("asChongUrl").value;
+      const highlight = document.getElementById("asChongHighlight").value;
       if (!epObj.tabs[tabIdx].sections[secIdx].timelines) epObj.tabs[tabIdx].sections[secIdx].timelines = [];
-      epObj.tabs[tabIdx].sections[secIdx].timelines.push({ text, url, spacing: 0 });
+      epObj.tabs[tabIdx].sections[secIdx].timelines.push({ text, url, spacing: 0, highlight });
       saveData();
     }
   } else if (type === "chong-timeline-edit") {
@@ -1318,6 +1358,7 @@ function handleSubFormSubmit(e) {
       const item = epObj.tabs[tabIdx].sections[secIdx].timelines[timeIdx];
       item.text = document.getElementById("asChongText").value;
       item.url = document.getElementById("asChongUrl").value;
+      item.highlight = document.getElementById("asChongHighlight").value;
       saveData();
     }
   } else if (type === "mc-day") {
@@ -1592,7 +1633,7 @@ function renderRecords() {
     return `<a onclick="setYear('${yVal}')" ${S.year === yVal ? 'aria-current="page"' : ''}>${yVal} <span class="n">${count}</span></a>`;
   }).join("");
 
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(yVal.replace("년", "")));
 
   const subnavHtml = currentModes.map(m => {
     const count = m === "전체" ? yearFilteredRows.length : yearFilteredRows.filter(r => {
@@ -1763,7 +1804,7 @@ function renderRecords() {
       <div>
         <div class="game-tabs">${gameTabsHtml}</div>
         <div style="font-size:11.5px; color:var(--page-muted); margin-top:6px; line-height:1.4;">
-          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다<br>
+          모든 전적은 하나의 세트씩 각각 기록되며 승률은 세트를 기준으로 계산됩니다 (후열 포함)<br>
           하나의 ${noticeModeText}의 최종 승/패 결과에 따라 계산되지 않습니다
         </div>
       </div>
@@ -1913,11 +1954,17 @@ function renderChongDetail(epNo, tabIdx = 0) {
               ${(sec.timelines || []).map((item, tIdx) => {
                 const spacingVal = item.spacing || 0;
                 const spacingStyles = Array(spacingVal).fill('<div style="height:12px;"></div>').join('');
+                
+                let bgStyle = '';
+                if (item.highlight === 'green') bgStyle = 'background-color: #f0fdf4; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px;';
+                else if (item.highlight === 'yellow') bgStyle = 'background-color: #fef9c3; border: 1px solid #fef08a; padding: 2px 6px; border-radius: 4px;';
+                else if (item.highlight === 'brown') bgStyle = 'background-color: #fdf8f6; border: 1px solid #f5ebe6; padding: 2px 6px; border-radius: 4px; color: #5c4033;';
+
                 return `
                 <li style="flex-direction:column; align-items:stretch;">
                   <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                     <div>
-                      ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre">${item.text}</span></a>` : `<span class="text-pre">${item.text}</span>`}
+                      ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre" style="${bgStyle}">${item.text}</span></a>` : `<span class="text-pre" style="${bgStyle}">${item.text}</span>`}
                     </div>
                     <div style="display:flex; align-items:center; gap:4px;">
                       ${isAdmin ? `
@@ -2303,8 +2350,9 @@ function renderMinecraft(subId, dayIndex = 0) {
                   const spacingStyles = Array(spacingVal).fill('<div style="height:12px;"></div>').join('');
                   
                   let bgStyle = '';
-                  if (item.highlight === 'green') bgStyle = 'background-color: #bbf7d0; padding: 2px 6px; border-radius: 4px;';
-                  else if (item.highlight === 'yellow') bgStyle = 'background-color: #fef08a; padding: 2px 6px; border-radius: 4px;';
+                  if (item.highlight === 'green') bgStyle = 'background-color: #f0fdf4; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px;';
+                  else if (item.highlight === 'yellow') bgStyle = 'background-color: #fef9c3; border: 1px solid #fef08a; padding: 2px 6px; border-radius: 4px;';
+                  else if (item.highlight === 'brown') bgStyle = 'background-color: #fdf8f6; border: 1px solid #f5ebe6; padding: 2px 6px; border-radius: 4px; color: #5c4033;';
 
                   let bossBoxesHtml = '';
                   if (isBossSection && item.bossItem && item.bossCount > 0) {
