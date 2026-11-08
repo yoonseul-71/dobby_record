@@ -1701,8 +1701,8 @@ function renderRecords() {
       const rowClass = (!nextR || nextR.date !== r.date) ? "record-row-last-of-date" : "record-row";
 
       let detailHtml = '';
-      if (S.game === "발로란트") {
-        detailHtml = r.allMembersText ? `<div class="text-pre" style="color:var(--page-fg);">${r.allMembersText}</div>` : '';
+      if (r.allMembersText && r.allMembersText.trim() !== "") {
+        detailHtml = `<div class="text-pre" style="color:var(--page-fg);">${r.allMembersText}</div>`;
       } else if (S.game === "배그") {
         let pubgRows = r.pubgRows || [];
         let rowsTrs = pubgRows.map(pr => `
