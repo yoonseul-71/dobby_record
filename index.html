@@ -1633,7 +1633,7 @@ function renderRecords() {
     return `<a onclick="setYear('${yVal}')" ${S.year === yVal ? 'aria-current="page"' : ''}>${yVal} <span class="n">${count}</span></a>`;
   }).join("");
 
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(yVal.replace("년", "")));
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
 
   const subnavHtml = currentModes.map(m => {
     const count = m === "전체" ? yearFilteredRows.length : yearFilteredRows.filter(r => {
