@@ -1956,9 +1956,9 @@ function renderChongDetail(epNo, tabIdx = 0) {
                 const spacingStyles = Array(spacingVal).fill('<div style="height:12px;"></div>').join('');
                 
                 let bgStyle = '';
-                if (item.highlight === 'green') bgStyle = 'background-color: #f0fdf4; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px;';
-                else if (item.highlight === 'yellow') bgStyle = 'background-color: #fef9c3; border: 1px solid #fef08a; padding: 2px 6px; border-radius: 4px;';
-                else if (item.highlight === 'brown') bgStyle = 'background-color: #fdf8f6; border: 1px solid #f5ebe6; padding: 2px 6px; border-radius: 4px; color: #5c4033;';
+                if (item.highlight === 'green') bgStyle = 'background-color: #f0fdf4; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px; color: #000000;';
+                else if (item.highlight === 'yellow') bgStyle = 'background-color: #fef9c3; border: 1px solid #fef08a; padding: 2px 6px; border-radius: 4px; color: #000000;';
+                else if (item.highlight === 'brown') bgStyle = 'background-color: #fdf8f6; border: 1px solid #f5ebe6; padding: 2px 6px; border-radius: 4px; color: #000000;';
 
                 return `
                 <li style="flex-direction:column; align-items:stretch;">
@@ -2350,9 +2350,9 @@ function renderMinecraft(subId, dayIndex = 0) {
                   const spacingStyles = Array(spacingVal).fill('<div style="height:12px;"></div>').join('');
                   
                   let bgStyle = '';
-                  if (item.highlight === 'green') bgStyle = 'background-color: #f0fdf4; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px;';
-                  else if (item.highlight === 'yellow') bgStyle = 'background-color: #fef9c3; border: 1px solid #fef08a; padding: 2px 6px; border-radius: 4px;';
-                  else if (item.highlight === 'brown') bgStyle = 'background-color: #fdf8f6; border: 1px solid #f5ebe6; padding: 2px 6px; border-radius: 4px; color: #5c4033;';
+                  if (item.highlight === 'green') bgStyle = 'background-color: #f0fdf4; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px; color: #000000;';
+                  else if (item.highlight === 'yellow') bgStyle = 'background-color: #fef9c3; border: 1px solid #fef08a; padding: 2px 6px; border-radius: 4px; color: #000000;';
+                  else if (item.highlight === 'brown') bgStyle = 'background-color: #fdf8f6; border: 1px solid #f5ebe6; padding: 2px 6px; border-radius: 4px; color: #000000;';
 
                   let bossBoxesHtml = '';
                   if (isBossSection && item.bossItem && item.bossCount > 0) {
