@@ -1649,7 +1649,7 @@ function renderRecords() {
     return `<a onclick="setYear('${yVal}')" ${S.year === yVal ? 'aria-current="page"' : ''}>${yVal} <span class="n">${count}</span></a>`;
   }).join("");
 
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(yVal.replace("년", ""))); // 유효성 안전
 
   const subnavHtml = currentModes.map(m => {
     const count = m === "전체" ? yearFilteredRows.length : yearFilteredRows.filter(r => {
@@ -1670,22 +1670,29 @@ function renderRecords() {
     groups.get(k).push(r);
   });
 
-  if (!initializedMonths) {
-    groups.forEach((_, k) => { S.monthOrder[k] = { open: true, sort: 'desc' }; });
-    initializedMonths = true;
-  } else {
-    groups.forEach((_, k) => {
-      if (!S.monthOrder[k]) S.monthOrder[k] = { open: true, sort: 'desc' };
-    });
-  }
-
   const sortedMonthKeys = [...groups.keys()].sort((a, b) => {
     return S.globalMonthSort === "desc" ? b.localeCompare(a) : a.localeCompare(b);
   });
 
+  if (!initializedMonths) {
+    sortedMonthKeys.forEach((k, idx) => {
+      // 최신순 정렬 시 첫 번째(가장 최신) 월만 open: true, 나머지는 false
+      const shouldOpen = (S.globalMonthSort === "desc" && idx === 0) || (S.globalMonthSort === "asc" && idx === sortedMonthKeys.length - 1);
+      S.monthOrder[k] = { open: shouldOpen, sort: 'desc' };
+    });
+    initializedMonths = true;
+  } else {
+    sortedMonthKeys.forEach(k => {
+      if (!S.monthOrder[k]) {
+        const isLatest = (k === sortedMonthKeys[0]);
+        S.monthOrder[k] = { open: isLatest, sort: 'desc' };
+      }
+    });
+  }
+
   const monthsHtml = sortedMonthKeys.map(k => {
     const list = groups.get(k);
-    const mState = S.monthOrder[k] || { open: true, sort: 'desc' };
+    const mState = S.monthOrder[k] || { open: false, sort: 'desc' };
     const desc = mState.sort === "desc";
     const isOpen = mState.open;
     const sorted = [...list].sort((a, b) => desc ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date));
@@ -2462,14 +2469,32 @@ function renderMinecraft(subId, dayIndex = 0) {
     </div>`;
 }
 
-function setGame(g) { S.game = g; S.mode = "전체"; render(); }
-function setYear(yVal) { S.year = yVal; S.mode = "전체"; render(); }
+function setGame(g) {
+  S.game = g;
+  S.mode = "전체";
+  initializedMonths = false; // 게임 변경 시 최신 달만 펼쳐지도록 초기화 상태 재설정
+  render();
+}
+
+function setYear(yVal) {
+  S.year = yVal;
+  S.mode = "전체";
+  initializedMonths = false; // 연도 변경 시 초기화 상태 재설정
+  render();
+}
+
 function setMode(m) { S.mode = m; render(); }
 function setChongSort(so) { S.chongSort = so; render(); }
 function setMcSort(so) { S.mcSort = so; render(); }
 function setScrimSort(so) { S.scrimSort = so; render(); }
 function setScrimFilter(f) { S.scrimFilter = f; render(); }
-function setGlobalMonthSort(so) { S.globalMonthSort = so; render(); }
+
+function setGlobalMonthSort(so) {
+  S.globalMonthSort = so;
+  initializedMonths = false; // 정렬 방식 변경 시 첫 달 open 상태 재계산
+  render();
+}
+
 function setMonthOrd(k, so) { if (S.monthOrder[k]) S.monthOrder[k].sort = so; render(); }
 
 function getWd(dateStr) {
