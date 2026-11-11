@@ -1649,7 +1649,7 @@ function renderRecords() {
     return `<a onclick="setYear('${yVal}')" ${S.year === yVal ? 'aria-current="page"' : ''}>${yVal} <span class="n">${count}</span></a>`;
   }).join("");
 
-  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(yVal.replace("년", ""))); // 유효성 안전
+  const yearFilteredRows = S.year === "전체" ? gameFilteredRows : gameFilteredRows.filter(r => r.date && r.date.startsWith(S.year.replace("년", "")));
 
   const subnavHtml = currentModes.map(m => {
     const count = m === "전체" ? yearFilteredRows.length : yearFilteredRows.filter(r => {
@@ -1676,7 +1676,6 @@ function renderRecords() {
 
   if (!initializedMonths) {
     sortedMonthKeys.forEach((k, idx) => {
-      // 최신순 정렬 시 첫 번째(가장 최신) 월만 open: true, 나머지는 false
       const shouldOpen = (S.globalMonthSort === "desc" && idx === 0) || (S.globalMonthSort === "asc" && idx === sortedMonthKeys.length - 1);
       S.monthOrder[k] = { open: shouldOpen, sort: 'desc' };
     });
@@ -2472,14 +2471,14 @@ function renderMinecraft(subId, dayIndex = 0) {
 function setGame(g) {
   S.game = g;
   S.mode = "전체";
-  initializedMonths = false; // 게임 변경 시 최신 달만 펼쳐지도록 초기화 상태 재설정
+  initializedMonths = false;
   render();
 }
 
 function setYear(yVal) {
   S.year = yVal;
   S.mode = "전체";
-  initializedMonths = false; // 연도 변경 시 초기화 상태 재설정
+  initializedMonths = false;
   render();
 }
 
@@ -2491,7 +2490,7 @@ function setScrimFilter(f) { S.scrimFilter = f; render(); }
 
 function setGlobalMonthSort(so) {
   S.globalMonthSort = so;
-  initializedMonths = false; // 정렬 방식 변경 시 첫 달 open 상태 재계산
+  initializedMonths = false;
   render();
 }
 
