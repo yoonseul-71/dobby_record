@@ -108,8 +108,9 @@ nav.bar a::before {
   background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(0,0,0,0.08); border-radius: 2px; transform: rotate(-3deg);
 }
 
-nav.bar a[data-cat="record"] { --note: var(--pink-bg); --note-ink: var(--pink-ink); --note-edge: var(--pink); --tilt: -1deg; }
-nav.bar a[data-cat="mc"] { --note: var(--sky-bg); --note-ink: var(--sky-ink); --note-edge: var(--sky); --tilt: -0.8deg; }
+nav.bar a[data-cat="home"] { --note: #e0f2fe; --note-ink: #0369a1; --note-edge: #0284c7; --tilt: -1.2deg; }
+nav.bar a[data-cat="record"] { --note: var(--pink-bg); --note-ink: var(--pink-ink); --note-edge: var(--pink); --tilt: -0.4deg; }
+nav.bar a[data-cat="mc"] { --note: var(--sky-bg); --note-ink: var(--sky-ink); --note-edge: var(--sky); --tilt: 0.6deg; }
 nav.bar a[data-cat="chong"] { --note: var(--violet-bg); --note-ink: var(--violet-ink); --note-edge: var(--violet-line); --tilt: 1.2deg; }
 
 nav.bar a[aria-current="page"] {
@@ -267,6 +268,7 @@ footer.bottom-footer {
   <div class="sheet">
     <div class="nav-bar-container">
       <nav class="bar" id="mainNav">
+        <a href="#home" data-cat="home">홈</a>
         <a href="#record" data-cat="record">전적</a>
         <a href="#mc" data-cat="mc">마크서버</a>
         <a href="#chong" data-cat="chong">총겜동</a>
@@ -1126,6 +1128,78 @@ function deleteItem(target, idx) {
   render();
 }
 
+function renderHome() {
+  return `
+    <div class="block" style="align-items: center; padding: 20px 0 40px;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <h2 style="justify-content: center; font-size: 26px; margin-bottom: 6px;">도현 아카이브 정보</h2>
+        <p style="color: var(--page-muted); font-size: 14px; margin: 0;">주요 방송 채널, 커뮤니티 및 관련 링크 바로가기</p>
+      </div>
+
+      <!-- 상단 4개 아이콘 가로 정렬 (숲 방송국, 도튜브, 도밥천국, 일정표) -->
+      <div style="display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; max-width: 650px;">
+        
+        <!-- 숲 방송국 -->
+        <a href="https://www.sooplive.com/station/dobby1031" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width: 76px; height: 76px; border-radius: 50%; background: #18181b; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </div>
+          <span style="font-weight: 700; font-size: 13.5px; color: var(--page-fg);">숲 방송국</span>
+        </a>
+
+        <!-- 도튜브 -->
+        <a href="https://www.youtube.com/@d_obby" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width: 76px; height: 76px; border-radius: 50%; background: #18181b; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"></path><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#ffffff"></polygon></svg>
+          </div>
+          <span style="font-weight: 700; font-size: 13.5px; color: var(--page-fg);">도튜브</span>
+        </a>
+
+        <!-- 도밥천국 -->
+        <a href="https://cafe.naver.com/jamdo" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width: 76px; height: 76px; border-radius: 50%; background: #18181b; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+          </div>
+          <span style="font-weight: 700; font-size: 13.5px; color: var(--page-fg);">도밥천국</span>
+        </a>
+
+        <!-- 일정표 (달력 모양 심볼) -->
+        <a href="https://yoonseul-71.github.io/dohyeon_calendar/" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width: 76px; height: 76px; border-radius: 50%; background: #18181b; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <span style="font-weight: 700; font-size: 13.5px; color: var(--page-fg);">일정표</span>
+        </a>
+
+      </div>
+
+      <!-- 중간 구분선 및 여백 -->
+      <div style="width: 100%; max-width: 500px; border-top: 1px dashed var(--line); margin: 16px 0;"></div>
+
+      <!-- 하단 이모티콘 2개 가로 정렬 (이모티콘, 움직이는 이모티콘) -->
+      <div style="display: flex; gap: 36px; justify-content: center; flex-wrap: wrap;">
+        
+        <!-- 도현 이모티콘 -->
+        <a href="https://ogqmarket.sooplive.com/emoticon/63fee49b8e6ff" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width: 66px; height: 66px; border-radius: 50%; background: #18181b; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.06);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+          </div>
+          <span style="font-weight: 700; font-size: 12.5px; color: var(--page-muted);">도현 이모티콘</span>
+        </a>
+
+        <!-- 도현 움직이는 이모티콘 -->
+        <a href="https://ogqmarket.sooplive.com/emoticon/65c3ea120a90d" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width: 66px; height: 66px; border-radius: 50%; background: #18181b; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.06);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="#ffffff"></polygon></svg>
+          </div>
+          <span style="font-weight: 700; font-size: 12.5px; color: var(--page-muted);">움직이는 이모티콘</span>
+        </a>
+
+      </div>
+    </div>
+  `;
+}
+
 function renderRecords() {
   const games = ["발로란트", "롤", "배그"];
   const yearsSet = new Set(["전체", "2024년", "2025년", "2026년"]);
@@ -1190,7 +1264,6 @@ function renderRecords() {
 
   if (!initializedMonths) {
     sortedMonthKeys.forEach((k) => {
-      // 모든 월을 기본적으로 닫힌 상태(open: false)로 설정
       S.monthOrder[k] = { open: false, sort: 'desc' };
     });
     initializedMonths = true;
@@ -1762,12 +1835,14 @@ function getWd(dateStr) {
 }
 
 function render() {
-  const hash = location.hash || "#record";
+  const hash = location.hash || "#home";
   const navLinks = document.querySelectorAll("#mainNav a");
   
-  let cat = "record";
-  if (hash.startsWith("#mc")) cat = "mc";
+  let cat = "home";
+  if (hash.startsWith("#record")) cat = "record";
+  else if (hash.startsWith("#mc")) cat = "mc";
   else if (hash.startsWith("#chong")) cat = "chong";
+  else if (hash.startsWith("#home")) cat = "home";
 
   navLinks.forEach(a => {
     if (a.getAttribute("data-cat") === cat) a.setAttribute("aria-current", "page");
@@ -1777,7 +1852,9 @@ function render() {
   const view = document.getElementById("view");
   if (!view) return;
 
-  if (hash.startsWith("#record")) {
+  if (hash.startsWith("#home") || hash === "") {
+    view.innerHTML = renderHome();
+  } else if (hash.startsWith("#record")) {
     view.innerHTML = renderRecords();
   } else if (hash.startsWith("#mc")) {
     const parts = hash.split("-");
@@ -1806,7 +1883,7 @@ function render() {
       view.innerHTML = renderChongList();
     }
   } else {
-    view.innerHTML = renderRecords();
+    view.innerHTML = renderHome();
   }
 }
 
