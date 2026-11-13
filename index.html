@@ -108,7 +108,6 @@ nav.bar a::before {
   background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(0,0,0,0.08); border-radius: 2px; transform: rotate(-3deg);
 }
 
-/* 홈 탭 민트색 테마 적용 */
 nav.bar a[data-cat="home"] { --note: #ccfbf1; --note-ink: #115e59; --note-edge: #14b8a6; --tilt: -1.2deg; }
 nav.bar a[data-cat="record"] { --note: var(--pink-bg); --note-ink: var(--pink-ink); --note-edge: var(--pink); --tilt: -0.4deg; }
 nav.bar a[data-cat="mc"] { --note: var(--sky-bg); --note-ink: var(--sky-ink); --note-edge: var(--sky); --tilt: 0.6deg; }
@@ -1059,6 +1058,35 @@ function moveMcSection(serverId, dayIdx, secIdx, direction) {
   render();
 }
 
+// 타임라인 항목 위/아래 순서 이동 함수 추가
+function moveTimelineItem(targetType, parentId, idx1, idx2, idx3, direction) {
+  if (targetType === "chong") {
+    const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
+    if (epObj && epObj.tabs[idx1] && epObj.tabs[idx1].sections[idx2] && epObj.tabs[idx1].sections[idx2].timelines) {
+      const timelines = epObj.tabs[idx1].sections[idx2].timelines;
+      const targetIdx = idx3 + direction;
+      if (targetIdx < 0 || targetIdx >= timelines.length) return;
+      const temp = timelines[idx3];
+      timelines[idx3] = timelines[targetIdx];
+      timelines[targetIdx] = temp;
+      saveData();
+      render();
+    }
+  } else if (targetType === "mc") {
+    const srv = MC_SERVERS.find(s => s.id === parentId);
+    if (srv && srv.days[idx1] && srv.days[idx1].sections[idx2] && srv.days[idx1].sections[idx2].timelines) {
+      const timelines = srv.days[idx1].sections[idx2].timelines;
+      const targetIdx = idx3 + direction;
+      if (targetIdx < 0 || targetIdx >= timelines.length) return;
+      const temp = timelines[idx3];
+      timelines[idx3] = timelines[targetIdx];
+      timelines[targetIdx] = temp;
+      saveData();
+      render();
+    }
+  }
+}
+
 function adjustSpacing(targetType, parentId, idx1, idx2, idx3, delta) {
   if (targetType === "chong") {
     const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
@@ -1573,6 +1601,8 @@ function renderChongDetail(epNo, tabIdx = 0) {
                     </div>
                     <div style="display:flex; align-items:center; gap:4px;">
                       ${isAdmin ? `
+                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="moveTimelineItem('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, -1)" ${tIdx === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''}>▲</button>
+                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="moveTimelineItem('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, 1)" ${tIdx === sec.timelines.length - 1 ? 'disabled style="opacity:0.4; cursor:default;"' : ''}>▼</button>
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, 1)">＋</button>
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, -1)">－</button>
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-edit', ${tabIdx}, ${sIdx}, ${tIdx})">수정</button>
@@ -1719,6 +1749,8 @@ function renderMinecraft(subId, dayIndex = 0) {
                       </div>
                       <div style="display:flex; align-items:center; gap:4px;">
                         ${isAdmin ? `
+                          <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="moveTimelineItem('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx}, -1)" ${tIdx === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''}>▲</button>
+                          <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="moveTimelineItem('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx}, 1)" ${tIdx === sec.timelines.length - 1 ? 'disabled style="opacity:0.4; cursor:default;"' : ''}>▼</button>
                           <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx}, 1)">＋</button>
                           <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx}, -1)">－</button>
                           <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-edit', ${dayIndex}, ${sIdx}, ${tIdx})">수정</button>
