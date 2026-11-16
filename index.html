@@ -234,6 +234,10 @@ td.mono { font-weight: 500; }
 
 .ep-detail-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
 .ep-box { border: 2px solid #12161c; border-radius: 12px; padding: 20px; background: var(--surface); position: relative; }
+/* 공지 섹션 테두리 근처 약 1.5cm(55px) 연한 파스텔 분홍빛 글로우 */
+.ep-box.notice-glow {
+  box-shadow: inset 0 0 38px 18px rgba(251, 207, 232, 0.72);
+}
 .ep-box-title { font-size: 15px; font-weight: bold; color: var(--page-fg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 .ep-box-title-line { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
 .timeline-clean { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
@@ -1585,6 +1589,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
       <div class="ep-detail-wrap">
         ${(curTab.sections || []).map((sec, sIdx) => {
           const hasTitle = sec.title && sec.title.trim() !== "";
+          const isNoticeSection = hasTitle && sec.title.includes("공지");
           const timelinesHtml = `
             <ul class="timeline-clean">
               ${(sec.timelines || []).map((item, tIdx) => {
@@ -1620,7 +1625,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
           `;
 
           return `
-            <div class="ep-box">
+            <div class="ep-box ${isNoticeSection ? 'notice-glow' : ''}">
               <div class="ep-box-title ${hasTitle ? 'ep-box-title-line' : ''}">
                 <span>${hasTitle ? sec.title : ''}</span>
                 ${isAdmin ? `
@@ -1727,6 +1732,7 @@ function renderMinecraft(subId, dayIndex = 0) {
         <div class="ep-detail-wrap">
           ${(curDay.sections || []).map((sec, sIdx) => {
             const hasTitle = sec.title && sec.title.trim() !== "";
+            const isNoticeSection = hasTitle && sec.title.includes("공지");
             const isBossSection = sec.title && sec.title.trim() === "보스";
 
             const timelinesHtml = `
@@ -1772,7 +1778,7 @@ function renderMinecraft(subId, dayIndex = 0) {
             `;
 
             return `
-              <div class="ep-box">
+              <div class="ep-box ${isNoticeSection ? 'notice-glow' : ''}">
                 <div class="ep-box-title ${hasTitle ? 'ep-box-title-line' : ''}">
                   <span>${hasTitle ? sec.title : ''}</span>
                   ${isAdmin ? `
