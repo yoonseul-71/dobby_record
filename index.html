@@ -789,7 +789,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
   } else if (type === "chong-timeline-add") {
     document.getElementById("asTitle").textContent = "타임라인 내용 추가";
     container.innerHTML = `
-      <label>내용 (HTML 태그 &lt;span style="color:#64748b;"&gt; 등 사용 가능)</label><textarea id="asChongText" rows="3"></textarea>
+      <label>내용 (HTML 태그 &lt;span style="color:#64748b;"&gt;, &lt;b&gt; 등 사용 가능)</label><textarea id="asChongText" rows="3"></textarea>
       <label>링크</label><input type="text" id="asChongUrl">
       <label>인라인 배경색 (하이라이트)</label>
       <select id="asChongHighlight" style="margin-bottom:10px;">
@@ -846,7 +846,7 @@ function openSubAdminModal(parentId, type, ex1 = "", ex2 = "", ex3 = "", ex4 = "
   } else if (type === "mc-timeline-add") {
     document.getElementById("asTitle").textContent = "타임라인 내용 추가";
     container.innerHTML = `
-      <label>내용 (HTML 태그 &lt;span style="color:#64748b;"&gt; 등 사용 가능)</label><textarea id="asTimelineText" rows="3"></textarea>
+      <label>내용 (HTML 태그 &lt;span style="color:#64748b;"&gt;, &lt;b&gt; 등 사용 가능)</label><textarea id="asTimelineText" rows="3"></textarea>
       <label>링크</label><input type="text" id="asTimelineUrl">
       <label>인라인 배경색 (파스텔)</label>
       <select id="asTimelineHighlight" style="margin-bottom:10px;">
@@ -1600,7 +1600,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
                 <li style="flex-direction:column; align-items:stretch;">
                   <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                     <div>
-                      ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span style="${bgStyle}">${item.text}</span></a>` : `<span style="${bgStyle}">${item.text}</span>`}
+                      ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre" style="${bgStyle}">${item.text}</span></a>` : `<span class="text-pre" style="${bgStyle}">${item.text}</span>`}
                     </div>
                     <div style="display:flex; align-items:center; gap:4px;">
                       ${isAdmin ? `
@@ -1751,7 +1751,7 @@ function renderMinecraft(subId, dayIndex = 0) {
                   <li style="flex-direction:column; align-items:stretch;">
                     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                       <div>
-                        ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span style="${bgStyle}">${item.text}</span></a>` : `<span style="${bgStyle}">${item.text}</span>`}
+                        ${item.url ? `<a href="${item.url}" target="_blank"><span class="arrow">↗</span> <span class="text-pre" style="${bgStyle}">${item.text}</span></a>` : `<span class="text-pre" style="${bgStyle}">${item.text}</span>`}
                         ${bossBoxesHtml}
                       </div>
                       <div style="display:flex; align-items:center; gap:4px;">
