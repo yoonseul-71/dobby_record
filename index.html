@@ -233,13 +233,16 @@ td.mono { font-weight: 500; }
 .text-pre { white-space: pre-wrap; word-break: break-all; }
 
 .ep-detail-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
-.ep-box { border: 2px solid #12161c; border-radius: 12px; padding: 20px; background: var(--surface); position: relative; }
-/* 공지 섹션 테두리 근처 약 1.5cm(55px) 연한 파스텔 분홍빛 글로우 */
-.ep-box.notice-glow {
-  box-shadow: inset 0 0 38px 18px rgba(251, 207, 232, 0.72);
-}
+.ep-box { border: 2px solid #12161c; border-radius: 12px; padding: 20px; background: var(--surface); position: relative; overflow: hidden; }
 .ep-box-title { font-size: 15px; font-weight: bold; color: var(--page-fg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 .ep-box-title-line { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+/* 공지 섹션 상단 제목 영역만 연노랑 파스텔색 채우기 */
+.ep-box-title.notice-header {
+  background-color: #fef9c3;
+  margin: -20px -20px 14px -20px;
+  padding: 13px 20px 11px 20px;
+  border-bottom: 1px solid #fde047;
+}
 .timeline-clean { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .timeline-clean li { font-size: 14px; display: flex; align-items: center; justify-content: space-between; color: #000; flex-wrap: wrap; gap: 6px; }
 .timeline-clean a { color: #000; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
@@ -1625,8 +1628,8 @@ function renderChongDetail(epNo, tabIdx = 0) {
           `;
 
           return `
-            <div class="ep-box ${isNoticeSection ? 'notice-glow' : ''}">
-              <div class="ep-box-title ${hasTitle ? 'ep-box-title-line' : ''}">
+            <div class="ep-box">
+              <div class="ep-box-title ${hasTitle ? 'ep-box-title-line' : ''} ${isNoticeSection ? 'notice-header' : ''}">
                 <span>${hasTitle ? sec.title : ''}</span>
                 ${isAdmin ? `
                   <div style="display:flex; gap:6px; align-items:center; margin-left:auto;">
@@ -1778,8 +1781,8 @@ function renderMinecraft(subId, dayIndex = 0) {
             `;
 
             return `
-              <div class="ep-box ${isNoticeSection ? 'notice-glow' : ''}">
-                <div class="ep-box-title ${hasTitle ? 'ep-box-title-line' : ''}">
+              <div class="ep-box">
+                <div class="ep-box-title ${hasTitle ? 'ep-box-title-line' : ''} ${isNoticeSection ? 'notice-header' : ''}">
                   <span>${hasTitle ? sec.title : ''}</span>
                   ${isAdmin ? `
                     <div style="display:flex; gap:6px; align-items:center; margin-left:auto;">
