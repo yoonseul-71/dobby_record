@@ -1049,6 +1049,32 @@ function handleSubFormSubmit(e) {
   render();
 }
 
+function copyTimelineItem(targetType, parentId, idx1, idx2, idx3) {
+  if (targetType === "chong") {
+    const epObj = CHONG_EPS.find(e => String(e.ep) === String(parentId));
+    if (epObj && epObj.tabs[idx1] && epObj.tabs[idx1].sections[idx2] && epObj.tabs[idx1].sections[idx2].timelines) {
+      const timelines = epObj.tabs[idx1].sections[idx2].timelines;
+      const source = timelines[idx3];
+      if (!source) return;
+      const cloned = JSON.parse(JSON.stringify(source));
+      timelines.splice(idx3 + 1, 0, cloned);
+      saveData();
+      render();
+    }
+  } else if (targetType === "mc") {
+    const srv = MC_SERVERS.find(s => s.id === parentId);
+    if (srv && srv.days[idx1] && srv.days[idx1].sections[idx2] && srv.days[idx1].sections[idx2].timelines) {
+      const timelines = srv.days[idx1].sections[idx2].timelines;
+      const source = timelines[idx3];
+      if (!source) return;
+      const cloned = JSON.parse(JSON.stringify(source));
+      timelines.splice(idx3 + 1, 0, cloned);
+      saveData();
+      render();
+    }
+  }
+}
+
 function moveMcSection(serverId, dayIdx, secIdx, direction) {
   const srv = MC_SERVERS.find(s => s.id === serverId);
   if (!srv || !srv.days[dayIdx] || !srv.days[dayIdx].sections) return;
@@ -1615,6 +1641,7 @@ function renderChongDetail(epNo, tabIdx = 0) {
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, 1)">＋</button>
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx}, -1)">－</button>
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="openSubAdminModal('${epObj.ep}', 'chong-timeline-edit', ${tabIdx}, ${sIdx}, ${tIdx})">수정</button>
+                        <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="copyTimelineItem('chong', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx})">복사</button>
                         <button class="btn-btn" style="padding:1px 5px; font-size:11px; color:red;" onclick="deleteSubItem('chong-timeline', '${epObj.ep}', ${tabIdx}, ${sIdx}, ${tIdx})">삭제</button>
                       ` : ''}
                     </div>
@@ -1767,6 +1794,7 @@ function renderMinecraft(subId, dayIndex = 0) {
                           <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx}, 1)">＋</button>
                           <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="adjustSpacing('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx}, -1)">－</button>
                           <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="openSubAdminModal('${srv.id}', 'mc-timeline-edit', ${dayIndex}, ${sIdx}, ${tIdx})">수정</button>
+                          <button class="btn-btn" style="padding:1px 5px; font-size:11px;" onclick="copyTimelineItem('mc', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx})">복사</button>
                           <button class="btn-btn" style="padding:1px 5px; font-size:11px; color:red;" onclick="deleteSubItem('mc-timeline', '${srv.id}', ${dayIndex}, ${sIdx}, ${tIdx})">삭제</button>
                         ` : ''}
                       </div>
